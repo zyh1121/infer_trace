@@ -1,0 +1,59 @@
+#1807
+src/http/ngx_http_special_response.c:602: error: Buffer Overrun L4
+  Offset: [0, +oo] Size: 39 by call to `ngx_http_send_special_response`.
+
+src/http/ngx_http_special_response.c:531:1: Parameter `r->err_status`
+529. 
+530. 
+531. static ngx_int_t
+     ^
+532. ngx_http_send_error_page(ngx_http_request_t *r, ngx_http_err_page_t *err_page)
+533. {
+
+src/http/ngx_http_special_response.c:602:12: Call
+600.     }
+601. 
+602.     return ngx_http_send_special_response(r, clcf, r->err_status
+                ^
+603.                                                    - NGX_HTTP_MOVED_PERMANENTLY
+604.                                                    + NGX_HTTP_OFF_3XX);
+
+src/http/ngx_http_special_response.c:608:1: <Offset trace>
+606. 
+607. 
+608. static ngx_int_t
+     ^
+609. ngx_http_send_special_response(ngx_http_request_t *r,
+610.     ngx_http_core_loc_conf_t *clcf, ngx_uint_t err)
+
+src/http/ngx_http_special_response.c:608:1: Parameter `err`
+  606. 
+  607. 
+  608. static ngx_int_t
+       ^
+  609. ngx_http_send_special_response(ngx_http_request_t *r,
+  610.     ngx_http_core_loc_conf_t *clcf, ngx_uint_t err)
+
+src/http/ngx_http_special_response.c:301:1: <Length trace>
+299. 
+300. 
+301. static ngx_str_t ngx_http_error_pages[] = {
+     ^
+302. 
+303.     ngx_null_string,                     /* 201, 204 */
+
+src/http/ngx_http_special_response.c:301:1: Array declaration
+  299. 
+  300. 
+  301. static ngx_str_t ngx_http_error_pages[] = {
+       ^
+  302. 
+  303.     ngx_null_string,                     /* 201, 204 */
+
+src/http/ngx_http_special_response.c:665:9: Array access: Offset: [0, +oo] Size: 39 by call to `ngx_http_send_special_response` 
+  663.     }
+  664. 
+  665.     if (ngx_http_error_pages[err].len == 0) {
+               ^
+  666.         return ngx_http_send_special(r, NGX_HTTP_LAST);
+  667.     }

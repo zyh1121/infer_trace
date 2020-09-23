@@ -1,0 +1,51 @@
+#19935
+libavcodec/dsputil_template.c:1312: error: Buffer Overrun L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + 3) Size: 64 by call to `put_h264_qpel8_h_lowpass`.
+
+libavcodec/dsputil_template.c:1312:1: Array declaration
+1310. H264_MC(put_, 16)
+1311. H264_MC(avg_, 4)
+1312. H264_MC(avg_, 8)
+      ^
+1313. H264_MC(avg_, 16)
+1314. 
+
+libavcodec/dsputil_template.c:1312:1: Call
+1310. H264_MC(put_, 16)
+1311. H264_MC(avg_, 4)
+1312. H264_MC(avg_, 8)
+      ^
+1313. H264_MC(avg_, 16)
+1314. 
+
+libavcodec/dsputil_template.c:1305:1: <Length trace>
+1303. #define op2_put(a, b)  a = CLIP(((b) + 512)>>10)
+1304. 
+1305. H264_LOWPASS(put_       , op_put, op2_put)
+      ^
+1306. H264_LOWPASS(avg_       , op_avg, op2_avg)
+1307. H264_MC(put_, 2)
+
+libavcodec/dsputil_template.c:1305:1: Parameter `*_dst`
+  1303. #define op2_put(a, b)  a = CLIP(((b) + 512)>>10)
+  1304. 
+  1305. H264_LOWPASS(put_       , op_put, op2_put)
+        ^
+  1306. H264_LOWPASS(avg_       , op_avg, op2_avg)
+  1307. H264_MC(put_, 2)
+
+libavcodec/dsputil_template.c:1305:1: Assignment
+  1303. #define op2_put(a, b)  a = CLIP(((b) + 512)>>10)
+  1304. 
+  1305. H264_LOWPASS(put_       , op_put, op2_put)
+        ^
+  1306. H264_LOWPASS(avg_       , op_avg, op2_avg)
+  1307. H264_MC(put_, 2)
+
+libavcodec/dsputil_template.c:1305:1: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + 3) Size: 64 by call to `put_h264_qpel8_h_lowpass` 
+  1303. #define op2_put(a, b)  a = CLIP(((b) + 512)>>10)
+  1304. 
+  1305. H264_LOWPASS(put_       , op_put, op2_put)
+        ^
+  1306. H264_LOWPASS(avg_       , op_avg, op2_avg)
+  1307. H264_MC(put_, 2)

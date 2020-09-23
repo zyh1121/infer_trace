@@ -1,0 +1,170 @@
+ssl/t1_lib.c:1532: error: BUFFER_OVERRUN_L4
+  Offset added: [0, +oo] Size: [1, 2147483644] by call to `WPACKET_start_sub_packet_len__`.
+Showing all 22 steps of the trace
+
+
+ssl/t1_lib.c:1531:10: Call
+1529.       }
+1530.   
+1531.       if (!WPACKET_put_bytes_u16(pkt, TLSEXT_TYPE_key_share)
+                 ^
+1532.               || !WPACKET_start_sub_packet_u16(pkt)
+1533.               || !WPACKET_put_bytes_u16(pkt, s->s3->group_id)) {
+
+ssl/packet.c:289:1: Parameter `pkt->buf->length`
+  287.   }
+  288.   
+  289. > int WPACKET_put_bytes__(WPACKET *pkt, unsigned int val, size_t size)
+  290.   {
+  291.       unsigned char *data;
+
+ssl/t1_lib.c:1532:17: Call
+1530.   
+1531.       if (!WPACKET_put_bytes_u16(pkt, TLSEXT_TYPE_key_share)
+1532.               || !WPACKET_start_sub_packet_u16(pkt)
+                        ^
+1533.               || !WPACKET_put_bytes_u16(pkt, s->s3->group_id)) {
+1534.           SSLerr(SSL_F_ADD_CLIENT_KEY_SHARE_EXT, ERR_R_INTERNAL_ERROR);
+
+ssl/packet.c:252:1: Parameter `pkt->buf->length`
+  250.   }
+  251.   
+  252. > int WPACKET_start_sub_packet_len__(WPACKET *pkt, size_t lenbytes)
+  253.   {
+  254.       WPACKET_SUB *sub;
+
+ssl/packet.c:276:10: Call
+  274.       }
+  275.   
+  276.       if (!WPACKET_allocate_bytes(pkt, lenbytes, &lenchars))
+                  ^
+  277.           return 0;
+  278.       /* Convert to an offset in case the underlying BUF_MEM gets realloc'd */
+
+ssl/packet.c:15:1: Parameter `pkt->buf->length`
+    13.   #define DEFAULT_BUF_SIZE    256
+    14.   
+    15. > int WPACKET_allocate_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+    16.   {
+    17.       if (!WPACKET_reserve_bytes(pkt, len, allocbytes))
+
+ssl/packet.c:17:10: Call
+    15.   int WPACKET_allocate_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+    16.   {
+    17.       if (!WPACKET_reserve_bytes(pkt, len, allocbytes))
+                   ^
+    18.           return 0;
+    19.   
+
+ssl/packet.c:39:1: Parameter `len`
+      37.                        ? (p)->staticbuf : (unsigned char *)(p)->buf->data)
+      38.   
+      39. > int WPACKET_reserve_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+      40.   {
+      41.       /* Internal API, so should not fail */
+
+ssl/packet.c:62:13: Call
+      60.                   newlen = DEFAULT_BUF_SIZE;
+      61.           }
+      62.           if (BUF_MEM_grow(pkt->buf, newlen) == 0)
+                        ^
+      63.               return 0;
+      64.       }
+
+crypto/buffer/buffer.c:72:1: Parameter `len`
+        70.   }
+        71.   
+        72. > size_t BUF_MEM_grow(BUF_MEM *str, size_t len)
+        73.   {
+        74.       char *ret;
+
+crypto/buffer/buffer.c:94:15: Call
+        92.       n = (len + 3) / 3 * 4;
+        93.       if ((str->flags & BUF_MEM_FLAG_SECURE))
+        94.           ret = sec_alloc_realloc(str, n);
+                            ^
+        95.       else
+        96.           ret = OPENSSL_realloc(str->data, n);
+
+crypto/buffer/buffer.c:59:1: <Offset trace>
+57.   /* Allocate a block of secure memory; copy over old data if there
+58.    * was any, and then free it. */
+59. > static char *sec_alloc_realloc(BUF_MEM *str, size_t len)
+60.   {
+61.       char *ret;
+
+crypto/buffer/buffer.c:59:1: Parameter `str->length`
+          57.   /* Allocate a block of secure memory; copy over old data if there
+          58.    * was any, and then free it. */
+          59. > static char *sec_alloc_realloc(BUF_MEM *str, size_t len)
+          60.   {
+          61.       char *ret;
+
+crypto/buffer/buffer.c:59:1: <Length trace>
+57.   /* Allocate a block of secure memory; copy over old data if there
+58.    * was any, and then free it. */
+59. > static char *sec_alloc_realloc(BUF_MEM *str, size_t len)
+60.   {
+61.       char *ret;
+
+crypto/buffer/buffer.c:59:1: Parameter `len`
+          57.   /* Allocate a block of secure memory; copy over old data if there
+          58.    * was any, and then free it. */
+          59. > static char *sec_alloc_realloc(BUF_MEM *str, size_t len)
+          60.   {
+          61.       char *ret;
+
+crypto/buffer/buffer.c:63:11: Call
+          61.       char *ret;
+          62.   
+          63.       ret = OPENSSL_secure_malloc(len);
+                          ^
+          64.       if (str->data != NULL) {
+          65.           if (ret != NULL)
+
+crypto/mem_sec.c:103:1: Parameter `num`
+            101.   }
+            102.   
+            103. > void *CRYPTO_secure_malloc(size_t num, const char *file, int line)
+            104.   {
+            105.   #ifdef IMPLEMENTED
+
+crypto/mem_sec.c:110:16: Call
+            108.   
+            109.       if (!secure_mem_initialized) {
+            110.           return CRYPTO_malloc(num, file, line);
+                                  ^
+            111.       }
+            112.       CRYPTO_THREAD_write_lock(sec_malloc_lock);
+
+crypto/mem.c:79:9: Assignment
+              77.   
+              78.       if (num <= 0)
+              79.           return NULL;
+                            ^
+              80.   
+              81.       allow_customize = 0;
+
+crypto/mem_sec.c:110:9: Assignment
+            108.   
+            109.       if (!secure_mem_initialized) {
+            110.           return CRYPTO_malloc(num, file, line);
+                           ^
+            111.       }
+            112.       CRYPTO_THREAD_write_lock(sec_malloc_lock);
+
+crypto/buffer/buffer.c:63:5: Assignment
+          61.       char *ret;
+          62.   
+          63.       ret = OPENSSL_secure_malloc(len);
+                    ^
+          64.       if (str->data != NULL) {
+          65.           if (ret != NULL)
+
+crypto/buffer/buffer.c:66:13: Array access: Offset added: [0, +oo] Size: [1, 2147483644] by call to `WPACKET_start_sub_packet_len__` 
+          64.       if (str->data != NULL) {
+          65.           if (ret != NULL)
+          66.               memcpy(ret, str->data, str->length);
+                            ^
+          67.           OPENSSL_secure_free(str->data);
+          68.       }

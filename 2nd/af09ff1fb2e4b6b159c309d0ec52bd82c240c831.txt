@@ -1,0 +1,99 @@
+#27018
+libavcodec/h264_slice.c:1307: error: Integer Overflow L5
+  ([-oo, +oo] + [0, +oo]):unsigned32 by call to `get_ue_golomb`.
+
+libavcodec/h264_slice.c:1085:17: Call
+1083.     }
+1084. 
+1085.     frame_num = get_bits(&sl->gb, sps->log2_max_frame_num);
+                      ^
+1086.     if (!h->setup_finished)
+1087.         h->poc.frame_num = frame_num;
+
+libavcodec/get_bits.h:241:1: Parameter `n`
+  239.  * Read 1-25 bits.
+  240.  */
+  241. static inline unsigned int get_bits(GetBitContext *s, int n)
+       ^
+  242. {
+  243.     register int tmp;
+
+libavcodec/get_bits.h:247:5: Assignment
+  245.     UPDATE_CACHE(re, s);
+  246.     tmp = SHOW_UBITS(re, s, n);
+  247.     LAST_SKIP_BITS(re, s, n);
+           ^
+  248.     CLOSE_READER(re, s);
+  249.     return tmp;
+
+libavcodec/get_bits.h:247:5: Assignment
+  245.     UPDATE_CACHE(re, s);
+  246.     tmp = SHOW_UBITS(re, s, n);
+  247.     LAST_SKIP_BITS(re, s, n);
+           ^
+  248.     CLOSE_READER(re, s);
+  249.     return tmp;
+
+libavcodec/get_bits.h:248:5: Assignment
+  246.     tmp = SHOW_UBITS(re, s, n);
+  247.     LAST_SKIP_BITS(re, s, n);
+  248.     CLOSE_READER(re, s);
+           ^
+  249.     return tmp;
+  250. }
+
+libavcodec/h264_slice.c:1307:9: Call
+1305. 
+1306.     if (h->nal_unit_type == NAL_IDR_SLICE)
+1307.         get_ue_golomb(&sl->gb); /* idr_pic_id */
+              ^
+1308. 
+1309.     if (sps->poc_type == 0) {
+
+libavcodec/golomb.h:53:1: <LHS trace>
+51.  * read unsigned exp golomb code.
+52.  */
+53. static inline int get_ue_golomb(GetBitContext *gb)
+    ^
+54. {
+55.     unsigned int buf;
+
+libavcodec/golomb.h:53:1: Parameter `gb->index`
+  51.  * read unsigned exp golomb code.
+  52.  */
+  53. static inline int get_ue_golomb(GetBitContext *gb)
+      ^
+  54. {
+  55.     unsigned int buf;
+
+libavcodec/golomb.h:57:5: Assignment
+  55.     unsigned int buf;
+  56. 
+  57.     OPEN_READER(re, gb);
+          ^
+  58.     UPDATE_CACHE(re, gb);
+  59.     buf = GET_CACHE(re, gb);
+
+libavcodec/golomb.h:53:1: <RHS trace>
+51.  * read unsigned exp golomb code.
+52.  */
+53. static inline int get_ue_golomb(GetBitContext *gb)
+    ^
+54. {
+55.     unsigned int buf;
+
+libavcodec/golomb.h:53:1: Global `ff_golomb_vlc_len`
+  51.  * read unsigned exp golomb code.
+  52.  */
+  53. static inline int get_ue_golomb(GetBitContext *gb)
+      ^
+  54. {
+  55.     unsigned int buf;
+
+libavcodec/golomb.h:63:9: Binary operation: ([-oo, +oo] + [0, +oo]):unsigned32 by call to `get_ue_golomb` 
+  61.     if (buf >= (1 << 27)) {
+  62.         buf >>= 32 - 9;
+  63.         LAST_SKIP_BITS(re, gb, ff_golomb_vlc_len[buf]);
+              ^
+  64.         CLOSE_READER(re, gb);
+  65. 

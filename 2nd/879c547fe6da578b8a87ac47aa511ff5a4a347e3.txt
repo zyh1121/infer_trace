@@ -1,0 +1,67 @@
+#15641
+libavcodec/snow.c:985: error: Integer Overflow L5
+  ([-oo, `height` - 1] × `stride`):signed32.
+
+libavcodec/snow.c:977:1: <LHS trace>
+975. }
+976. 
+977. static void spatial_decompose97i(DWTELEM *buffer, int width, int height, int stride){
+     ^
+978.     int y;
+979.     DWTELEM *b0= buffer + mirror(-4-1, height-1)*stride;
+
+libavcodec/snow.c:977:1: Parameter `height`
+975. }
+976. 
+977. static void spatial_decompose97i(DWTELEM *buffer, int width, int height, int stride){
+     ^
+978.     int y;
+979.     DWTELEM *b0= buffer + mirror(-4-1, height-1)*stride;
+
+libavcodec/snow.c:985:31: Call
+983. 
+984.     for(y=-4; y<height; y+=2){
+985.         DWTELEM *b4= buffer + mirror(y+3, height-1)*stride;
+                                   ^
+986.         DWTELEM *b5= buffer + mirror(y+4, height-1)*stride;
+987. 
+
+libavcodec/snow.c:583:1: Parameter `v`
+  581. static uint8_t qexp[QROOT];
+  582. 
+  583. static inline int mirror(int v, int m){
+       ^
+  584.     while((unsigned)v > (unsigned)m){
+  585.         v=-v;
+
+libavcodec/snow.c:588:5: Assignment
+  586.         if(v<0) v+= 2*m;
+  587.     }
+  588.     return v;
+           ^
+  589. }
+  590. 
+
+libavcodec/snow.c:977:1: <RHS trace>
+975. }
+976. 
+977. static void spatial_decompose97i(DWTELEM *buffer, int width, int height, int stride){
+     ^
+978.     int y;
+979.     DWTELEM *b0= buffer + mirror(-4-1, height-1)*stride;
+
+libavcodec/snow.c:977:1: Parameter `stride`
+975. }
+976. 
+977. static void spatial_decompose97i(DWTELEM *buffer, int width, int height, int stride){
+     ^
+978.     int y;
+979.     DWTELEM *b0= buffer + mirror(-4-1, height-1)*stride;
+
+libavcodec/snow.c:985:9: Binary operation: ([-oo, height - 1] × stride):signed32
+983. 
+984.     for(y=-4; y<height; y+=2){
+985.         DWTELEM *b4= buffer + mirror(y+3, height-1)*stride;
+             ^
+986.         DWTELEM *b5= buffer + mirror(y+4, height-1)*stride;
+987. 

@@ -1,0 +1,255 @@
+ssl/s3_clnt.c:1261: error: INTEGER_OVERFLOW_L5
+  ([2, +oo] - [0, +oo]):unsigned64 by call to `ssl_parse_serverhello_tlsext`.
+Showing all 32 steps of the trace
+
+
+ssl/s3_clnt.c:974:10: Call
+972.       }
+973.   
+974.       if (!PACKET_buf_init(&pkt, s->init_msg, n)) {
+                ^
+975.           al = SSL_AD_INTERNAL_ERROR;
+976.           SSLerr(SSL_F_SSL3_GET_SERVER_HELLO, ERR_R_INTERNAL_ERROR);
+
+ssl/packet_locl.h:110:8: Parameter `pkt->remaining`
+  108.    * is being used.
+  109.    */
+  110.   __owur static inline int PACKET_buf_init(PACKET *pkt, unsigned char *buf,
+                ^
+  111.                                            size_t len)
+  112.   {
+
+ssl/s3_clnt.c:983:14: Call
+981.           unsigned int sversion;
+982.   
+983.           if (!PACKET_get_net_2(&pkt, &sversion)) {
+                    ^
+984.               al = SSL_AD_DECODE_ERROR;
+985.               SSLerr(SSL_F_SSL3_GET_SERVER_HELLO, SSL_R_LENGTH_MISMATCH);
+
+ssl/packet_locl.h:188:8: Parameter `pkt->remaining`
+  186.   /* Equivalent of n2s */
+  187.   /* Get 2 bytes in network order from |pkt| and store the value in |*data| */
+  188.   __owur static inline int PACKET_get_net_2(PACKET *pkt, unsigned int *data)
+                ^
+  189.   {
+  190.       if (!PACKET_peek_net_2(pkt, data))
+
+ssl/packet_locl.h:190:10: Call
+  188.   __owur static inline int PACKET_get_net_2(PACKET *pkt, unsigned int *data)
+  189.   {
+  190.       if (!PACKET_peek_net_2(pkt, data))
+                  ^
+  191.           return 0;
+  192.   
+
+ssl/packet_locl.h:174:8: Parameter `pkt->remaining`
+    172.    * |*data|
+    173.    */
+    174.   __owur static inline int PACKET_peek_net_2(const PACKET *pkt,
+                  ^
+    175.                                              unsigned int *data)
+    176.   {
+
+ssl/s3_clnt.c:1071:10: Call
+1069.       /* load the server hello data */
+1070.       /* load the server random */
+1071.       if (!PACKET_copy_bytes(&pkt, s->s3->server_random, SSL3_RANDOM_SIZE)) {
+                 ^
+1072.           al = SSL_AD_DECODE_ERROR;
+1073.           SSLerr(SSL_F_SSL3_GET_SERVER_HELLO, SSL_R_LENGTH_MISMATCH);
+
+ssl/packet_locl.h:359:8: Parameter `pkt->remaining`
+  357.    * The caller is responsible for ensuring that |data| can hold |len| bytes.
+  358.    */
+  359.   __owur static inline int PACKET_copy_bytes(PACKET *pkt, unsigned char *data,
+                ^
+  360.                                              size_t len)
+  361.   {
+
+ssl/packet_locl.h:362:10: Call
+  360.                                              size_t len)
+  361.   {
+  362.       if (!PACKET_peek_copy_bytes(pkt, data, len))
+                  ^
+  363.           return 0;
+  364.   
+
+ssl/packet_locl.h:344:8: Parameter `len`
+    342.   
+    343.   /* Peek ahead at |len| bytes from |pkt| and copy them to |data| */
+    344.   __owur static inline int PACKET_peek_copy_bytes(const PACKET *pkt,
+                  ^
+    345.                                                   unsigned char *data, size_t len)
+    346.   {
+
+ssl/s3_clnt.c:1093:10: Call
+1091.       }
+1092.   
+1093.       if (!PACKET_get_bytes(&pkt, &cipherchars, TLS_CIPHER_LEN)) {
+                 ^
+1094.           SSLerr(SSL_F_SSL3_GET_SERVER_HELLO, SSL_R_LENGTH_MISMATCH);
+1095.           al = SSL_AD_DECODE_ERROR;
+
+ssl/packet_locl.h:332:8: Parameter `pkt->remaining`
+  330.    * freed
+  331.    */
+  332.   __owur static inline int PACKET_get_bytes(PACKET *pkt, unsigned char **data,
+                ^
+  333.                                             size_t len)
+  334.   {
+
+ssl/packet_locl.h:335:10: Call
+  333.                                             size_t len)
+  334.   {
+  335.       if (!PACKET_peek_bytes(pkt, data, len))
+                  ^
+  336.           return 0;
+  337.   
+
+ssl/packet_locl.h:315:8: Parameter `len`
+    313.    * underlying buffer gets freed
+    314.    */
+    315.   __owur static inline int PACKET_peek_bytes(const PACKET *pkt, unsigned char **data,
+                  ^
+    316.                                              size_t len)
+    317.   {
+
+ssl/s3_clnt.c:1213:10: Call
+1211.       /* lets get the compression algorithm */
+1212.       /* COMPRESSION */
+1213.       if (!PACKET_get_1(&pkt, &compression)) {
+                 ^
+1214.           SSLerr(SSL_F_SSL3_GET_SERVER_HELLO, SSL_R_LENGTH_MISMATCH);
+1215.           al = SSL_AD_DECODE_ERROR;
+
+ssl/packet_locl.h:267:8: Parameter `pkt->remaining`
+  265.   
+  266.   /* Get 1 byte from |pkt| and store the value in |*data| */
+  267.   __owur static inline int PACKET_get_1(PACKET *pkt, unsigned int *data)
+                ^
+  268.   {
+  269.       if (!PACKET_peek_1(pkt, data))
+
+ssl/packet_locl.h:269:10: Call
+  267.   __owur static inline int PACKET_get_1(PACKET *pkt, unsigned int *data)
+  268.   {
+  269.       if (!PACKET_peek_1(pkt, data))
+                  ^
+  270.           return 0;
+  271.   
+
+ssl/packet_locl.h:256:8: Parameter `pkt->remaining`
+    254.   
+    255.   /* Peek ahead at 1 byte from |pkt| and store the value in |*data| */
+    256.   __owur static inline int PACKET_peek_1(const PACKET *pkt, unsigned int *data)
+                  ^
+    257.   {
+    258.       if (!PACKET_remaining(pkt))
+
+ssl/s3_clnt.c:1261:10: Call
+1259.   
+1260.       /* TLS extensions */
+1261.       if (!ssl_parse_serverhello_tlsext(s, &pkt)) {
+                 ^
+1262.           SSLerr(SSL_F_SSL3_GET_SERVER_HELLO, SSL_R_PARSE_TLSEXT);
+1263.           goto err;
+
+ssl/t1_lib.c:2888:1: Parameter `pkt->remaining`
+  2886.   }
+  2887.   
+  2888. > int ssl_parse_serverhello_tlsext(SSL *s, PACKET *pkt)
+  2889.   {
+  2890.       int al = -1;
+
+ssl/t1_lib.c:2893:9: Call
+  2891.       if (s->version < SSL3_VERSION)
+  2892.           return 1;
+  2893.       if (ssl_scan_serverhello_tlsext(s, pkt, &al) <= 0) {
+                  ^
+  2894.           ssl3_send_alert(s, SSL3_AL_FATAL, al);
+  2895.           return 0;
+
+ssl/t1_lib.c:2397:44: Call
+    2395.       }
+    2396.   
+    2397.       while (PACKET_get_net_2(pkt, &type) && PACKET_get_net_2(pkt, &size)) {
+                                                       ^
+    2398.           unsigned char *data;
+    2399.           PACKET spkt;
+
+ssl/packet_locl.h:190:10: Call
+      188.   __owur static inline int PACKET_get_net_2(PACKET *pkt, unsigned int *data)
+      189.   {
+      190.       if (!PACKET_peek_net_2(pkt, data))
+                      ^
+      191.           return 0;
+      192.   
+
+ssl/packet_locl.h:174:8: Parameter `*data`
+        172.    * |*data|
+        173.    */
+        174.   __owur static inline int PACKET_peek_net_2(const PACKET *pkt,
+                      ^
+        175.                                              unsigned int *data)
+        176.   {
+
+ssl/t1_lib.c:2401:14: Call
+    2399.           PACKET spkt;
+    2400.   
+    2401.           if (!PACKET_get_sub_packet(pkt, &spkt, size)
+                         ^
+    2402.                   ||  !PACKET_peek_bytes(&spkt, &data, size))
+    2403.               goto ri_check;
+
+ssl/packet_locl.h:160:8: Parameter `len`
+      158.    * original |pkt|, so data wrapped by |pkt| must outlive the |subpkt|.
+      159.    */
+      160.   __owur static inline int PACKET_get_sub_packet(PACKET *pkt, PACKET *subpkt,
+                    ^
+      161.                                                  size_t len)
+      162.   {
+
+ssl/packet_locl.h:166:5: Call
+      164.           return 0;
+      165.   
+      166.       packet_forward(pkt, len);
+                 ^
+      167.   
+      168.       return 1;
+
+ssl/packet_locl.h:80:1: <LHS trace>
+78.   
+79.   /* Internal unchecked shorthand; don't use outside this file. */
+80. > static inline void packet_forward(PACKET *pkt, size_t len)
+81.   {
+82.       pkt->curr += len;
+
+ssl/packet_locl.h:80:1: Parameter `pkt->remaining`
+        78.   
+        79.   /* Internal unchecked shorthand; don't use outside this file. */
+        80. > static inline void packet_forward(PACKET *pkt, size_t len)
+        81.   {
+        82.       pkt->curr += len;
+
+ssl/packet_locl.h:80:1: <RHS trace>
+78.   
+79.   /* Internal unchecked shorthand; don't use outside this file. */
+80. > static inline void packet_forward(PACKET *pkt, size_t len)
+81.   {
+82.       pkt->curr += len;
+
+ssl/packet_locl.h:80:1: Parameter `len`
+        78.   
+        79.   /* Internal unchecked shorthand; don't use outside this file. */
+        80. > static inline void packet_forward(PACKET *pkt, size_t len)
+        81.   {
+        82.       pkt->curr += len;
+
+ssl/packet_locl.h:83:5: Binary operation: ([2, +oo] - [0, +oo]):unsigned64 by call to `ssl_parse_serverhello_tlsext` 
+        81.   {
+        82.       pkt->curr += len;
+        83.       pkt->remaining -= len;
+                  ^
+        84.   }
+        85.   

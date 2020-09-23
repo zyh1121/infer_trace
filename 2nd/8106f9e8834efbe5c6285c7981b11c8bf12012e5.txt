@@ -1,0 +1,59 @@
+#7177
+libavcodec/dirac_vlc.c:101: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] + `lut_ctx->preamble_bits`):signed32.
+
+libavcodec/dirac_vlc.c:107:24: <LHS trace>
+105.             }
+106.             dst[c_idx++] = l->sign * (coeff - 1);
+107.             res_bits = res = 0;
+                            ^
+108.         }
+109. 
+
+libavcodec/dirac_vlc.c:107:24: Assignment
+105.             }
+106.             dst[c_idx++] = l->sign * (coeff - 1);
+107.             res_bits = res = 0;
+                            ^
+108.         }
+109. 
+
+libavcodec/dirac_vlc.c:107:13: Assignment
+105.             }
+106.             dst[c_idx++] = l->sign * (coeff - 1);
+107.             res_bits = res = 0;
+                 ^
+108.         }
+109. 
+
+libavcodec/dirac_vlc.c:114:9: Assignment
+112.         c_idx += l->ready_num;
+113. 
+114.         APPEND_RESIDUE(res, l->leftover);
+             ^
+115. 
+116.         l = future[l->need_s ? 3 : !res_bits ? 2 : res_bits & 1];
+
+libavcodec/dirac_vlc.c:82:1: <RHS trace>
+80. }
+81. 
+82. int ff_dirac_golomb_read_16bit(DiracGolombLUT *lut_ctx, const uint8_t *buf,
+    ^
+83.                                int bytes, uint8_t *_dst, int coeffs)
+84. {
+
+libavcodec/dirac_vlc.c:82:1: Parameter `lut_ctx->preamble_bits`
+80. }
+81. 
+82. int ff_dirac_golomb_read_16bit(DiracGolombLUT *lut_ctx, const uint8_t *buf,
+    ^
+83.                                int bytes, uint8_t *_dst, int coeffs)
+84. {
+
+libavcodec/dirac_vlc.c:101:13: Binary operation: ([-oo, +oo] + lut_ctx->preamble_bits):signed32
+ 99.         if (res_bits && l->sign) {
+100.             int32_t coeff = 1;
+101.             APPEND_RESIDUE(res, l->preamble);
+                 ^
+102.             for (i = 0; i < (res_bits >> 1) - 1; i++) {
+103.                 coeff <<= 1;

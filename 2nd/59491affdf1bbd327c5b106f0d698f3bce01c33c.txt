@@ -1,0 +1,79 @@
+apps/apps.c:498: error: BUFFER_OVERRUN_L4
+  Offset: [0, +oo] Size: 1024 by call to `BUF_strdup`.
+Showing all 10 steps of the trace
+
+
+apps/apps.c:428:1: Array declaration
+426.   }
+427.   
+428. > static char *app_get_pass(char *arg, int keepbio)
+429.   {
+430.       char *tmp, tpass[APP_PASS_LEN];
+
+apps/apps.c:498:12: Call
+496.       if (tmp)
+497.           *tmp = 0;
+498.       return BUF_strdup(tpass);
+                  ^
+499.   }
+500.   
+
+crypto/buffer/buf_str.c:73:1: Parameter `*str`
+  71.   }
+  72.   
+  73. > char *BUF_strdup(const char *str)
+  74.   {
+  75.       if (str == NULL)
+
+crypto/buffer/buf_str.c:77:12: Call
+  75.       if (str == NULL)
+  76.           return NULL;
+  77.       return BUF_strndup(str, strlen(str));
+                   ^
+  78.   }
+  79.   
+
+crypto/buffer/buf_str.c:80:1: Parameter `*str`
+    78.   }
+    79.   
+    80. > char *BUF_strndup(const char *str, size_t siz)
+    81.   {
+    82.       char *ret;
+
+crypto/buffer/buf_str.c:87:11: Call
+    85.           return NULL;
+    86.   
+    87.       siz = BUF_strnlen(str, siz);
+                    ^
+    88.   
+    89.       if (siz >= INT_MAX)
+
+crypto/buffer/buf_str.c:64:1: <Length trace>
+62.   #include <openssl/buffer.h>
+63.   
+64. > size_t BUF_strnlen(const char *str, size_t maxlen)
+65.   {
+66.       const char *p;
+
+crypto/buffer/buf_str.c:64:1: Parameter `*str`
+      62.   #include <openssl/buffer.h>
+      63.   
+      64. > size_t BUF_strnlen(const char *str, size_t maxlen)
+      65.   {
+      66.       const char *p;
+
+crypto/buffer/buf_str.c:68:10: Assignment
+      66.       const char *p;
+      67.   
+      68.       for (p = str; maxlen-- != 0 && *p != '\0'; ++p) ;
+                     ^
+      69.   
+      70.       return p - str;
+
+crypto/buffer/buf_str.c:68:36: Array access: Offset: [0, +oo] Size: 1024 by call to `BUF_strdup` 
+      66.       const char *p;
+      67.   
+      68.       for (p = str; maxlen-- != 0 && *p != '\0'; ++p) ;
+                                               ^
+      69.   
+      70.       return p - str;

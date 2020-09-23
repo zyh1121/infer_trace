@@ -1,0 +1,136 @@
+test/bntest.c:1998: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, +oo]) Size: [0, +oo].
+Showing all 17 steps of the trace
+
+
+test/bntest.c:1992:13: <Offset trace>
+1990.           || !TEST_ptr(rng = BN_new())
+1991.           || !TEST_ptr(val = BN_new())
+1992.           || !TEST_true(BN_set_word(rng, range)))
+                    ^
+1993.           goto err;
+1994.       for (i = 0; i < iterations; i++) {
+
+test/bntest.c:1992:13: Call
+1990.           || !TEST_ptr(rng = BN_new())
+1991.           || !TEST_ptr(val = BN_new())
+1992.           || !TEST_true(BN_set_word(rng, range)))
+                    ^
+1993.           goto err;
+1994.       for (i = 0; i < iterations; i++) {
+
+crypto/bn/bn_lib.c:361:1: Parameter `*a->d`
+  359.   }
+  360.   
+  361. > int BN_set_word(BIGNUM *a, BN_ULONG w)
+  362.   {
+  363.       bn_check_top(a);
+
+test/bntest.c:1996:17: Call
+1994.       for (i = 0; i < iterations; i++) {
+1995.           if (!TEST_true(BN_rand_range(val, rng))
+1996.               || !TEST_uint_lt(v = (unsigned int)BN_get_word(val), range))
+                        ^
+1997.               goto err;
+1998.           counts[v]++;
+
+crypto/bn/bn_lib.c:354:9: Assignment
+  352.   {
+  353.       if (a->top > 1)
+  354.           return BN_MASK2;
+                 ^
+  355.       else if (a->top == 1)
+  356.           return a->d[0];
+
+test/bntest.c:1996:17: Assignment
+1994.       for (i = 0; i < iterations; i++) {
+1995.           if (!TEST_true(BN_rand_range(val, rng))
+1996.               || !TEST_uint_lt(v = (unsigned int)BN_get_word(val), range))
+                        ^
+1997.               goto err;
+1998.           counts[v]++;
+
+test/bntest.c:1977:1: <Length trace>
+1975.   };
+1976.   
+1977. > static int test_rand_range(int n)
+1978.   {
+1979.       const unsigned int range = rand_range_cases[n].range;
+
+test/bntest.c:1977:1: Global `rand_range_cases.range`
+1975.   };
+1976.   
+1977. > static int test_rand_range(int n)
+1978.   {
+1979.       const unsigned int range = rand_range_cases[n].range;
+
+test/bntest.c:1979:5: Assignment
+1977.   static int test_rand_range(int n)
+1978.   {
+1979.       const unsigned int range = rand_range_cases[n].range;
+            ^
+1980.       const unsigned int iterations = rand_range_cases[n].iterations;
+1981.       const double critical = rand_range_cases[n].critical;
+
+test/bntest.c:1989:10: Call
+1987.       int res = 0;
+1988.   
+1989.       if (!TEST_ptr(counts = OPENSSL_zalloc(sizeof(*counts) * range))
+                 ^
+1990.           || !TEST_ptr(rng = BN_new())
+1991.           || !TEST_ptr(val = BN_new())
+
+crypto/mem.c:228:1: Parameter `num`
+  226.   }
+  227.   
+  228. > void *CRYPTO_zalloc(size_t num, const char *file, int line)
+  229.   {
+  230.       void *ret = CRYPTO_malloc(num, file, line);
+
+crypto/mem.c:230:17: Call
+  228.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+  229.   {
+  230.       void *ret = CRYPTO_malloc(num, file, line);
+                         ^
+  231.   
+  232.       FAILTEST();
+
+crypto/mem.c:201:9: Assignment
+    199.   
+    200.       if (num == 0)
+    201.           return NULL;
+                   ^
+    202.   
+    203.       FAILTEST();
+
+crypto/mem.c:230:5: Assignment
+  228.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+  229.   {
+  230.       void *ret = CRYPTO_malloc(num, file, line);
+             ^
+  231.   
+  232.       FAILTEST();
+
+crypto/mem.c:235:5: Assignment
+  233.       if (ret != NULL)
+  234.           memset(ret, 0, num);
+  235.       return ret;
+             ^
+  236.   }
+  237.   
+
+test/bntest.c:1989:10: Assignment
+1987.       int res = 0;
+1988.   
+1989.       if (!TEST_ptr(counts = OPENSSL_zalloc(sizeof(*counts) * range))
+                 ^
+1990.           || !TEST_ptr(rng = BN_new())
+1991.           || !TEST_ptr(val = BN_new())
+
+test/bntest.c:1998:9: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, +oo]) Size: [0, +oo]
+1996.               || !TEST_uint_lt(v = (unsigned int)BN_get_word(val), range))
+1997.               goto err;
+1998.           counts[v]++;
+                ^
+1999.       }
+2000.   

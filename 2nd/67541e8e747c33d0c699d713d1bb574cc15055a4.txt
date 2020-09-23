@@ -1,0 +1,66 @@
+crypto/ec/ec2_smpl.c:638: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] + 32):signed32 by call to `BN_bin2bn`.
+Showing all 8 steps of the trace
+
+
+crypto/ec/ec2_smpl.c:603:15: Call
+601.   		}
+602.   	
+603.   	field_len = (EC_GROUP_get_degree(group) + 7) / 8;
+                     ^
+604.   	enc_len = (form == POINT_CONVERSION_COMPRESSED) ? 1 + field_len : 1 + 2*field_len;
+605.   
+
+crypto/ec/ec_lib.c:456:3: Assignment
+  454.   		{
+  455.   		ECerr(EC_F_EC_GROUP_GET_DEGREE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+  456.   		return 0;
+           ^
+  457.   		}
+  458.   	return group->meth->group_get_degree(group);
+
+crypto/ec/ec2_smpl.c:603:2: Assignment
+601.   		}
+602.   	
+603.   	field_len = (EC_GROUP_get_degree(group) + 7) / 8;
+        ^
+604.   	enc_len = (form == POINT_CONVERSION_COMPRESSED) ? 1 + field_len : 1 + 2*field_len;
+605.   
+
+crypto/ec/ec2_smpl.c:638:8: Call
+636.   	else
+637.   		{
+638.   		if (!BN_bin2bn(buf + 1 + field_len, field_len, y)) goto err;
+              ^
+639.   		if (BN_ucmp(y, &group->field) >= 0)
+640.   			{
+
+crypto/bn/bn_lib.c:641:1: <LHS trace>
+639.   	}
+640.   
+641. > BIGNUM *BN_bin2bn(const unsigned char *s, int len, BIGNUM *ret)
+642.   	{
+643.   	unsigned int i,m;
+
+crypto/bn/bn_lib.c:641:1: Parameter `len`
+  639.   	}
+  640.   
+  641. > BIGNUM *BN_bin2bn(const unsigned char *s, int len, BIGNUM *ret)
+  642.   	{
+  643.   	unsigned int i,m;
+
+crypto/bn/bn_lib.c:651:2: Assignment
+  649.   	bn_check_top(ret);
+  650.   	l=0;
+  651.   	n=len;
+          ^
+  652.   	if (n == 0)
+  653.   		{
+
+crypto/bn/bn_lib.c:657:6: Binary operation: ([-oo, +oo] + 32):signed32 by call to `BN_bin2bn` 
+  655.   		return(ret);
+  656.   		}
+  657.   	if (bn_expand(ret,(int)(n+2)*8) == NULL)
+              ^
+  658.   		return(NULL);
+  659.   	i=((n-1)/BN_BYTES)+1;

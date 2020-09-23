@@ -1,0 +1,59 @@
+#27512
+libavcodec/vc1dec.c:3145: error: Integer Overflow U5
+  ([-oo, +oo] + 1):signed32.
+
+libavcodec/vc1dec.c:3139:5: <LHS trace>
+3137.     int pat = 0;
+3138. 
+3139.     s->dsp.clear_block(block);
+          ^
+3140. 
+3141.     if (ttmb == -1) {
+
+libavcodec/vc1dec.c:3139:5: Unknown value from: non-const function
+3137.     int pat = 0;
+3138. 
+3139.     s->dsp.clear_block(block);
+          ^
+3140. 
+3141.     if (ttmb == -1) {
+
+libavcodec/vc1dec.c:3145:23: Call
+3143.     }
+3144.     if (ttblk == TT_4X4) {
+3145.         subblkpat = ~(get_vlc2(gb, ff_vc1_subblkpat_vlc[v->tt_index].table, VC1_SUBBLKPAT_VLC_BITS, 1) + 1);
+                            ^
+3146.     }
+3147.     if ((ttblk != TT_8X8 && ttblk != TT_4X4)
+
+libavcodec/get_bits.h:521:1: Parameter `(*table)[*]`
+  519.  *                  = (max_vlc_length + bits - 1) / bits
+  520.  */
+  521. static av_always_inline int get_vlc2(GetBitContext *s, VLC_TYPE (*table)[2],
+       ^
+  522.                                      int bits, int max_depth)
+  523. {
+
+libavcodec/get_bits.h:529:5: Assignment
+  527.     UPDATE_CACHE(re, s);
+  528. 
+  529.     GET_VLC(code, re, s, table, bits, max_depth);
+           ^
+  530. 
+  531.     CLOSE_READER(re, s);
+
+libavcodec/get_bits.h:533:5: Assignment
+  531.     CLOSE_READER(re, s);
+  532. 
+  533.     return code;
+           ^
+  534. }
+  535. 
+
+libavcodec/vc1dec.c:3145:9: Binary operation: ([-oo, +oo] + 1):signed32
+3143.     }
+3144.     if (ttblk == TT_4X4) {
+3145.         subblkpat = ~(get_vlc2(gb, ff_vc1_subblkpat_vlc[v->tt_index].table, VC1_SUBBLKPAT_VLC_BITS, 1) + 1);
+              ^
+3146.     }
+3147.     if ((ttblk != TT_8X8 && ttblk != TT_4X4)

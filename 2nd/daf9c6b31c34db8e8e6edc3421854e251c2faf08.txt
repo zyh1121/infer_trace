@@ -1,0 +1,51 @@
+#9373
+libavcodec/vp3dsp.c:268: error: Integer Overflow L5
+  ([-oo, +oo] - `*bounding_values`):signed32.
+
+libavcodec/vp3dsp.c:257:1: <LHS trace>
+255. }
+256. 
+257. void ff_vp3_h_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_values)
+     ^
+258. {
+259.     unsigned char *end;
+
+libavcodec/vp3dsp.c:257:1: Parameter `*first_pixel`
+255. }
+256. 
+257. void ff_vp3_h_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_values)
+     ^
+258. {
+259.     unsigned char *end;
+
+libavcodec/vp3dsp.c:257:1: <RHS trace>
+255. }
+256. 
+257. void ff_vp3_h_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_values)
+     ^
+258. {
+259.     unsigned char *end;
+
+libavcodec/vp3dsp.c:257:1: Parameter `*bounding_values`
+255. }
+256. 
+257. void ff_vp3_h_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_values)
+     ^
+258. {
+259.     unsigned char *end;
+
+libavcodec/vp3dsp.c:266:9: Assignment
+264.             (first_pixel[-2] - first_pixel[ 1])
+265.          +3*(first_pixel[ 0] - first_pixel[-1]);
+266.         filter_value = bounding_values[(filter_value + 4) >> 3];
+             ^
+267.         first_pixel[-1] = av_clip_uint8(first_pixel[-1] + filter_value);
+268.         first_pixel[ 0] = av_clip_uint8(first_pixel[ 0] - filter_value);
+
+libavcodec/vp3dsp.c:268:27: Binary operation: ([-oo, +oo] - *bounding_values):signed32
+266.         filter_value = bounding_values[(filter_value + 4) >> 3];
+267.         first_pixel[-1] = av_clip_uint8(first_pixel[-1] + filter_value);
+268.         first_pixel[ 0] = av_clip_uint8(first_pixel[ 0] - filter_value);
+                               ^
+269.     }
+270. }

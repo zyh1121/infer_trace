@@ -1,0 +1,59 @@
+#4638
+libavformat/westwood_aud.c:153: error: Integer Overflow L5
+  ([-oo, +oo] + 8):unsigned32 by call to `av_get_packet`.
+
+libavformat/westwood_aud.c:152:5: Assignment
+150.         return AVERROR_INVALIDDATA;
+151. 
+152.     chunk_size = AV_RL16(&preamble[0]);
+         ^
+153.     ret= av_get_packet(pb, pkt, chunk_size);
+154.     if (ret != chunk_size)
+
+libavformat/westwood_aud.c:153:10: Call
+151. 
+152.     chunk_size = AV_RL16(&preamble[0]);
+153.     ret= av_get_packet(pb, pkt, chunk_size);
+              ^
+154.     if (ret != chunk_size)
+155.         return AVERROR(EIO);
+
+libavformat/utils.c:269:1: Parameter `size`
+  267. 
+  268. 
+  269. int av_get_packet(AVIOContext *s, AVPacket *pkt, int size)
+       ^
+  270. {
+  271.     int ret= av_new_packet(pkt, size);
+
+libavformat/utils.c:271:14: Call
+  269. int av_get_packet(AVIOContext *s, AVPacket *pkt, int size)
+  270. {
+  271.     int ret= av_new_packet(pkt, size);
+                    ^
+  272. 
+  273.     if(ret<0)
+
+libavcodec/avpacket.c:60:1: <LHS trace>
+58. }
+59. 
+60. int av_new_packet(AVPacket *pkt, int size)
+    ^
+61. {
+62.     uint8_t *data= NULL;
+
+libavcodec/avpacket.c:60:1: Parameter `size`
+    58. }
+    59. 
+    60. int av_new_packet(AVPacket *pkt, int size)
+        ^
+    61. {
+    62.     uint8_t *data= NULL;
+
+libavcodec/avpacket.c:63:8: Binary operation: ([-oo, +oo] + 8):unsigned32 by call to `av_get_packet` 
+    61. {
+    62.     uint8_t *data= NULL;
+    63.     if((unsigned)size < (unsigned)size + FF_INPUT_BUFFER_PADDING_SIZE)
+               ^
+    64.         data = av_malloc(size + FF_INPUT_BUFFER_PADDING_SIZE);
+    65.     if (data){

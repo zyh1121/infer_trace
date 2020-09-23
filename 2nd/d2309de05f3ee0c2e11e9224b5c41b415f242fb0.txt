@@ -1,0 +1,75 @@
+#26084
+libavcodec/dvbsubdec.c:927: error: NULLPTR_DEREFERENCE
+  accessing memory that is the null pointer on line 923 indirectly during the call to `av_malloc()`.
+
+libavcodec/dvbsubdec.c:923:16: invalidation part of the trace starts here
+921. 
+922.     if (!clut) {
+923.         clut = av_malloc(sizeof(DVBSubCLUT));
+                    ^
+924. 
+925.         memcpy(clut, &default_clut, sizeof(DVBSubCLUT));
+
+libavcodec/dvbsubdec.c:923:16: when calling `av_malloc` here
+  921. 
+  922.     if (!clut) {
+  923.         clut = av_malloc(sizeof(DVBSubCLUT));
+                      ^
+  924. 
+  925.         memcpy(clut, &default_clut, sizeof(DVBSubCLUT));
+
+libavutil/mem.c:71:9: assigned
+    69.     /* let's disallow possibly ambiguous cases */
+    70.     if (size > (INT_MAX - 32) || !size)
+    71.         return NULL;
+                ^
+    72. 
+    73. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:71:9: is the null pointer
+    69.     /* let's disallow possibly ambiguous cases */
+    70.     if (size > (INT_MAX - 32) || !size)
+    71.         return NULL;
+                ^
+    72. 
+    73. #if CONFIG_MEMALIGN_HACK
+
+libavcodec/dvbsubdec.c:923:16: use-after-lifetime part of the trace starts here
+921. 
+922.     if (!clut) {
+923.         clut = av_malloc(sizeof(DVBSubCLUT));
+                    ^
+924. 
+925.         memcpy(clut, &default_clut, sizeof(DVBSubCLUT));
+
+libavcodec/dvbsubdec.c:923:16: passed as argument to `av_malloc`
+  921. 
+  922.     if (!clut) {
+  923.         clut = av_malloc(sizeof(DVBSubCLUT));
+                      ^
+  924. 
+  925.         memcpy(clut, &default_clut, sizeof(DVBSubCLUT));
+
+libavcodec/dvbsubdec.c:923:16: return from call to `av_malloc`
+  921. 
+  922.     if (!clut) {
+  923.         clut = av_malloc(sizeof(DVBSubCLUT));
+                      ^
+  924. 
+  925.         memcpy(clut, &default_clut, sizeof(DVBSubCLUT));
+
+libavcodec/dvbsubdec.c:923:9: assigned
+  921. 
+  922.     if (!clut) {
+  923.         clut = av_malloc(sizeof(DVBSubCLUT));
+               ^
+  924. 
+  925.         memcpy(clut, &default_clut, sizeof(DVBSubCLUT));
+
+libavcodec/dvbsubdec.c:927:9: invalid access occurs here
+  925.         memcpy(clut, &default_clut, sizeof(DVBSubCLUT));
+  926. 
+  927.         clut->id = clut_id;
+               ^
+  928. 
+  929.         clut->next = ctx->clut_list;

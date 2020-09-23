@@ -1,0 +1,81 @@
+engines/ccgost/gost94_keyx.c:215: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] × 4):unsigned64 by call to `DH_free`.
+Showing all 10 steps of the trace
+
+
+engines/ccgost/gost94_keyx.c:173:7: Call
+171.   		}	
+172.   
+173.   	dh = make_ephemeral_key(pubk,gost_get_priv_key(data->eph_seckey));
+             ^
+174.   	gost_init(&cctx,param->sblock);	
+175.   	make_cp_exchange_key(dh,pubk,shared_key);
+
+engines/ccgost/gost94_keyx.c:125:17: Call
+  123.   	dh->g = BN_dup(pubk->pkey.dsa->g);
+  124.   	dh->p = BN_dup(pubk->pkey.dsa->p);
+  125.   	dh->priv_key = BN_dup(ephemeral_key);
+                         ^
+  126.   	/* Generate ephemeral key pair */
+  127.   	if (!DH_generate_key(dh))
+
+crypto/bn/bn_lib.c:486:6: Call
+    484.   	bn_check_top(a);
+    485.   
+    486.   	t = BN_new();
+                ^
+    487.   	if (t == NULL) return NULL;
+    488.   	if(!BN_copy(t, a))
+
+crypto/bn/bn_lib.c:310:2: Assignment
+      308.   	ret->top=0;
+      309.   	ret->neg=0;
+      310.   	ret->dmax=0;
+              ^
+      311.   	ret->d=NULL;
+      312.   	bn_check_top(ret);
+
+engines/ccgost/gost94_keyx.c:215:2: Call
+213.   		}
+214.   	GOST_KEY_TRANSPORT_free(gkt);
+215.   	DH_free(dh);
+        ^
+216.   	return 1;	
+217.   	memerr:
+
+crypto/dh/dh_lib.c:174:1: Parameter `r->p->dmax`
+  172.   	}
+  173.   
+  174. > void DH_free(DH *r)
+  175.   	{
+  176.   	int i;
+
+crypto/dh/dh_lib.c:200:20: Call
+  198.   	CRYPTO_free_ex_data(CRYPTO_EX_INDEX_DH, r, &r->ex_data);
+  199.   
+  200.   	if (r->p != NULL) BN_clear_free(r->p);
+                            ^
+  201.   	if (r->g != NULL) BN_clear_free(r->g);
+  202.   	if (r->q != NULL) BN_clear_free(r->q);
+
+crypto/bn/bn_lib.c:257:1: <LHS trace>
+255.   	}
+256.   
+257. > void BN_clear_free(BIGNUM *a)
+258.   	{
+259.   	int i;
+
+crypto/bn/bn_lib.c:257:1: Parameter `a->dmax`
+    255.   	}
+    256.   
+    257. > void BN_clear_free(BIGNUM *a)
+    258.   	{
+    259.   	int i;
+
+crypto/bn/bn_lib.c:265:3: Binary operation: ([-oo, +oo] × 4):unsigned64 by call to `DH_free` 
+    263.   	if (a->d != NULL)
+    264.   		{
+    265.   		OPENSSL_cleanse(a->d,a->dmax*sizeof(a->d[0]));
+             ^
+    266.   		if (!(BN_get_flags(a,BN_FLG_STATIC_DATA)))
+    267.   			OPENSSL_free(a->d);

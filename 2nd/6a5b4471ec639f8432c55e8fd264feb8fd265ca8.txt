@@ -1,0 +1,59 @@
+#962
+libavcodec/adxdec.c:62: error: Integer Overflow L5
+  ([-oo, +oo] - [-oo, +oo]):signed32.
+
+libavcodec/adxdec.c:49:1: <LHS trace>
+47.  * channel.
+48.  */
+49. static void adx_decode(ADXContext *c, int16_t *out, const uint8_t *in, int ch)
+    ^
+50. {
+51.     ADXChannelState *prev = &c->prev[ch];
+
+libavcodec/adxdec.c:49:1: Parameter `c->prev[*].s1`
+47.  * channel.
+48.  */
+49. static void adx_decode(ADXContext *c, int16_t *out, const uint8_t *in, int ch)
+    ^
+50. {
+51.     ADXChannelState *prev = &c->prev[ch];
+
+libavcodec/adxdec.c:58:5: Assignment
+56. 
+57.     init_get_bits(&gb, in + 2, (18 - 2) * 8);
+58.     s1 = prev->s1;
+        ^
+59.     s2 = prev->s2;
+60.     for (i = 0; i < 32; i++) {
+
+libavcodec/adxdec.c:49:1: <RHS trace>
+47.  * channel.
+48.  */
+49. static void adx_decode(ADXContext *c, int16_t *out, const uint8_t *in, int ch)
+    ^
+50. {
+51.     ADXChannelState *prev = &c->prev[ch];
+
+libavcodec/adxdec.c:49:1: Parameter `c->prev[*].s2`
+47.  * channel.
+48.  */
+49. static void adx_decode(ADXContext *c, int16_t *out, const uint8_t *in, int ch)
+    ^
+50. {
+51.     ADXChannelState *prev = &c->prev[ch];
+
+libavcodec/adxdec.c:59:5: Assignment
+57.     init_get_bits(&gb, in + 2, (18 - 2) * 8);
+58.     s1 = prev->s1;
+59.     s2 = prev->s2;
+        ^
+60.     for (i = 0; i < 32; i++) {
+61.         d  = get_sbits(&gb, 4);
+
+libavcodec/adxdec.c:62:9: Binary operation: ([-oo, +oo] - [-oo, +oo]):signed32
+60.     for (i = 0; i < 32; i++) {
+61.         d  = get_sbits(&gb, 4);
+62.         s0 = ((d << COEFF_BITS) * scale + COEFF1 * s1 - COEFF2 * s2) >> COEFF_BITS;
+            ^
+63.         s2 = s1;
+64.         s1 = av_clip_int16(s0);

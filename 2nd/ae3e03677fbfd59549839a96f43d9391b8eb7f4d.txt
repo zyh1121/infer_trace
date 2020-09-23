@@ -1,0 +1,75 @@
+#32605
+ffmpeg.c:1638: error: INTEGER_OVERFLOW_L5
+  ([0, +oo] + 1):unsigned64 by call to `get_default_channel_layouts`.
+
+ffmpeg.c:1638:5: Call
+1636. 
+1637. 
+1638.     get_default_channel_layouts(ost, ist);
+          ^
+1639. 
+1640.     if (alloc_audio_output_buf(dec, enc, decoded_frame->nb_samples, &out_linesize) < 0) {
+
+ffmpeg.c:1450:1: Parameter `layout_name.strlen`
+  1448. }
+  1449. 
+  1450. static void get_default_channel_layouts(OutputStream *ost, InputStream *ist)
+        ^
+  1451. {
+  1452.     char layout_name[256];
+
+ffmpeg.c:1458:9: Call
+  1456.     if (dec->channel_layout &&
+  1457.         av_get_channel_layout_nb_channels(dec->channel_layout) != dec->channels) {
+  1458.         av_get_channel_layout_string(layout_name, sizeof(layout_name),
+                ^
+  1459.                                      dec->channels, dec->channel_layout);
+  1460.         av_log(NULL, AV_LOG_ERROR, "New channel layout (%s) is invalid\n",
+
+libavutil/audioconvert.c:139:1: Parameter `buf->strlen`
+    137. }
+    138. 
+    139. void av_get_channel_layout_string(char *buf, int buf_size,
+         ^
+    140.                                   int nb_channels, uint64_t channel_layout)
+    141. {
+
+libavutil/audioconvert.c:157:9: Call
+    155.     if (channel_layout) {
+    156.         int i, ch;
+    157.         av_strlcat(buf, " (", buf_size);
+                 ^
+    158.         for (i = 0, ch = 0; i < 64; i++) {
+    159.             if ((channel_layout & (UINT64_C(1) << i))) {
+
+libavutil/avstring.c:74:1: <LHS trace>
+72. }
+73. 
+74. size_t av_strlcat(char *dst, const char *src, size_t size)
+    ^
+75. {
+76.     size_t len = strlen(dst);
+
+libavutil/avstring.c:74:1: Parameter `dst->strlen`
+      72. }
+      73. 
+      74. size_t av_strlcat(char *dst, const char *src, size_t size)
+          ^
+      75. {
+      76.     size_t len = strlen(dst);
+
+libavutil/avstring.c:76:5: Assignment
+      74. size_t av_strlcat(char *dst, const char *src, size_t size)
+      75. {
+      76.     size_t len = strlen(dst);
+              ^
+      77.     if (size <= len + 1)
+      78.         return len + strlen(src);
+
+libavutil/avstring.c:77:9: Binary operation: ([0, +oo] + 1):unsigned64 by call to `get_default_channel_layouts` 
+      75. {
+      76.     size_t len = strlen(dst);
+      77.     if (size <= len + 1)
+                  ^
+      78.         return len + strlen(src);
+      79.     return len + av_strlcpy(dst + len, src, size - len);

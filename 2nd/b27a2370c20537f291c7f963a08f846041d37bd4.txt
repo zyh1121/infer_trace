@@ -1,0 +1,91 @@
+#31395
+libavformat/hlsenc.c:499: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] Size: [0, +oo] by call to `avio_closep`.
+
+libavformat/hlsenc.c:498:21: Call
+496.     av_write_trailer(oc);
+497.     if (oc->pb) {
+498.         hls->size = avio_tell(hls->avf->pb) - hls->start_pos;
+                         ^
+499.         avio_closep(&oc->pb);
+500.         hls_append_segment(hls, hls->duration, hls->start_pos, hls->size);
+
+libavformat/avio.h:361:12: Call
+  359. static av_always_inline int64_t avio_tell(AVIOContext *s)
+  360. {
+  361.     return avio_seek(s, 0, SEEK_CUR);
+                  ^
+  362. }
+  363. 
+
+libavformat/aviobuf.c:248:20: Unknown value from: non-const function
+    246. 
+    247.         pos -= FFMIN(buffer_size>>1, pos);
+    248.         if ((res = s->seek(s->opaque, pos, SEEK_SET)) < 0)
+                            ^
+    249.             return res;
+    250.         s->buf_end =
+
+libavformat/hlsenc.c:499:9: Call
+497.     if (oc->pb) {
+498.         hls->size = avio_tell(hls->avf->pb) - hls->start_pos;
+499.         avio_closep(&oc->pb);
+             ^
+500.         hls_append_segment(hls, hls->duration, hls->start_pos, hls->size);
+501.     }
+
+libavformat/aviobuf.c:953:1: Parameter `**s`
+  951. }
+  952. 
+  953. int avio_closep(AVIOContext **s)
+       ^
+  954. {
+  955.     int ret = avio_close(*s);
+
+libavformat/aviobuf.c:955:15: Call
+  953. int avio_closep(AVIOContext **s)
+  954. {
+  955.     int ret = avio_close(*s);
+                     ^
+  956.     *s = NULL;
+  957.     return ret;
+
+libavformat/aviobuf.c:935:1: Parameter `*s`
+    933. }
+    934. 
+    935. int avio_close(AVIOContext *s)
+         ^
+    936. {
+    937.     URLContext *h;
+
+libavformat/aviobuf.c:946:9: Call
+    944.     av_freep(&s->buffer);
+    945.     if (s->write_flag)
+    946.         av_log(s, AV_LOG_DEBUG, "Statistics: %d seeks, %d writeouts\n", s->seek_count, s->writeout_count);
+                 ^
+    947.     else
+    948.         av_log(s, AV_LOG_DEBUG, "Statistics: %"PRId64" bytes read, %d seeks\n", s->bytes_read, s->seek_count);
+
+libavutil/log.c:358:1: <Length trace>
+356.     av_log_default_callback;
+357. 
+358. void av_log(void* avcl, int level, const char *fmt, ...)
+     ^
+359. {
+360.     AVClass* avc = avcl ? *(AVClass **) avcl : NULL;
+
+libavutil/log.c:358:1: Parameter `*avcl`
+      356.     av_log_default_callback;
+      357. 
+      358. void av_log(void* avcl, int level, const char *fmt, ...)
+           ^
+      359. {
+      360.     AVClass* avc = avcl ? *(AVClass **) avcl : NULL;
+
+libavutil/log.c:360:27: Array access: Offset: [-oo, +oo] Size: [0, +oo] by call to `avio_closep` 
+      358. void av_log(void* avcl, int level, const char *fmt, ...)
+      359. {
+      360.     AVClass* avc = avcl ? *(AVClass **) avcl : NULL;
+                                     ^
+      361.     va_list vl;
+      362.     va_start(vl, fmt);

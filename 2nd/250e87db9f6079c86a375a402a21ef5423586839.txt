@@ -1,0 +1,187 @@
+#9223
+libavformat/concatdec.c:141: error: INTEGER_OVERFLOW_L5
+  ([1, 128] + [0, +oo]):unsigned64 by call to `avformat_open_input`.
+
+libavformat/concatdec.c:136:16: Call
+134.         avformat_close_input(&cat->avf);
+135. 
+136.     cat->avf = avformat_alloc_context();
+                    ^
+137.     if (!cat->avf)
+138.         return AVERROR(ENOMEM);
+
+libavformat/options.c:112:5: Call
+  110.     ic = av_malloc(sizeof(AVFormatContext));
+  111.     if (!ic) return ic;
+  112.     avformat_get_context_defaults(ic);
+           ^
+  113. 
+  114.     ic->internal = av_mallocz(sizeof(*ic->internal));
+
+libavformat/options.c:104:5: Call
+    102.     s->av_class = &av_format_context_class;
+    103. 
+    104.     av_opt_set_defaults(s);
+             ^
+    105. }
+    106. 
+
+libavutil/opt.c:1148:5: Call
+      1146. {
+      1147. #if FF_API_OLD_AVOPTIONS
+      1148.     av_opt_set_defaults2(s, 0, 0);
+                ^
+      1149. }
+      1150. 
+
+libavutil/opt.c:1151:1: Parameter `s->strlen`
+        1149. }
+        1150. 
+        1151. void av_opt_set_defaults2(void *s, int mask, int flags)
+              ^
+        1152. {
+        1153. #endif
+
+libavformat/concatdec.c:141:16: Call
+139. 
+140.     cat->avf->interrupt_callback = avf->interrupt_callback;
+141.     if ((ret = avformat_open_input(&cat->avf, file->url, NULL, NULL)) < 0 ||
+                    ^
+142.         (ret = avformat_find_stream_info(cat->avf, NULL)) < 0) {
+143.         av_log(avf, AV_LOG_ERROR, "Impossible to open '%s'\n", file->url);
+
+libavformat/utils.c:512:1: Parameter `filename->strlen`
+  510. }
+  511. 
+  512. int avformat_open_input(AVFormatContext **ps, const char *filename,
+       ^
+  513.                         AVInputFormat *fmt, AVDictionary **options)
+  514. {
+
+libavformat/utils.c:535:16: Call
+  533.         goto fail;
+  534. 
+  535.     if ((ret = init_input(s, filename, &tmp)) < 0)
+                      ^
+  536.         goto fail;
+  537.     s->probe_score = ret;
+
+libavformat/utils.c:446:1: Parameter `filename->strlen`
+    444. 
+    445. /* Open input file and probe the format if necessary. */
+    446. static int init_input(AVFormatContext *s, const char *filename,
+         ^
+    447.                       AVDictionary **options)
+    448. {
+
+libavformat/utils.c:468:16: Call
+    466.         return score;
+    467. 
+    468.     if ((ret = avio_open2(&s->pb, filename, AVIO_FLAG_READ | s->avio_flags,
+                        ^
+    469.                           &s->interrupt_callback, options)) < 0)
+    470.         return ret;
+
+libavformat/aviobuf.c:863:1: Parameter `filename->strlen`
+      861. }
+      862. 
+      863. int avio_open2(AVIOContext **s, const char *filename, int flags,
+           ^
+      864.                const AVIOInterruptCB *int_cb, AVDictionary **options)
+      865. {
+
+libavformat/aviobuf.c:869:11: Call
+      867.     int err;
+      868. 
+      869.     err = ffurl_open(&h, filename, flags, int_cb, options);
+                     ^
+      870.     if (err < 0)
+      871.         return err;
+
+libavformat/avio.c:269:1: Parameter `filename->strlen`
+        267. }
+        268. 
+        269. int ffurl_open(URLContext **puc, const char *filename, int flags,
+             ^
+        270.                const AVIOInterruptCB *int_cb, AVDictionary **options)
+        271. {
+
+libavformat/avio.c:272:15: Call
+        270.                const AVIOInterruptCB *int_cb, AVDictionary **options)
+        271. {
+        272.     int ret = ffurl_alloc(puc, filename, flags, int_cb);
+                           ^
+        273.     if (ret < 0)
+        274.         return ret;
+
+libavformat/avio.c:249:1: Parameter `filename->strlen`
+          247. }
+          248. 
+          249. int ffurl_alloc(URLContext **puc, const char *filename, int flags,
+               ^
+          250.                 const AVIOInterruptCB *int_cb)
+          251. {
+
+libavformat/avio.c:259:9: Call
+          257.     }
+          258. 
+          259.     p = url_find_protocol(filename);
+                       ^
+          260.     if (p)
+          261.        return url_alloc_for_protocol(puc, p, filename, flags, int_cb);
+
+libavformat/avio.c:218:1: Parameter `filename->strlen`
+            216.     "0123456789+-."
+            217. 
+            218. static struct URLProtocol *url_find_protocol(const char *filename)
+                 ^
+            219. {
+            220.     URLProtocol *up = NULL;
+
+libavformat/avio.c:229:9: Call
+            227.         strcpy(proto_str, "file");
+            228.     else
+            229.         av_strlcpy(proto_str, filename,
+                         ^
+            230.                    FFMIN(proto_len + 1, sizeof(proto_str)));
+            231. 
+
+libavutil/avstring.c:82:1: <LHS trace>
+80. }
+81. 
+82. size_t av_strlcpy(char *dst, const char *src, size_t size)
+    ^
+83. {
+84.     size_t len = 0;
+
+libavutil/avstring.c:82:1: Parameter `size`
+              80. }
+              81. 
+              82. size_t av_strlcpy(char *dst, const char *src, size_t size)
+                  ^
+              83. {
+              84.     size_t len = 0;
+
+libavutil/avstring.c:82:1: <RHS trace>
+80. }
+81. 
+82. size_t av_strlcpy(char *dst, const char *src, size_t size)
+    ^
+83. {
+84.     size_t len = 0;
+
+libavutil/avstring.c:82:1: Parameter `src->strlen`
+              80. }
+              81. 
+              82. size_t av_strlcpy(char *dst, const char *src, size_t size)
+                  ^
+              83. {
+              84.     size_t len = 0;
+
+libavutil/avstring.c:89:5: Binary operation: ([1, 128] + [0, +oo]):unsigned64 by call to `avformat_open_input` 
+              87.     if (len <= size)
+              88.         *dst = 0;
+              89.     return len + strlen(src) - 1;
+                      ^
+              90. }
+              91. 

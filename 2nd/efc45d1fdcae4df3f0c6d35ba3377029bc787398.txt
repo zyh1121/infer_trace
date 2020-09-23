@@ -1,0 +1,43 @@
+#2867
+libtiff/tif_dirread.c:4159: error: Integer Overflow U5
+  ([-oo, +oo] - [-oo, +oo]):unsigned64.
+
+libtiff/tif_dirread.c:4159:10: <LHS trace>
+4157.                            && _TIFFFillStriles(tif)
+4158. 			   && tif->tif_dir.td_stripoffset[0] != 0
+4159. 			   && BYTECOUNTLOOKSBAD) {
+               ^
+4160. 			/*
+4161. 			 * XXX: Plexus (and others) sometimes give a value of
+
+libtiff/tif_dirread.c:4159:10: Unknown value from: non-const function
+4157.                            && _TIFFFillStriles(tif)
+4158. 			   && tif->tif_dir.td_stripoffset[0] != 0
+4159. 			   && BYTECOUNTLOOKSBAD) {
+               ^
+4160. 			/*
+4161. 			 * XXX: Plexus (and others) sometimes give a value of
+
+libtiff/tif_dirread.c:3543:1: <RHS trace>
+3541.  * format. We read directories sequentially.
+3542.  */
+3543. int
+      ^
+3544. TIFFReadDirectory(TIFF* tif)
+3545. {
+
+libtiff/tif_dirread.c:3543:1: Parameter `*tif->tif_dir.td_stripbytecount`
+3541.  * format. We read directories sequentially.
+3542.  */
+3543. int
+      ^
+3544. TIFFReadDirectory(TIFF* tif)
+3545. {
+
+libtiff/tif_dirread.c:4159:10: Binary operation: ([-oo, +oo] - [-oo, +oo]):unsigned64
+4157.                            && _TIFFFillStriles(tif)
+4158. 			   && tif->tif_dir.td_stripoffset[0] != 0
+4159. 			   && BYTECOUNTLOOKSBAD) {
+               ^
+4160. 			/*
+4161. 			 * XXX: Plexus (and others) sometimes give a value of

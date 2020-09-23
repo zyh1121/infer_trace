@@ -1,0 +1,117 @@
+apps/pkcs12.c:541: error: BUFFER_OVERRUN_L4
+  Offset: [5, +oo] (⇐ [0, +oo] + 5) Size: [8, +oo] by call to `PKCS12_verify_mac`.
+Showing all 15 steps of the trace
+
+
+apps/pkcs12.c:118:1: Array declaration
+116.   };
+117.   
+118. > int pkcs12_main(int argc, char **argv)
+119.   {
+120.       char *infile = NULL, *outfile = NULL, *keyname = NULL, *certfile = NULL;
+
+apps/pkcs12.c:312:9: Assignment
+310.       } else {
+311.           cpass = pass;
+312.           mpass = macpass;
+               ^
+313.       }
+314.   
+
+apps/pkcs12.c:541:21: Call
+539.               if (!twopass)
+540.                   cpass = NULL;
+541.           } else if (!PKCS12_verify_mac(p12, mpass, -1)) {
+                           ^
+542.               BIO_printf(bio_err, "Mac verify error: invalid password?\n");
+543.               ERR_print_errors(bio_err);
+
+crypto/pkcs12/p12_mutl.c:132:1: Parameter `*pass`
+  130.   
+  131.   /* Verify the mac */
+  132. > int PKCS12_verify_mac(PKCS12 *p12, const char *pass, int passlen)
+  133.   {
+  134.       unsigned char mac[EVP_MAX_MD_SIZE];
+
+crypto/pkcs12/p12_mutl.c:142:10: Call
+  140.           return 0;
+  141.       }
+  142.       if (!PKCS12_gen_mac(p12, pass, passlen, mac, &maclen)) {
+                  ^
+  143.           PKCS12err(PKCS12_F_PKCS12_VERIFY_MAC, PKCS12_R_MAC_GENERATION_ERROR);
+  144.           return 0;
+
+crypto/pkcs12/p12_mutl.c:70:1: Parameter `*pass`
+    68.   
+    69.   /* Generate a MAC */
+    70. > int PKCS12_gen_mac(PKCS12 *p12, const char *pass, int passlen,
+    71.                      unsigned char *mac, unsigned int *maclen)
+    72.   {
+
+crypto/pkcs12/p12_mutl.c:114:14: Call
+    112.           }
+    113.       } else
+    114.           if (!PKCS12_key_gen(pass, passlen, salt, saltlen, PKCS12_MAC_ID, iter,
+                        ^
+    115.                               md_size, key, md_type)) {
+    116.           PKCS12err(PKCS12_F_PKCS12_GEN_MAC, PKCS12_R_KEY_GEN_ERROR);
+
+crypto/pkcs12/p12_key.c:53:1: Parameter `*pass`
+      51.   }
+      52.   
+      53. > int PKCS12_key_gen_utf8(const char *pass, int passlen, unsigned char *salt,
+      54.                           int saltlen, int id, int iter, int n,
+      55.                           unsigned char *out, const EVP_MD *md_type)
+
+crypto/pkcs12/p12_key.c:64:17: Call
+      62.           unipass = NULL;
+      63.           uniplen = 0;
+      64.       } else if (!OPENSSL_utf82uni(pass, passlen, &unipass, &uniplen)) {
+                            ^
+      65.           PKCS12err(PKCS12_F_PKCS12_KEY_GEN_UTF8, ERR_R_MALLOC_FAILURE);
+      66.           return 0;
+
+crypto/pkcs12/p12_utl.c:70:1: Parameter `asclen`
+        68.    * bytes the string occupies, and treat it, the length, accordingly.
+        69.    */
+        70. > unsigned char *OPENSSL_utf82uni(const char *asc, int asclen,
+        71.                                   unsigned char **uni, int *unilen)
+        72.   {
+
+crypto/pkcs12/p12_utl.c:81:13: Call
+        79.   
+        80.       for (ulen = 0, i = 0; i < asclen; i += j) {
+        81.           j = UTF8_getc((const unsigned char *)asc+i, asclen-i, &utf32chr);
+                          ^
+        82.   
+        83.           /*
+
+crypto/asn1/a_utf8.c:27:1: <Length trace>
+25.    */
+26.   
+27. > int UTF8_getc(const unsigned char *str, int len, unsigned long *val)
+28.   {
+29.       const unsigned char *p;
+
+crypto/asn1/a_utf8.c:27:1: Parameter `*str`
+          25.    */
+          26.   
+          27. > int UTF8_getc(const unsigned char *str, int len, unsigned long *val)
+          28.   {
+          29.       const unsigned char *p;
+
+crypto/asn1/a_utf8.c:34:5: Assignment
+          32.       if (len <= 0)
+          33.           return 0;
+          34.       p = str;
+                    ^
+          35.   
+          36.       /* Check syntax and work out the encoded value (if correct) */
+
+crypto/asn1/a_utf8.c:99:18: Array access: Offset: [5, +oo] (⇐ [0, +oo] + 5) Size: [8, +oo] by call to `PKCS12_verify_mac` 
+          97.               || ((p[3] & 0xc0) != 0x80)
+          98.               || ((p[4] & 0xc0) != 0x80)
+          99.               || ((p[5] & 0xc0) != 0x80))
+                                  ^
+          100.               return -3;
+          101.           value = ((unsigned long)(*p++ & 0x1)) << 30;

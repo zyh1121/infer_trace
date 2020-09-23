@@ -1,0 +1,83 @@
+#46530
+ffmpeg_opt.c:1382: error: INTEGER_OVERFLOW_L5
+  ([0, +oo] + 1):unsigned32 by call to `check_stream_specifier`.
+
+ffmpeg_opt.c:1352:14: Assignment
+1350. 
+1351.         MATCH_PER_STREAM_OPT(rc_overrides, str, p, oc, st);
+1352.         for (i = 0; p; i++) {
+                   ^
+1353.             int start, end, q;
+1354.             int e = sscanf(p, "%d,%d,%d", &start, &end, &q);
+
+ffmpeg_opt.c:1376:9: Assignment
+1374.             if (p) p++;
+1375.         }
+1376.         video_enc->rc_override_count = i;
+              ^
+1377. 
+1378.         if (do_psnr)
+
+ffmpeg_opt.c:1382:9: Call
+1380. 
+1381.         /* two pass mode */
+1382.         MATCH_PER_STREAM_OPT(pass, i, do_pass, oc, st);
+              ^
+1383.         if (do_pass) {
+1384.             if (do_pass & 1) {
+
+cmdutils.c:1952:1: Parameter `st->metadata->count`
+  1950. }
+  1951. 
+  1952. int check_stream_specifier(AVFormatContext *s, AVStream *st, const char *spec)
+        ^
+  1953. {
+  1954.     int ret = avformat_match_stream_specifier(s, st, spec);
+
+cmdutils.c:1954:15: Call
+  1952. int check_stream_specifier(AVFormatContext *s, AVStream *st, const char *spec)
+  1953. {
+  1954.     int ret = avformat_match_stream_specifier(s, st, spec);
+                      ^
+  1955.     if (ret < 0)
+  1956.         av_log(s, AV_LOG_ERROR, "Invalid stream specifier: %s.\n", spec);
+
+libavformat/utils.c:4119:1: Parameter `st->metadata->count`
+    4117. }
+    4118. 
+    4119. int avformat_match_stream_specifier(AVFormatContext *s, AVStream *st,
+          ^
+    4120.                                     const char *spec)
+    4121. {
+
+libavformat/utils.c:4187:15: Call
+    4185.             return AVERROR(ENOMEM);
+    4186. 
+    4187.         tag = av_dict_get(st->metadata, key, NULL, 0);
+                        ^
+    4188.         if (tag) {
+    4189.             if (!val || !strcmp(tag->value, val + 1))
+
+libavutil/dict.c:38:1: <LHS trace>
+36. }
+37. 
+38. AVDictionaryEntry *av_dict_get(FF_CONST_AVUTIL53 AVDictionary *m, const char *key,
+    ^
+39.                                const AVDictionaryEntry *prev, int flags)
+40. {
+
+libavutil/dict.c:38:1: Parameter `m->count`
+      36. }
+      37. 
+      38. AVDictionaryEntry *av_dict_get(FF_CONST_AVUTIL53 AVDictionary *m, const char *key,
+          ^
+      39.                                const AVDictionaryEntry *prev, int flags)
+      40. {
+
+libavutil/dict.c:51:26: Binary operation: ([0, +oo] + 1):unsigned32 by call to `check_stream_specifier` 
+      49.         i = 0;
+      50. 
+      51.     for (; i < m->count; i++) {
+                                   ^
+      52.         const char *s = m->elems[i].key;
+      53.         if (flags & AV_DICT_MATCH_CASE)

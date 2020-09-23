@@ -1,0 +1,107 @@
+apps/req.c:1118: error: BUFFER_OVERRUN_L5
+  Offset added: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `X509_NAME_add_entry_by_txt`.
+Showing all 14 steps of the trace
+
+
+apps/req.c:1118:14: Call
+1116.           } else
+1117.               mval = 0;
+1118.           if (!X509_NAME_add_entry_by_txt(subj, type, chtype,
+                     ^
+1119.                                           (unsigned char *)v->value, -1, -1,
+1120.                                           mval))
+
+crypto/x509/x509name.c:161:1: Parameter `name->entries->num`
+  159.   }
+  160.   
+  161. > int X509_NAME_add_entry_by_txt(X509_NAME *name, const char *field, int type,
+  162.                                  const unsigned char *bytes, int len, int loc,
+  163.                                  int set)
+
+apps/req.c:1118:14: Call
+1116.           } else
+1117.               mval = 0;
+1118.           if (!X509_NAME_add_entry_by_txt(subj, type, chtype,
+                     ^
+1119.                                           (unsigned char *)v->value, -1, -1,
+1120.                                           mval))
+
+crypto/x509/x509name.c:161:1: Parameter `name->entries->num`
+  159.   }
+  160.   
+  161. > int X509_NAME_add_entry_by_txt(X509_NAME *name, const char *field, int type,
+  162.                                  const unsigned char *bytes, int len, int loc,
+  163.                                  int set)
+
+crypto/x509/x509name.c:170:11: Call
+  168.       if (!ne)
+  169.           return 0;
+  170.       ret = X509_NAME_add_entry(name, ne, loc, set);
+                   ^
+  171.       X509_NAME_ENTRY_free(ne);
+  172.       return ret;
+
+crypto/x509/x509name.c:179:1: Parameter `loc`
+    177.    * guy we are about to stomp on.
+    178.    */
+    179. > int X509_NAME_add_entry(X509_NAME *name, const X509_NAME_ENTRY *ne, int loc,
+    180.                           int set)
+    181.   {
+
+crypto/x509/x509name.c:224:10: Call
+    222.           goto err;
+    223.       new_name->set = set;
+    224.       if (!sk_X509_NAME_ENTRY_insert(sk, new_name, loc)) {
+                    ^
+    225.           X509err(X509_F_X509_NAME_ADD_ENTRY, ERR_R_MALLOC_FAILURE);
+    226.           goto err;
+
+include/openssl/x509.h:73:1: Parameter `idx`
+      71.   typedef struct X509_name_entry_st X509_NAME_ENTRY;
+      72.   
+      73. > DEFINE_STACK_OF(X509_NAME_ENTRY)
+      74.   
+      75.   DEFINE_STACK_OF(X509_NAME)
+
+include/openssl/x509.h:73:1: Call
+      71.   typedef struct X509_name_entry_st X509_NAME_ENTRY;
+      72.   
+      73. > DEFINE_STACK_OF(X509_NAME_ENTRY)
+      74.   
+      75.   DEFINE_STACK_OF(X509_NAME)
+
+crypto/stack/stack.c:114:1: <Offset trace>
+112.   }
+113.   
+114. > int OPENSSL_sk_insert(OPENSSL_STACK *st, const void *data, int loc)
+115.   {
+116.       const char **s;
+
+crypto/stack/stack.c:114:1: Parameter `loc`
+        112.   }
+        113.   
+        114. > int OPENSSL_sk_insert(OPENSSL_STACK *st, const void *data, int loc)
+        115.   {
+        116.       const char **s;
+
+crypto/stack/stack.c:114:1: <Length trace>
+112.   }
+113.   
+114. > int OPENSSL_sk_insert(OPENSSL_STACK *st, const void *data, int loc)
+115.   {
+116.       const char **s;
+
+crypto/stack/stack.c:114:1: Parameter `**st->data`
+        112.   }
+        113.   
+        114. > int OPENSSL_sk_insert(OPENSSL_STACK *st, const void *data, int loc)
+        115.   {
+        116.       const char **s;
+
+crypto/stack/stack.c:131:9: Array access: Offset added: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `X509_NAME_add_entry_by_txt` 
+        129.           st->data[st->num] = data;
+        130.       else {
+        131.           memmove(&st->data[loc + 1], &st->data[loc],
+                       ^
+        132.                   sizeof(st->data[0]) * (st->num - loc));
+        133.           st->data[loc] = data;

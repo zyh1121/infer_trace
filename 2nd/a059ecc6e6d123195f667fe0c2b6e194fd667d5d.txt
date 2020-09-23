@@ -1,0 +1,70 @@
+crypto/ec/ec2_mult.c:345: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, 11] Size: 12 by call to `ec_GF2m_montgomery_point_multiply`.
+Showing all 9 steps of the trace
+
+
+crypto/ec/ec2_mult.c:314:1: Parameter `ctx->depth`
+312.    * gracefully ignoring NULL scalar values.
+313.    */
+314. > int ec_GF2m_simple_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
+315.   	size_t num, const EC_POINT *points[], const BIGNUM *scalars[], BN_CTX *ctx)
+316.   	{
+
+crypto/ec/ec2_mult.c:345:8: Call
+343.   	if (scalar)
+344.   		{
+345.   		if (!ec_GF2m_montgomery_point_multiply(group, p, scalar, group->generator, ctx)) goto err;
+              ^
+346.   		if (BN_get_sign(scalar)) 
+347.   			if (!group->meth->invert(group, p, ctx)) goto err;
+
+crypto/ec/ec2_mult.c:215:1: Parameter `ctx->depth`
+  213.    *     GF(2^m) without precomputation".
+  214.    */
+  215. > static int ec_GF2m_montgomery_point_multiply(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
+  216.   	const EC_POINT *point, BN_CTX *ctx)
+  217.   	{
+
+crypto/ec/ec2_mult.c:239:2: Call
+  237.   
+  238.   	/* Since point_multiply is static we can guarantee that ctx != NULL. */
+  239.   	BN_CTX_start(ctx);
+          ^
+  240.   	x1 = BN_CTX_get(ctx);
+  241.   	z1 = BN_CTX_get(ctx);
+
+crypto/bn/bn_ctx.c:133:1: <Offset trace>
+131.   	}
+132.   
+133. > void BN_CTX_start(BN_CTX *ctx)
+134.   	{
+135.   	if (ctx->depth < BN_CTX_NUM_POS)
+
+crypto/bn/bn_ctx.c:133:1: Parameter `ctx->depth`
+    131.   	}
+    132.   
+    133. > void BN_CTX_start(BN_CTX *ctx)
+    134.   	{
+    135.   	if (ctx->depth < BN_CTX_NUM_POS)
+
+crypto/bn/bn_ctx.c:133:1: <Length trace>
+131.   	}
+132.   
+133. > void BN_CTX_start(BN_CTX *ctx)
+134.   	{
+135.   	if (ctx->depth < BN_CTX_NUM_POS)
+
+crypto/bn/bn_ctx.c:133:1: Parameter `ctx->pos[*]`
+    131.   	}
+    132.   
+    133. > void BN_CTX_start(BN_CTX *ctx)
+    134.   	{
+    135.   	if (ctx->depth < BN_CTX_NUM_POS)
+
+crypto/bn/bn_ctx.c:136:3: Array access: Offset: [-oo, 11] Size: 12 by call to `ec_GF2m_montgomery_point_multiply` 
+    134.   	{
+    135.   	if (ctx->depth < BN_CTX_NUM_POS)
+    136.   		ctx->pos[ctx->depth] = ctx->tos;
+             ^
+    137.   	ctx->depth++;
+    138.   	}

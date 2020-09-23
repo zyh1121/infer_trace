@@ -1,0 +1,91 @@
+#6206
+libavformat/aiffdec.c:193: error: Buffer Overrun L5
+  Offset: [-oo, +oo] Size: [0, +oo] by call to `avio_rl32`.
+
+libavformat/aiffdec.c:177:1: Parameter `*s->pb->buffer`
+175. 
+176. /* aiff input */
+177. static int aiff_read_header(AVFormatContext *s)
+     ^
+178. {
+179.     int size, filesize;
+
+libavformat/aiffdec.c:188:16: Call
+186. 
+187.     /* check FORM header */
+188.     filesize = get_tag(pb, &tag);
+                    ^
+189.     if (filesize < 0 || tag != MKTAG('F', 'O', 'R', 'M'))
+190.         return AVERROR_INVALIDDATA;
+
+libavformat/aiffdec.c:52:1: Parameter `*pb->buf_end`
+  50. 
+  51. /* returns the size of the found tag */
+  52. static int get_tag(AVIOContext *pb, uint32_t * tag)
+      ^
+  53. {
+  54.     int size;
+
+libavformat/aiffdec.c:193:11: Call
+191. 
+192.     /* AIFF data type */
+193.     tag = avio_rl32(pb);
+               ^
+194.     if (tag == MKTAG('A', 'I', 'F', 'F'))       /* Got an AIFF file */
+195.         version = AIFF;
+
+libavformat/aviobuf.c:521:1: Parameter `*s->buf_end`
+  519. }
+  520. 
+  521. unsigned int avio_rl32(AVIOContext *s)
+       ^
+  522. {
+  523.     unsigned int val;
+
+libavformat/aviobuf.c:524:11: Call
+  522. {
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+                 ^
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+
+libavformat/aviobuf.c:505:1: Parameter `*s->buf_end`
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:11: Call
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+                   ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: <Length trace>
+424. 
+425. /* XXX: put an inline version */
+426. int avio_r8(AVIOContext *s)
+     ^
+427. {
+428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:426:1: Parameter `*s->buf_ptr`
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:431:16: Array access: Offset: [-oo, +oo] Size: [0, +oo] by call to `avio_rl32` 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                          ^
+      432.     return 0;
+      433. }

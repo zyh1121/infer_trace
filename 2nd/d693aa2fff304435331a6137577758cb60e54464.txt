@@ -1,0 +1,398 @@
+crypto/ec/ecdsa_ossl.c:247: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [1, +oo] + [-oo, +oo]) Size: [0, 8388607] by call to `ecdsa_sign_setup`.
+Showing all 52 steps of the trace
+
+
+crypto/ec/ecdsa_ossl.c:170:1: Parameter `eckey->group->order->top`
+168.   }
+169.   
+170. > ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
+171.                                  const BIGNUM *in_kinv, const BIGNUM *in_r,
+172.                                  EC_KEY *eckey)
+
+crypto/ec/ecdsa_ossl.c:230:9: Call
+228.           goto err;
+229.       }
+230.       i = BN_num_bits(order);
+               ^
+231.       /*
+232.        * Need to truncate digest if it is too long: first truncate whole bytes.
+
+crypto/bn/bn_lib.c:139:9: Call
+  137.       bn_check_top(a);
+  138.   
+  139.       if (BN_is_zero(a))
+                 ^
+  140.           return 0;
+  141.       return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
+
+crypto/bn/bn_lib.c:846:1: Parameter `a->top`
+    844.   }
+    845.   
+    846. > int BN_is_zero(const BIGNUM *a)
+    847.   {
+    848.       return a->top == 0;
+
+crypto/ec/ecdsa_ossl.c:247:18: Call
+245.       do {
+246.           if (in_kinv == NULL || in_r == NULL) {
+247.               if (!ecdsa_sign_setup(eckey, ctx, &kinv, &ret->r, dgst, dgst_len)) {
+                        ^
+248.                   ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_ECDSA_LIB);
+249.                   goto err;
+
+crypto/ec/ecdsa_ossl.c:34:1: Parameter `eckey->group->order->top`
+  32.   }
+  33.   
+  34. > static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
+  35.                               BIGNUM **kinvp, BIGNUM **rp,
+  36.                               const unsigned char *dgst, int dlen)
+
+crypto/ec/ecdsa_ossl.c:82:18: Call
+  80.   
+  81.       /* Preallocate space */
+  82.       order_bits = BN_num_bits(order);
+                         ^
+  83.       if (!BN_set_bit(k, order_bits)
+  84.           || !BN_set_bit(r, order_bits)
+
+crypto/bn/bn_lib.c:139:9: Call
+    137.       bn_check_top(a);
+    138.   
+    139.       if (BN_is_zero(a))
+                   ^
+    140.           return 0;
+    141.       return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
+
+crypto/bn/bn_lib.c:846:1: Parameter `a->top`
+      844.   }
+      845.   
+      846. > int BN_is_zero(const BIGNUM *a)
+      847.   {
+      848.       return a->top == 0;
+
+crypto/ec/ecdsa_ossl.c:100:22: Call
+  98.                   }
+  99.               } else {
+  100.                   if (!BN_priv_rand_range(k, order)) {
+                              ^
+  101.                       ECerr(EC_F_ECDSA_SIGN_SETUP,
+  102.                                EC_R_RANDOM_NUMBER_GENERATION_FAILED);
+
+crypto/bn/bn_rand.c:182:1: Parameter `range->top`
+    180.   }
+    181.   
+    182. > int BN_priv_rand_range(BIGNUM *r, const BIGNUM *range)
+    183.   {
+    184.       return bnrand_range(PRIVATE, r, range);
+
+crypto/bn/bn_rand.c:184:12: Call
+    182.   int BN_priv_rand_range(BIGNUM *r, const BIGNUM *range)
+    183.   {
+    184.       return bnrand_range(PRIVATE, r, range);
+                      ^
+    185.   }
+    186.   
+
+crypto/bn/bn_rand.c:113:1: Parameter `range->top`
+      111.   
+      112.   /* random number r:  0 <= r < range */
+      113. > static int bnrand_range(BNRAND_FLAG flag, BIGNUM *r, const BIGNUM *range)
+      114.   {
+      115.       int n;
+
+crypto/ec/ecdsa_ossl.c:109:14: Call
+  107.   
+  108.           /* compute r the x-coordinate of generator * k */
+  109.           if (!EC_POINT_mul(group, tmp_point, k, NULL, NULL, ctx)) {
+                      ^
+  110.               ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_EC_LIB);
+  111.               goto err;
+
+crypto/ec/ec_lib.c:929:1: Parameter `group->order->top`
+    927.   }
+    928.   
+    929. > int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
+    930.                    const EC_POINT *point, const BIGNUM *p_scalar, BN_CTX *ctx)
+    931.   {
+
+crypto/ec/ec_lib.c:940:12: Call
+    938.       scalars[0] = p_scalar;
+    939.   
+    940.       return EC_POINTs_mul(group, r, g_scalar,
+                      ^
+    941.                            (point != NULL
+    942.                             && p_scalar != NULL), points, scalars, ctx);
+
+crypto/ec/ec_lib.c:918:1: Parameter `group->order->top`
+      916.    */
+      917.   
+      918. > int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
+      919.                     size_t num, const EC_POINT *points[],
+      920.                     const BIGNUM *scalars[], BN_CTX *ctx)
+
+crypto/ec/ecdsa_ossl.c:132:14: Call
+  130.           }
+  131.   #endif
+  132.           if (!BN_nnmod(r, X, order, ctx)) {
+                      ^
+  133.               ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_BN_LIB);
+  134.               goto err;
+
+crypto/bn/bn_mod.c:13:1: Parameter `d->top`
+    11.   #include "bn_lcl.h"
+    12.   
+    13. > int BN_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx)
+    14.   {
+    15.       /*
+
+crypto/bn/bn_mod.c:20:11: Call
+    18.        */
+    19.   
+    20.       if (!(BN_mod(r, m, d, ctx)))
+                    ^
+    21.           return 0;
+    22.       if (!r->neg)
+
+crypto/bn/bn_div.c:137:1: Parameter `divisor->top`
+      135.    * If 'dv' or 'rm' is NULL, the respective value is not returned.
+      136.    */
+      137. > int BN_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
+      138.              BN_CTX *ctx)
+      139.   {
+
+crypto/ec/ecdsa_ossl.c:140:10: Call
+  138.   
+  139.       /* compute the inverse of k */
+  140.       if (!ec_group_do_inverse_ord(group, k, k, ctx)) {
+                  ^
+  141.           ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_BN_LIB);
+  142.           goto err;
+
+crypto/ec/ec_lib.c:1074:1: Parameter `group->order->top`
+    1072.    * other functionality.
+    1073.    */
+    1074. > int ec_group_do_inverse_ord(const EC_GROUP *group, BIGNUM *res,
+    1075.                               const BIGNUM *x, BN_CTX *ctx)
+    1076.   {
+
+crypto/ec/ec_lib.c:1080:16: Call
+    1078.           return group->meth->field_inverse_mod_ord(group, res, x, ctx);
+    1079.       else
+    1080.           return ec_field_inverse_mod_ord(group, res, x, ctx);
+                           ^
+    1081.   }
+    1082.   
+
+crypto/ec/ec_lib.c:1020:1: Parameter `group->order->top`
+      1018.   }
+      1019.   
+      1020. > static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
+      1021.                                       const BIGNUM *x, BN_CTX *ctx)
+      1022.   {
+
+crypto/ec/ec_lib.c:1043:10: Call
+      1041.       if (!BN_set_word(e, 2))
+      1042.           goto err;
+      1043.       if (!BN_sub(e, group->order, e))
+                       ^
+      1044.           goto err;
+      1045.       /*-
+
+crypto/bn/bn_add.c:45:1: Parameter `a->top`
+        43.   
+        44.   /* signed sub of b from a. */
+        45. > int BN_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+        46.   {
+        47.       int ret, r_neg, cmp_res;
+
+crypto/ec/ec_lib.c:1049:10: Call
+      1047.        * No need for scatter-gather or BN_FLG_CONSTTIME.
+      1048.        */
+      1049.       if (!BN_mod_exp_mont(r, x, e, group->order, ctx, group->mont_data))
+                       ^
+      1050.           goto err;
+      1051.   
+
+crypto/bn/bn_exp.c:296:1: Parameter `m->top`
+        294.   }
+        295.   
+        296. > int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+        297.                       const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+        298.   {
+
+crypto/bn/bn_exp.c:310:16: Call
+        308.               || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+        309.               || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+        310.           return BN_mod_exp_mont_consttime(rr, a, p, m, ctx, in_mont);
+                              ^
+        311.       }
+        312.   
+
+crypto/bn/bn_exp.c:745:14: Assignment
+          743.           /* 2^(top*BN_BITS2) - m */
+          744.           tmp.d[0] = (0 - m->d[0]) & BN_MASK2;
+          745.           for (i = 1; i < top; i++)
+                              ^
+          746.               tmp.d[i] = (~m->d[i]) & BN_MASK2;
+          747.           tmp.top = top;
+
+crypto/bn/bn_exp.c:1062:14: Call
+          1060.           bits -= window0;
+          1061.           wvalue = bn_get_bits(p, bits) & wmask;
+          1062.           if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&tmp, top, powerbuf, wvalue,
+                               ^
+          1063.                                               window))
+          1064.               goto err;
+
+crypto/bn/bn_exp.c:520:1: Parameter `top`
+            518.   }
+            519.   
+            520. > static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
+            521.                                             unsigned char *buf, int idx,
+            522.                                             int window)
+
+crypto/bn/bn_exp.c:577:5: Assignment
+            575.       }
+            576.   
+            577.       b->top = top;
+                       ^
+            578.       bn_correct_top(b);
+            579.       return 1;
+
+crypto/bn/bn_exp.c:578:5: Call
+            576.   
+            577.       b->top = top;
+            578.       bn_correct_top(b);
+                       ^
+            579.       return 1;
+            580.   }
+
+crypto/bn/bn_lib.c:947:1: Parameter `a->top`
+              945.   }
+              946.   
+              947. > void bn_correct_top(BIGNUM *a)
+              948.   {
+              949.       BN_ULONG *ftl;
+
+crypto/bn/bn_exp.c:1098:18: Call
+          1096.   
+          1097.               /* Multiply the result into the intermediate result */
+          1098.               if (!BN_mod_mul_montgomery(&tmp, &tmp, &am, mont, ctx))
+                                   ^
+          1099.                   goto err;
+          1100.           }
+
+crypto/bn/bn_mont.c:26:1: Parameter `b->top`
+            24.   #endif
+            25.   
+            26. > int BN_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+            27.                             BN_MONT_CTX *mont, BN_CTX *ctx)
+            28.   {
+
+crypto/bn/bn_mont.c:56:14: Call
+            54.       bn_check_top(tmp);
+            55.       if (a == b) {
+            56.           if (!BN_sqr(tmp, a, ctx))
+                               ^
+            57.               goto err;
+            58.       } else {
+
+crypto/bn/bn_sqr.c:17:1: Parameter `a->top`
+              15.    * I've just gone over this and it is now %20 faster on x86 - eay - 27 Jun 96
+              16.    */
+              17. > int BN_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
+              18.   {
+              19.       int max, al;
+
+crypto/bn/bn_sqr.c:25:5: Assignment
+              23.       bn_check_top(a);
+              24.   
+              25.       al = a->top;
+                        ^
+              26.       if (al <= 0) {
+              27.           r->top = 0;
+
+crypto/bn/bn_sqr.c:74:17: Call
+              72.                   if (bn_wexpand(tmp, max) == NULL)
+              73.                       goto err;
+              74.                   bn_sqr_normal(rr->d, a->d, al, tmp->d);
+                                    ^
+              75.               }
+              76.           }
+
+crypto/bn/bn_sqr.c:99:1: <Offset trace>
+97.   
+98.   /* tmp must have 2*n words */
+99. > void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
+100.   {
+101.       int i, j, max;
+
+crypto/bn/bn_sqr.c:99:1: Parameter `n`
+                97.   
+                98.   /* tmp must have 2*n words */
+                99. > void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
+                100.   {
+                101.       int i, j, max;
+
+crypto/bn/bn_sqr.c:110:5: Assignment
+                108.       rp[0] = rp[max - 1] = 0;
+                109.       rp++;
+                110.       j = n;
+                           ^
+                111.   
+                112.       if (--j > 0) {
+
+crypto/bn/bn_sqr.c:112:9: Assignment
+                110.       j = n;
+                111.   
+                112.       if (--j > 0) {
+                               ^
+                113.           ap++;
+                114.           rp[j] = bn_mul_words(rp, ap, j, ap[-1]);
+
+crypto/bn/bn_sqr.c:119:9: Assignment
+                117.   
+                118.       for (i = n - 2; i > 0; i--) {
+                119.           j--;
+                               ^
+                120.           ap++;
+                121.           rp[j] = bn_mul_add_words(rp, ap, j, ap[-1]);
+
+crypto/bn/bn_sqr.c:99:1: <Length trace>
+97.   
+98.   /* tmp must have 2*n words */
+99. > void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
+100.   {
+101.       int i, j, max;
+
+crypto/bn/bn_sqr.c:99:1: Parameter `*r`
+                97.   
+                98.   /* tmp must have 2*n words */
+                99. > void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
+                100.   {
+                101.       int i, j, max;
+
+crypto/bn/bn_sqr.c:107:5: Assignment
+                105.       max = n * 2;
+                106.       ap = a;
+                107.       rp = r;
+                           ^
+                108.       rp[0] = rp[max - 1] = 0;
+                109.       rp++;
+
+crypto/bn/bn_sqr.c:109:5: Assignment
+                107.       rp = r;
+                108.       rp[0] = rp[max - 1] = 0;
+                109.       rp++;
+                           ^
+                110.       j = n;
+                111.   
+
+crypto/bn/bn_sqr.c:121:9: Array access: Offset: [-oo, +oo] (⇐ [1, +oo] + [-oo, +oo]) Size: [0, 8388607] by call to `ecdsa_sign_setup` 
+                119.           j--;
+                120.           ap++;
+                121.           rp[j] = bn_mul_add_words(rp, ap, j, ap[-1]);
+                               ^
+                122.           rp += 2;
+                123.       }

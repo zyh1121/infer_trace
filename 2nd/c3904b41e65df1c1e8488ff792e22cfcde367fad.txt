@@ -1,0 +1,27 @@
+#4422
+libavdevice/v4l2.c:129: error: Buffer Overrun U5
+  Offset: [-oo, +oo] Size: [0, +oo].
+
+libavdevice/v4l2.c:129:15: <Length trace>
+127.     fd = avpriv_open(ctx->filename, flags);
+128.     if (fd < 0) {
+129.         err = errno;
+                   ^
+130. 
+131.         av_log(ctx, AV_LOG_ERROR, "Cannot open video device %s : %s\n",
+
+libavdevice/v4l2.c:129:15: Unknown value from: __errno_location
+127.     fd = avpriv_open(ctx->filename, flags);
+128.     if (fd < 0) {
+129.         err = errno;
+                   ^
+130. 
+131.         av_log(ctx, AV_LOG_ERROR, "Cannot open video device %s : %s\n",
+
+libavdevice/v4l2.c:129:15: Array access: Offset: [-oo, +oo] Size: [0, +oo]
+127.     fd = avpriv_open(ctx->filename, flags);
+128.     if (fd < 0) {
+129.         err = errno;
+                   ^
+130. 
+131.         av_log(ctx, AV_LOG_ERROR, "Cannot open video device %s : %s\n",

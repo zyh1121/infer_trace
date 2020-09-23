@@ -1,0 +1,27 @@
+#18124
+libavformat/http.c:423: error: INTEGER_OVERFLOW_L5
+  (4096 - [0, +oo]):unsigned64.
+
+libavformat/http.c:386:5: <RHS trace>
+384.     char *authstr = NULL, *proxyauthstr = NULL;
+385.     int64_t off = s->off;
+386.     int len = 0;
+         ^
+387.     const char *method;
+388. 
+
+libavformat/http.c:386:5: Assignment
+384.     char *authstr = NULL, *proxyauthstr = NULL;
+385.     int64_t off = s->off;
+386.     int len = 0;
+         ^
+387.     const char *method;
+388. 
+
+libavformat/http.c:423:20: Binary operation: (4096 - [0, +oo]):unsigned64
+421.     if (!has_header(s->headers, "\r\nConnection: ")) {
+422.         if (s->multiple_requests) {
+423.             len += av_strlcpy(headers + len, "Connection: keep-alive\r\n",
+                        ^
+424.                               sizeof(headers) - len);
+425.         } else {

@@ -1,0 +1,108 @@
+crypto/bn/bntest.c:607: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_bntest_rand`.
+Showing all 14 steps of the trace
+
+
+crypto/bn/bntest.c:623:3: Call
+621.   			}
+622.   		BN_div(&d,&e,&c,&a,ctx);
+623.   		BN_sub(&d,&d,&a);
+         ^
+624.   		if(!BN_is_zero(&d) || !BN_is_zero(&e))
+625.   		    {
+
+crypto/bn/bn_add.c:263:1: Parameter `b->top`
+  261.   	}
+  262.   
+  263. > int BN_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+  264.   	{
+  265.   	int max;
+
+crypto/bn/bntest.c:607:3: Call
+605.   	for (i=0; i<num0; i++)
+606.   		{
+607.   		BN_bntest_rand(&a,40+i*10,0,0);
+         ^
+608.   		a.neg=rand_neg();
+609.   		BN_sqr(&c,&a,ctx);
+
+crypto/bn/bn_rand.c:222:1: Parameter `rnd->top`
+  220.   
+  221.   #if 1
+  222. > int     BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  223.   	{
+  224.   	return bnrand(2, rnd, bits, top, bottom);
+
+crypto/bn/bn_rand.c:224:9: Call
+  222.   int     BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  223.   	{
+  224.   	return bnrand(2, rnd, bits, top, bottom);
+                 ^
+  225.   	}
+  226.   #endif
+
+crypto/bn/bn_rand.c:118:1: Parameter `rnd->top`
+    116.   #include <openssl/rand.h>
+    117.   
+    118. > static int bnrand(int pseudorand, BIGNUM *rnd, int bits, int top, int bottom)
+    119.   	{
+    120.   	unsigned char *buf=NULL;
+
+crypto/bn/bn_rand.c:126:3: Call
+    124.   	if (bits == 0)
+    125.   		{
+    126.   		BN_zero(rnd);
+             ^
+    127.   		return 1;
+    128.   		}
+
+crypto/bn/bn_lib.c:635:1: Parameter `a->top`
+      633.   	}
+      634.   
+      635. > int BN_set_word(BIGNUM *a, BN_ULONG w)
+      636.   	{
+      637.   	int i,n;
+
+crypto/bn/bn_lib.c:639:6: Call
+      637.   	int i,n;
+      638.   	bn_check_top(a);
+      639.   	if (bn_expand(a,(int)sizeof(BN_ULONG)*8) == NULL) return(0);
+                  ^
+      640.   
+      641.   	n=sizeof(BN_ULONG)/BN_BYTES;
+
+crypto/bn/bn_lib.c:440:1: <Offset trace>
+438.    * NULL is returned. If not, 'b' is returned. */
+439.   
+440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+441.   	{
+442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: Parameter `words`
+        438.    * NULL is returned. If not, 'b' is returned. */
+        439.   
+        440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+        441.   	{
+        442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: <Length trace>
+438.    * NULL is returned. If not, 'b' is returned. */
+439.   
+440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+441.   	{
+442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: Parameter `*b->d`
+        438.    * NULL is returned. If not, 'b' is returned. */
+        439.   
+        440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+        441.   	{
+        442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:459:3: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_bntest_rand` 
+        457.   	if (b->top < b->dmax)
+        458.   		{
+        459.   		A = &(b->d[b->top]);
+                 ^
+        460.   		for (i=(b->dmax - b->top)>>3; i>0; i--,A+=8)
+        461.   			{

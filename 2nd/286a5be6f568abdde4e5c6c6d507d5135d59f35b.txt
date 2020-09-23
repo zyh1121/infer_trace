@@ -1,0 +1,55 @@
+ssl/statem/statem_srvr.c:2184: error: BUFFER_OVERRUN_L5
+  Offset added: [0, 256] Size: [0, +oo] by call to `BUF_memdup`.
+Showing all 7 steps of the trace
+
+
+ssl/statem/statem_srvr.c:2113:1: Array declaration
+2111.   }
+2112.   
+2113. > MSG_PROCESS_RETURN tls_process_client_key_exchange(SSL *s, PACKET *pkt)
+2114.   {
+2115.       int al;
+
+ssl/statem/statem_srvr.c:2184:26: Call
+2182.   
+2183.           OPENSSL_free(s->s3->tmp.psk);
+2184.           s->s3->tmp.psk = BUF_memdup(psk, psklen);
+                                 ^
+2185.           OPENSSL_cleanse(psk, psklen);
+2186.   
+
+crypto/buffer/buf_str.c:104:1: <Offset trace>
+102.   }
+103.   
+104. > void *BUF_memdup(const void *data, size_t siz)
+105.   {
+106.       void *ret;
+
+crypto/buffer/buf_str.c:104:1: Parameter `siz`
+  102.   }
+  103.   
+  104. > void *BUF_memdup(const void *data, size_t siz)
+  105.   {
+  106.       void *ret;
+
+crypto/buffer/buf_str.c:104:1: <Length trace>
+102.   }
+103.   
+104. > void *BUF_memdup(const void *data, size_t siz)
+105.   {
+106.       void *ret;
+
+crypto/buffer/buf_str.c:104:1: Parameter `*data`
+  102.   }
+  103.   
+  104. > void *BUF_memdup(const void *data, size_t siz)
+  105.   {
+  106.       void *ret;
+
+crypto/buffer/buf_str.c:116:12: Array access: Offset added: [0, 256] Size: [0, +oo] by call to `BUF_memdup` 
+  114.           return NULL;
+  115.       }
+  116.       return memcpy(ret, data, siz);
+                    ^
+  117.   }
+  118.   

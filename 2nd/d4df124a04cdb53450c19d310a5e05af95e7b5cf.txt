@@ -1,0 +1,67 @@
+crypto/kdf/sskdf.c:250: error: NULLPTR_DEREFERENCE
+  call to `CRYPTO_free()` eventually accesses memory that is the null pointer on line 191.
+Showing all 8 steps of the trace
+
+
+crypto/kdf/sskdf.c:191:5: invalidation part of the trace starts here
+189.       unsigned char *out = derived_key;
+190.       EVP_MAC_CTX *ctx = NULL, *ctx_init = NULL;
+191.       unsigned char *mac = mac_buf, *kmac_buffer = NULL;
+           ^
+192.   
+193.       if (z_len > SSKDF_MAX_INLEN || info_len > SSKDF_MAX_INLEN
+
+crypto/kdf/sskdf.c:191:5: assigned
+  189.       unsigned char *out = derived_key;
+  190.       EVP_MAC_CTX *ctx = NULL, *ctx_init = NULL;
+  191.       unsigned char *mac = mac_buf, *kmac_buffer = NULL;
+             ^
+  192.   
+  193.       if (z_len > SSKDF_MAX_INLEN || info_len > SSKDF_MAX_INLEN
+
+crypto/kdf/sskdf.c:191:5: is the null pointer
+  189.       unsigned char *out = derived_key;
+  190.       EVP_MAC_CTX *ctx = NULL, *ctx_init = NULL;
+  191.       unsigned char *mac = mac_buf, *kmac_buffer = NULL;
+             ^
+  192.   
+  193.       if (z_len > SSKDF_MAX_INLEN || info_len > SSKDF_MAX_INLEN
+
+crypto/kdf/sskdf.c:191:5: use-after-lifetime part of the trace starts here
+189.       unsigned char *out = derived_key;
+190.       EVP_MAC_CTX *ctx = NULL, *ctx_init = NULL;
+191.       unsigned char *mac = mac_buf, *kmac_buffer = NULL;
+           ^
+192.   
+193.       if (z_len > SSKDF_MAX_INLEN || info_len > SSKDF_MAX_INLEN
+
+crypto/kdf/sskdf.c:191:5: assigned
+  189.       unsigned char *out = derived_key;
+  190.       EVP_MAC_CTX *ctx = NULL, *ctx_init = NULL;
+  191.       unsigned char *mac = mac_buf, *kmac_buffer = NULL;
+             ^
+  192.   
+  193.       if (z_len > SSKDF_MAX_INLEN || info_len > SSKDF_MAX_INLEN
+
+crypto/kdf/sskdf.c:250:5: when calling `CRYPTO_free` here
+  248.       ret = 1;
+  249.   end:
+  250.       OPENSSL_free(kmac_buffer);
+             ^
+  251.       EVP_MAC_CTX_free(ctx);
+  252.       EVP_MAC_CTX_free(ctx_init);
+
+crypto/mem.c:295:1: parameter `str` of CRYPTO_free
+    293.   }
+    294.   
+    295. > void CRYPTO_free(void *str, const char *file, int line)
+    296.   {
+    297.       INCREMENT(free_count);
+
+crypto/mem.c:312:5: invalid access occurs here
+    310.       }
+    311.   #else
+    312.       free(str);
+               ^
+    313.   #endif
+    314.   }

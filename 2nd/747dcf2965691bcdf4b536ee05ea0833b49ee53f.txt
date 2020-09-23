@@ -1,0 +1,97 @@
+test/bntest.c:1904: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, 206]) Size: [0, +oo] by call to `BN_bntest_rand`.
+Showing all 12 steps of the trace
+
+
+test/bntest.c:1904:5: Call
+1902.       c = BN_new();
+1903.   
+1904.       BN_bntest_rand(a, 200, 0, 0);
+            ^
+1905.       a->neg = rand_neg();
+1906.       for (i = 0; i < num0; i++) {
+
+crypto/bn/bn_rand.c:103:1: Parameter `bits`
+  101.   }
+  102.   
+  103. > int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  104.   {
+  105.       return bnrand(2, rnd, bits, top, bottom);
+
+crypto/bn/bn_rand.c:105:12: Call
+  103.   int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  104.   {
+  105.       return bnrand(2, rnd, bits, top, bottom);
+                    ^
+  106.   }
+  107.   
+
+crypto/bn/bn_rand.c:57:14: <Offset trace>
+55.           unsigned char c;
+56.   
+57.           for (i = 0; i < bytes; i++) {
+                   ^
+58.               if (RAND_bytes(&c, 1) <= 0)
+59.                   goto err;
+
+crypto/bn/bn_rand.c:57:14: Assignment
+    55.           unsigned char c;
+    56.   
+    57.           for (i = 0; i < bytes; i++) {
+                       ^
+    58.               if (RAND_bytes(&c, 1) <= 0)
+    59.                   goto err;
+
+crypto/bn/bn_rand.c:17:1: <Length trace>
+15.   #include <openssl/sha.h>
+16.   
+17. > static int bnrand(int pseudorand, BIGNUM *rnd, int bits, int top, int bottom)
+18.   {
+19.       unsigned char *buf = NULL;
+
+crypto/bn/bn_rand.c:17:1: Parameter `bits`
+    15.   #include <openssl/sha.h>
+    16.   
+    17. > static int bnrand(int pseudorand, BIGNUM *rnd, int bits, int top, int bottom)
+    18.   {
+    19.       unsigned char *buf = NULL;
+
+crypto/bn/bn_rand.c:33:5: Assignment
+    31.       }
+    32.   
+    33.       bytes = (bits + 7) / 8;
+              ^
+    34.       bit = (bits - 1) % 8;
+    35.       mask = 0xff << (bit + 1);
+
+crypto/bn/bn_rand.c:37:11: Call
+    35.       mask = 0xff << (bit + 1);
+    36.   
+    37.       buf = OPENSSL_malloc(bytes);
+                    ^
+    38.       if (buf == NULL) {
+    39.           BNerr(BN_F_BNRAND, ERR_R_MALLOC_FAILURE);
+
+crypto/mem.c:79:9: Assignment
+      77.   
+      78.       if (num <= 0)
+      79.           return NULL;
+                    ^
+      80.   
+      81.       allow_customize = 0;
+
+crypto/bn/bn_rand.c:37:5: Assignment
+    35.       mask = 0xff << (bit + 1);
+    36.   
+    37.       buf = OPENSSL_malloc(bytes);
+              ^
+    38.       if (buf == NULL) {
+    39.           BNerr(BN_F_BNRAND, ERR_R_MALLOC_FAILURE);
+
+crypto/bn/bn_rand.c:63:17: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, 206]) Size: [0, +oo] by call to `BN_bntest_rand` 
+    61.                   buf[i] = buf[i - 1];
+    62.               else if (c < 42)
+    63.                   buf[i] = 0;
+                          ^
+    64.               else if (c < 84)
+    65.                   buf[i] = 255;

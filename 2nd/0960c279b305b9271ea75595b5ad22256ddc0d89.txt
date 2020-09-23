@@ -1,0 +1,131 @@
+#1961
+libavfilter/vf_unsharp.c:99: error: Dangling Pointer Dereference
+  uninitialized pointer `src2` could be dangling and is dereferenced or freed at line 99, column 29.
+
+libavfilter/vf_unsharp.c:70:1: start of procedure apply_unsharp()
+68. } UnsharpContext;
+69. 
+70. static void apply_unsharp(      uint8_t *dst, int dst_stride,
+    ^
+71.                           const uint8_t *src, int src_stride,
+72.                           int width, int height, FilterParam *fp)
+
+libavfilter/vf_unsharp.c:74:5: 
+72.                           int width, int height, FilterParam *fp)
+73. {
+74.     uint32_t **sc = fp->sc;
+        ^
+75.     uint32_t sr[(MAX_SIZE * MAX_SIZE) - 1], tmp1, tmp2;
+76. 
+
+libavfilter/vf_unsharp.c:81:10: Taking false branch
+79.     const uint8_t *src2;
+80. 
+81.     if (!fp->amount) {
+             ^
+82.         if (dst_stride == src_stride)
+83.             memcpy(dst, src, src_stride * height);
+
+libavfilter/vf_unsharp.c:90:10: 
+88.     }
+89. 
+90.     for (y = 0; y < 2 * fp->steps_y; y++)
+             ^
+91.         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
+92. 
+
+libavfilter/vf_unsharp.c:90:17: Loop condition is true. Entering loop body
+88.     }
+89. 
+90.     for (y = 0; y < 2 * fp->steps_y; y++)
+                    ^
+91.         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
+92. 
+
+libavfilter/vf_unsharp.c:91:9: 
+89. 
+90.     for (y = 0; y < 2 * fp->steps_y; y++)
+91.         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
+            ^
+92. 
+93.     for (y = -fp->steps_y; y < height + fp->steps_y; y++) {
+
+libavfilter/vf_unsharp.c:90:38: 
+88.     }
+89. 
+90.     for (y = 0; y < 2 * fp->steps_y; y++)
+                                         ^
+91.         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
+92. 
+
+libavfilter/vf_unsharp.c:90:17: Loop condition is false. Leaving loop
+88.     }
+89. 
+90.     for (y = 0; y < 2 * fp->steps_y; y++)
+                    ^
+91.         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
+92. 
+
+libavfilter/vf_unsharp.c:93:10: 
+91.         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
+92. 
+93.     for (y = -fp->steps_y; y < height + fp->steps_y; y++) {
+             ^
+94.         if (y < height)
+95.             src2 = src;
+
+libavfilter/vf_unsharp.c:93:28: Loop condition is true. Entering loop body
+91.         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
+92. 
+93.     for (y = -fp->steps_y; y < height + fp->steps_y; y++) {
+                               ^
+94.         if (y < height)
+95.             src2 = src;
+
+libavfilter/vf_unsharp.c:94:13: Taking false branch
+92. 
+93.     for (y = -fp->steps_y; y < height + fp->steps_y; y++) {
+94.         if (y < height)
+                ^
+95.             src2 = src;
+96. 
+
+libavfilter/vf_unsharp.c:97:9: 
+95.             src2 = src;
+96. 
+97.         memset(sr, 0, sizeof(sr[0]) * (2 * fp->steps_x - 1));
+            ^
+98.         for (x = -fp->steps_x; x < width + fp->steps_x; x++) {
+99.             tmp1 = x <= 0 ? src2[0] : x >= width ? src2[width-1] : src2[x];
+
+libavfilter/vf_unsharp.c:98:14: 
+ 96. 
+ 97.         memset(sr, 0, sizeof(sr[0]) * (2 * fp->steps_x - 1));
+ 98.         for (x = -fp->steps_x; x < width + fp->steps_x; x++) {
+                  ^
+ 99.             tmp1 = x <= 0 ? src2[0] : x >= width ? src2[width-1] : src2[x];
+100.             for (z = 0; z < fp->steps_x * 2; z += 2) {
+
+libavfilter/vf_unsharp.c:98:32: Loop condition is true. Entering loop body
+ 96. 
+ 97.         memset(sr, 0, sizeof(sr[0]) * (2 * fp->steps_x - 1));
+ 98.         for (x = -fp->steps_x; x < width + fp->steps_x; x++) {
+                                    ^
+ 99.             tmp1 = x <= 0 ? src2[0] : x >= width ? src2[width-1] : src2[x];
+100.             for (z = 0; z < fp->steps_x * 2; z += 2) {
+
+libavfilter/vf_unsharp.c:99:20: Condition is false
+ 97.         memset(sr, 0, sizeof(sr[0]) * (2 * fp->steps_x - 1));
+ 98.         for (x = -fp->steps_x; x < width + fp->steps_x; x++) {
+ 99.             tmp1 = x <= 0 ? src2[0] : x >= width ? src2[width-1] : src2[x];
+                        ^
+100.             for (z = 0; z < fp->steps_x * 2; z += 2) {
+101.                 tmp2 = sr[z + 0] + tmp1; sr[z + 0] = tmp1;
+
+libavfilter/vf_unsharp.c:99:39: Condition is true
+ 97.         memset(sr, 0, sizeof(sr[0]) * (2 * fp->steps_x - 1));
+ 98.         for (x = -fp->steps_x; x < width + fp->steps_x; x++) {
+ 99.             tmp1 = x <= 0 ? src2[0] : x >= width ? src2[width-1] : src2[x];
+                                           ^
+100.             for (z = 0; z < fp->steps_x * 2; z += 2) {
+101.                 tmp2 = sr[z + 0] + tmp1; sr[z + 0] = tmp1;

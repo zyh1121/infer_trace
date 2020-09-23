@@ -1,0 +1,150 @@
+crypto/engine/hw_atalla.c:413: error: BUFFER_OVERRUN_U5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_mod_mul`.
+Showing all 19 steps of the trace
+
+
+crypto/engine/hw_atalla.c:409:7: Call
+407.   	BN_init(&t);
+408.   	/* let rr = a1 ^ p1 mod m */
+409.   	if (!atalla_mod_exp(rr,a1,p1,m,ctx)) goto end;
+             ^
+410.   	/* let t = a2 ^ p2 mod m */
+411.   	if (!atalla_mod_exp(&t,a2,p2,m,ctx)) goto end;
+
+crypto/engine/hw_atalla.c:296:1: Parameter `r->top`
+  294.   	}
+  295.   
+  296. > static int atalla_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
+  297.   			const BIGNUM *m, BN_CTX *ctx)
+  298.   	{
+
+crypto/engine/hw_atalla.c:413:7: Call
+411.   	if (!atalla_mod_exp(&t,a2,p2,m,ctx)) goto end;
+412.   	/* let rr = rr * t mod m */
+413.   	if (!BN_mod_mul(rr,rr,&t,m,ctx)) goto end;
+             ^
+414.   	to_return = 1;
+415.   end:
+
+crypto/bn/bn_exp.c:120:1: Parameter `a->top`
+  118.   
+  119.   /* slow but works */
+  120. > int BN_mod_mul(BIGNUM *ret, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
+  121.   	BN_CTX *ctx)
+  122.   	{
+
+crypto/bn/bn_exp.c:133:10: Call
+  131.   	if ((t = BN_CTX_get(ctx)) == NULL) goto err;
+  132.   	if (a == b)
+  133.   		{ if (!BN_sqr(t,a,ctx)) goto err; }
+                  ^
+  134.   	else
+  135.   		{ if (!BN_mul(t,a,b,ctx)) goto err; }
+
+crypto/bn/bn_sqr.c:65:1: Parameter `a->top`
+    63.   /* r must not be a */
+    64.   /* I've just gone over this and it is now %20 faster on x86 - eay - 27 Jun 96 */
+    65. > int BN_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
+    66.   	{
+    67.   	int max,al;
+
+crypto/bn/bn_sqr.c:128:23: Call
+    126.   				{
+    127.   				BIGNUM *tmp_bn = free_a;
+    128.   				if ((a = free_a = bn_dup_expand(a,k*2)) == NULL) goto err;
+                                 ^
+    129.   				if (bn_wexpand(tmp,k*2) == NULL) goto err;
+    130.   				if (tmp_bn) BN_free(tmp_bn);
+
+crypto/bn/bn_lib.c:450:1: Parameter `b->top`
+      448.    */
+      449.   
+      450. > BIGNUM *bn_dup_expand(const BIGNUM *b, int words)
+      451.   	{
+      452.   	BIGNUM *r = NULL;
+
+crypto/bn/bn_lib.c:456:17: Call
+      454.   	if (words > b->dmax)
+      455.   		{
+      456.   		BN_ULONG *a = internal_bn_expand(b, words);
+                             ^
+      457.   
+      458.   		if (a)
+
+crypto/bn/bn_lib.c:309:1: <Offset trace>
+307.   /* This is used both by bn_expand2() and bn_dup_expand() */
+308.   /* The caller MUST check that words > b->dmax before calling this */
+309. > static BN_ULONG *internal_bn_expand(const BIGNUM *b, int words)
+310.   	{
+311.   	BN_ULONG *A,*a = NULL;
+
+crypto/bn/bn_lib.c:309:1: Parameter `b->top`
+        307.   /* This is used both by bn_expand2() and bn_dup_expand() */
+        308.   /* The caller MUST check that words > b->dmax before calling this */
+        309. > static BN_ULONG *internal_bn_expand(const BIGNUM *b, int words)
+        310.   	{
+        311.   	BN_ULONG *A,*a = NULL;
+
+crypto/bn/bn_lib.c:321:18: <Length trace>
+319.   		return(NULL);
+320.   		}
+321.   	a=A=(BN_ULONG *)OPENSSL_malloc(sizeof(BN_ULONG)*(words+1));
+                        ^
+322.   	if (A == NULL)
+323.   		{
+
+crypto/bn/bn_lib.c:321:18: Call
+        319.   		return(NULL);
+        320.   		}
+        321.   	a=A=(BN_ULONG *)OPENSSL_malloc(sizeof(BN_ULONG)*(words+1));
+                                ^
+        322.   	if (A == NULL)
+        323.   		{
+
+crypto/mem.c:215:8: Unknown value from: non-const function
+          213.   		malloc_debug_func(NULL, num, file, line, 0);
+          214.   		}
+          215.   	ret = malloc_func(num);
+                        ^
+          216.   #ifdef LEVITTE_DEBUG
+          217.   	fprintf(stderr, "LEVITTE_DEBUG:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:215:2: Assignment
+          213.   		malloc_debug_func(NULL, num, file, line, 0);
+          214.   		}
+          215.   	ret = malloc_func(num);
+                  ^
+          216.   #ifdef LEVITTE_DEBUG
+          217.   	fprintf(stderr, "LEVITTE_DEBUG:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:222:2: Assignment
+          220.   		malloc_debug_func(ret, num, file, line, 1);
+          221.   
+          222.   	return ret;
+                  ^
+          223.   	}
+          224.   
+
+crypto/bn/bn_lib.c:321:4: Assignment
+        319.   		return(NULL);
+        320.   		}
+        321.   	a=A=(BN_ULONG *)OPENSSL_malloc(sizeof(BN_ULONG)*(words+1));
+                  ^
+        322.   	if (A == NULL)
+        323.   		{
+
+crypto/bn/bn_lib.c:321:2: Assignment
+        319.   		return(NULL);
+        320.   		}
+        321.   	a=A=(BN_ULONG *)OPENSSL_malloc(sizeof(BN_ULONG)*(words+1));
+                ^
+        322.   	if (A == NULL)
+        323.   		{
+
+crypto/bn/bn_lib.c:423:2: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_mod_mul` 
+        421.   	/* Now need to zero any data between b->top and b->max */
+        422.   
+        423.   	A= &(a[b->top]);
+                ^
+        424.   	for (i=(words - b->top)>>3; i>0; i--,A+=8)
+        425.   		{

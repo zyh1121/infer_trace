@@ -1,0 +1,91 @@
+#6846
+libavcodec/asv1.c:341: error: Integer Overflow L5
+  ([-oo, +oo] + 28):signed32 by call to `asv2_encode_block`.
+
+libavcodec/asv1.c:328:1: Parameter `a->pb.bit_left`
+326. }
+327. 
+328. static inline int encode_mb(ASV1Context *a, DCTELEM block[6][64]){
+     ^
+329.     int i;
+330. 
+
+libavcodec/asv1.c:341:13: Call
+339.     }else{
+340.         for(i=0; i<6; i++)
+341.             asv2_encode_block(a, block[i]);
+                 ^
+342.     }
+343.     return 0;
+
+libavcodec/asv1.c:270:1: Parameter `a->pb.bit_left`
+  268. }
+  269. 
+  270. static inline void asv2_encode_block(ASV1Context *a, DCTELEM block[64]){
+       ^
+  271.     int i;
+  272.     int count=0;
+
+libavcodec/asv1.c:283:5: Call
+  281.     count >>= 2;
+  282. 
+  283.     asv2_put_bits(&a->pb, 4, count);
+           ^
+  284.     asv2_put_bits(&a->pb, 8, (block[0] + 32)>>6);
+  285.     block[0]= 0;
+
+libavcodec/asv1.c:146:1: Parameter `n`
+    144. }
+    145. 
+    146. static inline void asv2_put_bits(PutBitContext *pb, int n, int v){
+         ^
+    147.     put_bits(pb, n, ff_reverse[ v << (8-n) ]);
+    148. }
+
+libavcodec/asv1.c:147:5: Call
+    145. 
+    146. static inline void asv2_put_bits(PutBitContext *pb, int n, int v){
+    147.     put_bits(pb, n, ff_reverse[ v << (8-n) ]);
+             ^
+    148. }
+    149. 
+
+libavcodec/put_bits.h:139:1: <LHS trace>
+137. void ff_copy_bits(PutBitContext *pb, const uint8_t *src, int length);
+138. 
+139. static inline void put_bits(PutBitContext *s, int n, unsigned int value)
+     ^
+140. #ifndef ALT_BITSTREAM_WRITER
+141. {
+
+libavcodec/put_bits.h:139:1: Parameter `n`
+      137. void ff_copy_bits(PutBitContext *pb, const uint8_t *src, int length);
+      138. 
+      139. static inline void put_bits(PutBitContext *s, int n, unsigned int value)
+           ^
+      140. #ifndef ALT_BITSTREAM_WRITER
+      141. {
+
+libavcodec/put_bits.h:139:1: <RHS trace>
+137. void ff_copy_bits(PutBitContext *pb, const uint8_t *src, int length);
+138. 
+139. static inline void put_bits(PutBitContext *s, int n, unsigned int value)
+     ^
+140. #ifndef ALT_BITSTREAM_WRITER
+141. {
+
+libavcodec/put_bits.h:139:1: Parameter `n`
+      137. void ff_copy_bits(PutBitContext *pb, const uint8_t *src, int length);
+      138. 
+      139. static inline void put_bits(PutBitContext *s, int n, unsigned int value)
+           ^
+      140. #ifndef ALT_BITSTREAM_WRITER
+      141. {
+
+libavcodec/put_bits.h:182:9: Binary operation: ([-oo, +oo] + 28):signed32 by call to `asv2_encode_block` 
+      180.         //printf("bitbuf = %08x\n", bit_buf);
+      181.         s->buf_ptr+=4;
+      182.         bit_left+=32 - n;
+                   ^
+      183.         bit_buf = value;
+      184.     }

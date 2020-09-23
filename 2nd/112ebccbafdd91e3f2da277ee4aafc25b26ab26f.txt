@@ -1,0 +1,124 @@
+ssl/t1_enc.c:1050: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] - 1):signed32 by call to `EVP_DigestSignFinal`.
+Showing all 16 steps of the trace
+
+
+ssl/t1_enc.c:1007:4: Call
+1005.   		else
+1006.   		{
+1007.   			EVP_MD_CTX_copy(&hmac,hash);
+           ^
+1008.   			mac_ctx = &hmac;
+1009.   		}
+
+crypto/evp/digest.c:263:1: Parameter `out->engine->funct_ref`
+  261.   	}
+  262.   
+  263. > int EVP_MD_CTX_copy(EVP_MD_CTX *out, const EVP_MD_CTX *in)
+  264.   	{
+  265.   	EVP_MD_CTX_init(out);
+
+crypto/evp/digest.c:266:9: Call
+  264.   	{
+  265.   	EVP_MD_CTX_init(out);
+  266.   	return EVP_MD_CTX_copy_ex(out, in);
+                 ^
+  267.   	}
+  268.   
+
+crypto/evp/digest.c:269:1: Parameter `out->engine->funct_ref`
+    267.   	}
+    268.   
+    269. > int EVP_MD_CTX_copy_ex(EVP_MD_CTX *out, const EVP_MD_CTX *in)
+    270.   	{
+    271.   	unsigned char *tmp_buf;
+
+ssl/t1_enc.c:1050:5: Call
+1048.   		EVP_DigestSignUpdate(mac_ctx,header,sizeof(header));
+1049.   		EVP_DigestSignUpdate(mac_ctx,rec->input,rec->length);
+1050.   		t=EVP_DigestSignFinal(mac_ctx,md,&md_size);
+            ^
+1051.   		OPENSSL_assert(t > 0);
+1052.   #ifdef OPENSSL_FIPS
+
+crypto/evp/m_sigver.c:137:1: Parameter `ctx->pctx->engine->funct_ref`
+  135.   	}
+  136.   
+  137. > int EVP_DigestSignFinal(EVP_MD_CTX *ctx, unsigned char *sigret, size_t *siglen)
+  138.   	{
+  139.   	int sctx, r = 0;
+
+crypto/evp/m_sigver.c:149:25: Call
+  147.   		else
+  148.   			{
+  149.   			EVP_PKEY_CTX *dctx = EVP_PKEY_CTX_dup(ctx->pctx);
+                                 ^
+  150.   			if (!dctx)
+  151.   				return 0;
+
+crypto/evp/pmeth_lib.c:311:1: Parameter `pctx->engine->funct_ref`
+    309.   	}
+    310.   
+    311. > EVP_PKEY_CTX *EVP_PKEY_CTX_dup(EVP_PKEY_CTX *pctx)
+    312.   	{
+    313.   	EVP_PKEY_CTX *rctx;
+
+crypto/evp/pmeth_lib.c:350:2: Call
+    348.   		return rctx;
+    349.   
+    350.   	EVP_PKEY_CTX_free(rctx);
+            ^
+    351.   	return NULL;
+    352.   
+
+crypto/evp/pmeth_lib.c:369:1: Parameter `ctx->engine->funct_ref`
+      367.   	}
+      368.   
+      369. > void EVP_PKEY_CTX_free(EVP_PKEY_CTX *ctx)
+      370.   	{
+      371.   	if (ctx == NULL)
+
+crypto/evp/pmeth_lib.c:383:3: Call
+      381.   		/* The EVP_PKEY_CTX we used belongs to an ENGINE, release the
+      382.   		 * functional reference we held for this reason. */
+      383.   		ENGINE_finish(ctx->engine);
+               ^
+      384.   #endif
+      385.   	OPENSSL_free(ctx);
+
+crypto/engine/eng_init.c:136:1: Parameter `e->funct_ref`
+        134.   
+        135.   /* The API (locked) version of "finish" */
+        136. > int ENGINE_finish(ENGINE *e)
+        137.   	{
+        138.   	int to_return = 1;
+
+crypto/engine/eng_init.c:146:14: Call
+        144.   		}
+        145.   	CRYPTO_w_lock(CRYPTO_LOCK_ENGINE);
+        146.   	to_return = engine_unlocked_finish(e, 1);
+                            ^
+        147.   	CRYPTO_w_unlock(CRYPTO_LOCK_ENGINE);
+        148.   	if(!to_return)
+
+crypto/engine/eng_init.c:82:1: <LHS trace>
+80.   /* Free a functional reference to a engine type. This version is only used
+81.    * internally. */
+82. > int engine_unlocked_finish(ENGINE *e, int unlock_for_handlers)
+83.   	{
+84.   	int to_return = 1;
+
+crypto/engine/eng_init.c:82:1: Parameter `e->funct_ref`
+          80.   /* Free a functional reference to a engine type. This version is only used
+          81.    * internally. */
+          82. > int engine_unlocked_finish(ENGINE *e, int unlock_for_handlers)
+          83.   	{
+          84.   	int to_return = 1;
+
+crypto/engine/eng_init.c:92:2: Binary operation: ([-oo, +oo] - 1):signed32 by call to `EVP_DigestSignFinal` 
+          90.   	 * there's a chance that both threads will together take the count from
+          91.   	 * 2 to 0 without either calling finish(). */
+          92.   	e->funct_ref--;
+                 ^
+          93.   	engine_ref_debug(e, 1, -1);
+          94.   	if((e->funct_ref == 0) && e->finish)

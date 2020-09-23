@@ -1,0 +1,93 @@
+crypto/bn/bn_exp.c:405: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_nnmod`.
+Showing all 12 steps of the trace
+
+
+crypto/bn/bn_exp.c:405:8: Call
+403.   	if (a->neg || BN_ucmp(a,m) >= 0)
+404.   		{
+405.   		if (!BN_nnmod(&(val[0]),a,m,ctx))
+              ^
+406.   			goto err;
+407.   		aa= &(val[0]);
+
+crypto/bn/bn_mod.c:127:1: Parameter `r->top`
+  125.   
+  126.   
+  127. > int BN_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx)
+  128.   	{
+  129.   	/* like BN_mod, but returns non-negative remainder
+
+crypto/bn/bn_mod.c:132:8: Call
+  130.   	 * (i.e.,  0 <= r < |d|  always holds) */
+  131.   
+  132.   	if (!(BN_mod(r,m,d,ctx)))
+                ^
+  133.   		return 0;
+  134.   	if (!r->neg)
+
+crypto/bn/bn_div.c:179:1: Parameter `rm->top`
+    177.    * If 'dv' or 'rm' is NULL, the respective value is not returned.
+    178.    */
+    179. > int BN_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
+    180.   	   BN_CTX *ctx)
+    181.   	{
+
+crypto/bn/bn_div.c:204:10: Call
+    202.   		{
+    203.   		if (rm != NULL)
+    204.   			{ if (BN_copy(rm,num) == NULL) return(0); }
+                    ^
+    205.   		if (dv != NULL) BN_zero(dv);
+    206.   		return(1);
+
+crypto/bn/bn_lib.c:491:1: Parameter `a->top`
+      489.   	}
+      490.   
+      491. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+      492.   	{
+      493.   	int i;
+
+crypto/bn/bn_lib.c:500:6: Call
+      498.   
+      499.   	if (a == b) return(a);
+      500.   	if (bn_wexpand(a,b->top) == NULL) return(NULL);
+                  ^
+      501.   
+      502.   #if 1
+
+crypto/bn/bn_lib.c:440:1: <Offset trace>
+438.    * NULL is returned. If not, 'b' is returned. */
+439.   
+440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+441.   	{
+442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: Parameter `words`
+        438.    * NULL is returned. If not, 'b' is returned. */
+        439.   
+        440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+        441.   	{
+        442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: <Length trace>
+438.    * NULL is returned. If not, 'b' is returned. */
+439.   
+440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+441.   	{
+442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: Parameter `*b->d`
+        438.    * NULL is returned. If not, 'b' is returned. */
+        439.   
+        440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+        441.   	{
+        442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:459:3: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_nnmod` 
+        457.   	if (b->top < b->dmax)
+        458.   		{
+        459.   		A = &(b->d[b->top]);
+                 ^
+        460.   		for (i=(b->dmax - b->top)>>3; i>0; i--,A+=8)
+        461.   			{

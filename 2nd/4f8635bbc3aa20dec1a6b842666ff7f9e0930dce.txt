@@ -1,0 +1,79 @@
+crypto/bn/bn_mont.c:64: error: BUFFER_OVERRUN_L5
+  Offset added: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_from_montgomery_word`.
+Showing all 10 steps of the trace
+
+
+crypto/bn/bn_mont.c:26:1: Parameter `mont->N.top`
+24.   #endif
+25.   
+26. > int BN_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+27.                             BN_MONT_CTX *mont, BN_CTX *ctx)
+28.   {
+
+crypto/bn/bn_mont.c:64:10: Call
+62.       /* reduce from aRR to aR */
+63.   #ifdef MONT_WORD
+64.       if (!BN_from_montgomery_word(r, tmp, mont))
+               ^
+65.           goto err;
+66.   #else
+
+crypto/bn/bn_mont.c:78:1: <Offset trace>
+76.   
+77.   #ifdef MONT_WORD
+78. > static int BN_from_montgomery_word(BIGNUM *ret, BIGNUM *r, BN_MONT_CTX *mont)
+79.   {
+80.       BIGNUM *n;
+
+crypto/bn/bn_mont.c:78:1: Parameter `mont->N.top`
+  76.   
+  77.   #ifdef MONT_WORD
+  78. > static int BN_from_montgomery_word(BIGNUM *ret, BIGNUM *r, BN_MONT_CTX *mont)
+  79.   {
+  80.       BIGNUM *n;
+
+crypto/bn/bn_mont.c:85:5: Assignment
+  83.   
+  84.       n = &(mont->N);
+  85.       nl = n->top;
+            ^
+  86.       if (nl == 0) {
+  87.           ret->top = 0;
+
+crypto/bn/bn_mont.c:91:5: Assignment
+  89.       }
+  90.   
+  91.       max = (2 * nl);             /* carry is stored separately */
+            ^
+  92.       if (bn_wexpand(r, max) == NULL)
+  93.           return 0;
+
+crypto/bn/bn_mont.c:100:5: Assignment
+  98.   
+  99.       /* clear the top words of T */
+  100.       i = max - r->top;
+             ^
+  101.       if (i)
+  102.           memset(&rp[r->top], 0, sizeof(*rp) * i);
+
+crypto/bn/bn_mont.c:78:1: <Length trace>
+76.   
+77.   #ifdef MONT_WORD
+78. > static int BN_from_montgomery_word(BIGNUM *ret, BIGNUM *r, BN_MONT_CTX *mont)
+79.   {
+80.       BIGNUM *n;
+
+crypto/bn/bn_mont.c:78:1: Parameter `*r->d`
+  76.   
+  77.   #ifdef MONT_WORD
+  78. > static int BN_from_montgomery_word(BIGNUM *ret, BIGNUM *r, BN_MONT_CTX *mont)
+  79.   {
+  80.       BIGNUM *n;
+
+crypto/bn/bn_mont.c:102:9: Array access: Offset added: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_from_montgomery_word` 
+  100.       i = max - r->top;
+  101.       if (i)
+  102.           memset(&rp[r->top], 0, sizeof(*rp) * i);
+                 ^
+  103.   
+  104.       r->top = max;

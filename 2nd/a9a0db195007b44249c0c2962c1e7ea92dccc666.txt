@@ -1,0 +1,1747 @@
+crypto/bn/bntest.c:1509: error: NULL_DEREFERENCE
+  pointer `b[0]` last assigned on line 1502 could be null and is dereferenced by call to `BN_GF2m_arr2poly()` at line 1509, column 2.
+Showing all 233 steps of the trace
+
+
+crypto/bn/bntest.c:1494:1: start of procedure test_gf2m_mod_sqrt()
+1492.   	}
+1493.   
+1494. > int test_gf2m_mod_sqrt(BIO *bp,BN_CTX *ctx)
+1495.   	{
+1496.   	BIGNUM *a,*b[2],*c,*d,*e,*f;
+
+crypto/bn/bntest.c:1497:2: 
+1495.   	{
+1496.   	BIGNUM *a,*b[2],*c,*d,*e,*f;
+1497. > 	int i, j, ret = 0;
+1498.   	int p0[] = {163,7,6,3,0,-1};
+1499.   	int p1[] = {193,15,0,-1};
+
+crypto/bn/bntest.c:1498:2: 
+1496.   	BIGNUM *a,*b[2],*c,*d,*e,*f;
+1497.   	int i, j, ret = 0;
+1498. > 	int p0[] = {163,7,6,3,0,-1};
+1499.   	int p1[] = {193,15,0,-1};
+1500.   
+
+crypto/bn/bntest.c:1499:2: 
+1497.   	int i, j, ret = 0;
+1498.   	int p0[] = {163,7,6,3,0,-1};
+1499. > 	int p1[] = {193,15,0,-1};
+1500.   
+1501.   	a=BN_new();
+
+crypto/bn/bntest.c:1501:2: 
+1499.   	int p1[] = {193,15,0,-1};
+1500.   
+1501. > 	a=BN_new();
+1502.   	b[0]=BN_new();
+1503.   	b[1]=BN_new();
+
+crypto/bn/bn_lib.c:298:1: start of procedure BN_new()
+  296.   	}
+  297.   
+  298. > BIGNUM *BN_new(void)
+  299.   	{
+  300.   	BIGNUM *ret;
+
+crypto/bn/bn_lib.c:302:6: 
+  300.   	BIGNUM *ret;
+  301.   
+  302. > 	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/mem.c:294:1: start of procedure CRYPTO_malloc()
+    292.   	}
+    293.   
+    294. > void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296.   	void *ret = NULL;
+
+crypto/mem.c:296:2: 
+    294.   void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296. > 	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+
+crypto/mem.c:298:6: Taking false branch
+    296.   	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+                ^
+    299.   
+    300.   	allow_customize = 0;
+
+crypto/mem.c:300:2: 
+    298.   	if (num <= 0) return NULL;
+    299.   
+    300. > 	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+
+crypto/mem.c:301:6: Taking true branch
+    299.   
+    300.   	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+                ^
+    302.   		{
+    303.   		allow_customize_debug = 0;
+
+crypto/mem.c:303:3: 
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+    303. > 		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+
+crypto/mem.c:304:3: Skipping __function_pointer__(): unresolved function pointer
+    302.   		{
+    303.   		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+             ^
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+
+crypto/mem.c:306:2: Skipping __function_pointer__(): unresolved function pointer
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+            ^
+    307.   #ifdef LEVITTE_DEBUG_MEM
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:310:6: Taking true branch
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+                ^
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+    312.   
+
+crypto/mem.c:311:3: Skipping __function_pointer__(): unresolved function pointer
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+             ^
+    312.   
+    313.   #ifndef OPENSSL_CPUID_OBJ
+
+crypto/mem.c:317:12: Taking false branch
+    315.            * sanitisation function can't be optimised out. NB: We only do
+    316.            * this for >2Kb so the overhead doesn't bother us. */
+    317.           if(ret && (num > 2048))
+                      ^
+    318.   	{	extern unsigned char cleanse_ctr;
+    319.                   ((unsigned char *)ret)[0] = cleanse_ctr;
+
+crypto/mem.c:323:2: 
+    321.   #endif
+    322.   
+    323. > 	return ret;
+    324.   	}
+    325.   
+
+crypto/mem.c:324:2: return from a call to CRYPTO_malloc
+    322.   
+    323.   	return ret;
+    324.   	}
+            ^
+    325.   
+    326.   void *CRYPTO_realloc(void *str, int num, const char *file, int line)
+
+crypto/bn/bn_lib.c:302:6: Taking true branch
+  300.   	BIGNUM *ret;
+  301.   
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+              ^
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/bn/bn_lib.c:304:3: 
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304. > 		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305.   		return(NULL);
+  306.   		}
+
+crypto/err/err.c:706:1: start of procedure ERR_put_error()
+    704.   /********************************************************/
+    705.   
+    706. > void ERR_put_error(int lib, int func, int reason, const char *file,
+    707.   	     int line)
+    708.   	{
+
+crypto/err/err.c:730:2: Skipping ERR_get_state(): empty list of specs
+    728.   	}
+    729.   #endif
+    730.   	es=ERR_get_state();
+            ^
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:732:2: 
+    730.   	es=ERR_get_state();
+    731.   
+    732. > 	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:733:6: Taking false branch
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+                ^
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+
+crypto/err/err.c:735:2: 
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735. > 	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+
+crypto/err/err.c:736:2: 
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+    736. > 	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+
+crypto/err/err.c:737:2: 
+    735.   	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737. > 	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+
+crypto/err/err.c:738:2: 
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738. > 	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+
+crypto/err/err.c:739:2: Taking true branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Taking false branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Loop condition is false. Leaving loop
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:740:2: return from a call to ERR_put_error
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+            ^
+    741.   
+    742.   void ERR_clear_error(void)
+
+crypto/bn/bn_lib.c:305:3: 
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305. > 		return(NULL);
+  306.   		}
+  307.   	ret->flags=BN_FLG_MALLOCED;
+
+crypto/bn/bn_lib.c:314:2: return from a call to BN_new
+  312.   	bn_check_top(ret);
+  313.   	return(ret);
+  314.   	}
+          ^
+  315.   
+  316.   /* This is used both by bn_expand2() and bn_dup_expand() */
+
+crypto/bn/bntest.c:1502:2: 
+1500.   
+1501.   	a=BN_new();
+1502. > 	b[0]=BN_new();
+1503.   	b[1]=BN_new();
+1504.   	c=BN_new();
+
+crypto/bn/bn_lib.c:298:1: start of procedure BN_new()
+  296.   	}
+  297.   
+  298. > BIGNUM *BN_new(void)
+  299.   	{
+  300.   	BIGNUM *ret;
+
+crypto/bn/bn_lib.c:302:6: 
+  300.   	BIGNUM *ret;
+  301.   
+  302. > 	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/mem.c:294:1: start of procedure CRYPTO_malloc()
+    292.   	}
+    293.   
+    294. > void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296.   	void *ret = NULL;
+
+crypto/mem.c:296:2: 
+    294.   void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296. > 	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+
+crypto/mem.c:298:6: Taking false branch
+    296.   	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+                ^
+    299.   
+    300.   	allow_customize = 0;
+
+crypto/mem.c:300:2: 
+    298.   	if (num <= 0) return NULL;
+    299.   
+    300. > 	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+
+crypto/mem.c:301:6: Taking true branch
+    299.   
+    300.   	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+                ^
+    302.   		{
+    303.   		allow_customize_debug = 0;
+
+crypto/mem.c:303:3: 
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+    303. > 		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+
+crypto/mem.c:304:3: Skipping __function_pointer__(): unresolved function pointer
+    302.   		{
+    303.   		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+             ^
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+
+crypto/mem.c:306:2: Skipping __function_pointer__(): unresolved function pointer
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+            ^
+    307.   #ifdef LEVITTE_DEBUG_MEM
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:310:6: Taking true branch
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+                ^
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+    312.   
+
+crypto/mem.c:311:3: Skipping __function_pointer__(): unresolved function pointer
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+             ^
+    312.   
+    313.   #ifndef OPENSSL_CPUID_OBJ
+
+crypto/mem.c:317:12: Taking false branch
+    315.            * sanitisation function can't be optimised out. NB: We only do
+    316.            * this for >2Kb so the overhead doesn't bother us. */
+    317.           if(ret && (num > 2048))
+                      ^
+    318.   	{	extern unsigned char cleanse_ctr;
+    319.                   ((unsigned char *)ret)[0] = cleanse_ctr;
+
+crypto/mem.c:323:2: 
+    321.   #endif
+    322.   
+    323. > 	return ret;
+    324.   	}
+    325.   
+
+crypto/mem.c:324:2: return from a call to CRYPTO_malloc
+    322.   
+    323.   	return ret;
+    324.   	}
+            ^
+    325.   
+    326.   void *CRYPTO_realloc(void *str, int num, const char *file, int line)
+
+crypto/bn/bn_lib.c:302:6: Taking true branch
+  300.   	BIGNUM *ret;
+  301.   
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+              ^
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/bn/bn_lib.c:304:3: 
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304. > 		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305.   		return(NULL);
+  306.   		}
+
+crypto/err/err.c:706:1: start of procedure ERR_put_error()
+    704.   /********************************************************/
+    705.   
+    706. > void ERR_put_error(int lib, int func, int reason, const char *file,
+    707.   	     int line)
+    708.   	{
+
+crypto/err/err.c:730:2: Skipping ERR_get_state(): empty list of specs
+    728.   	}
+    729.   #endif
+    730.   	es=ERR_get_state();
+            ^
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:732:2: 
+    730.   	es=ERR_get_state();
+    731.   
+    732. > 	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:733:6: Taking false branch
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+                ^
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+
+crypto/err/err.c:735:2: 
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735. > 	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+
+crypto/err/err.c:736:2: 
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+    736. > 	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+
+crypto/err/err.c:737:2: 
+    735.   	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737. > 	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+
+crypto/err/err.c:738:2: 
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738. > 	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+
+crypto/err/err.c:739:2: Taking true branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Taking false branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Loop condition is false. Leaving loop
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:740:2: return from a call to ERR_put_error
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+            ^
+    741.   
+    742.   void ERR_clear_error(void)
+
+crypto/bn/bn_lib.c:305:3: 
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305. > 		return(NULL);
+  306.   		}
+  307.   	ret->flags=BN_FLG_MALLOCED;
+
+crypto/bn/bn_lib.c:314:2: return from a call to BN_new
+  312.   	bn_check_top(ret);
+  313.   	return(ret);
+  314.   	}
+          ^
+  315.   
+  316.   /* This is used both by bn_expand2() and bn_dup_expand() */
+
+crypto/bn/bntest.c:1503:2: 
+1501.   	a=BN_new();
+1502.   	b[0]=BN_new();
+1503. > 	b[1]=BN_new();
+1504.   	c=BN_new();
+1505.   	d=BN_new();
+
+crypto/bn/bn_lib.c:298:1: start of procedure BN_new()
+  296.   	}
+  297.   
+  298. > BIGNUM *BN_new(void)
+  299.   	{
+  300.   	BIGNUM *ret;
+
+crypto/bn/bn_lib.c:302:6: 
+  300.   	BIGNUM *ret;
+  301.   
+  302. > 	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/mem.c:294:1: start of procedure CRYPTO_malloc()
+    292.   	}
+    293.   
+    294. > void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296.   	void *ret = NULL;
+
+crypto/mem.c:296:2: 
+    294.   void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296. > 	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+
+crypto/mem.c:298:6: Taking false branch
+    296.   	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+                ^
+    299.   
+    300.   	allow_customize = 0;
+
+crypto/mem.c:300:2: 
+    298.   	if (num <= 0) return NULL;
+    299.   
+    300. > 	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+
+crypto/mem.c:301:6: Taking true branch
+    299.   
+    300.   	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+                ^
+    302.   		{
+    303.   		allow_customize_debug = 0;
+
+crypto/mem.c:303:3: 
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+    303. > 		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+
+crypto/mem.c:304:3: Skipping __function_pointer__(): unresolved function pointer
+    302.   		{
+    303.   		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+             ^
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+
+crypto/mem.c:306:2: Skipping __function_pointer__(): unresolved function pointer
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+            ^
+    307.   #ifdef LEVITTE_DEBUG_MEM
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:310:6: Taking true branch
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+                ^
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+    312.   
+
+crypto/mem.c:311:3: Skipping __function_pointer__(): unresolved function pointer
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+             ^
+    312.   
+    313.   #ifndef OPENSSL_CPUID_OBJ
+
+crypto/mem.c:317:12: Taking false branch
+    315.            * sanitisation function can't be optimised out. NB: We only do
+    316.            * this for >2Kb so the overhead doesn't bother us. */
+    317.           if(ret && (num > 2048))
+                      ^
+    318.   	{	extern unsigned char cleanse_ctr;
+    319.                   ((unsigned char *)ret)[0] = cleanse_ctr;
+
+crypto/mem.c:323:2: 
+    321.   #endif
+    322.   
+    323. > 	return ret;
+    324.   	}
+    325.   
+
+crypto/mem.c:324:2: return from a call to CRYPTO_malloc
+    322.   
+    323.   	return ret;
+    324.   	}
+            ^
+    325.   
+    326.   void *CRYPTO_realloc(void *str, int num, const char *file, int line)
+
+crypto/bn/bn_lib.c:302:6: Taking true branch
+  300.   	BIGNUM *ret;
+  301.   
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+              ^
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/bn/bn_lib.c:304:3: 
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304. > 		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305.   		return(NULL);
+  306.   		}
+
+crypto/err/err.c:706:1: start of procedure ERR_put_error()
+    704.   /********************************************************/
+    705.   
+    706. > void ERR_put_error(int lib, int func, int reason, const char *file,
+    707.   	     int line)
+    708.   	{
+
+crypto/err/err.c:730:2: Skipping ERR_get_state(): empty list of specs
+    728.   	}
+    729.   #endif
+    730.   	es=ERR_get_state();
+            ^
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:732:2: 
+    730.   	es=ERR_get_state();
+    731.   
+    732. > 	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:733:6: Taking false branch
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+                ^
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+
+crypto/err/err.c:735:2: 
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735. > 	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+
+crypto/err/err.c:736:2: 
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+    736. > 	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+
+crypto/err/err.c:737:2: 
+    735.   	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737. > 	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+
+crypto/err/err.c:738:2: 
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738. > 	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+
+crypto/err/err.c:739:2: Taking true branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Taking false branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Loop condition is false. Leaving loop
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:740:2: return from a call to ERR_put_error
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+            ^
+    741.   
+    742.   void ERR_clear_error(void)
+
+crypto/bn/bn_lib.c:305:3: 
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305. > 		return(NULL);
+  306.   		}
+  307.   	ret->flags=BN_FLG_MALLOCED;
+
+crypto/bn/bn_lib.c:314:2: return from a call to BN_new
+  312.   	bn_check_top(ret);
+  313.   	return(ret);
+  314.   	}
+          ^
+  315.   
+  316.   /* This is used both by bn_expand2() and bn_dup_expand() */
+
+crypto/bn/bntest.c:1504:2: 
+1502.   	b[0]=BN_new();
+1503.   	b[1]=BN_new();
+1504. > 	c=BN_new();
+1505.   	d=BN_new();
+1506.   	e=BN_new();
+
+crypto/bn/bn_lib.c:298:1: start of procedure BN_new()
+  296.   	}
+  297.   
+  298. > BIGNUM *BN_new(void)
+  299.   	{
+  300.   	BIGNUM *ret;
+
+crypto/bn/bn_lib.c:302:6: 
+  300.   	BIGNUM *ret;
+  301.   
+  302. > 	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/mem.c:294:1: start of procedure CRYPTO_malloc()
+    292.   	}
+    293.   
+    294. > void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296.   	void *ret = NULL;
+
+crypto/mem.c:296:2: 
+    294.   void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296. > 	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+
+crypto/mem.c:298:6: Taking false branch
+    296.   	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+                ^
+    299.   
+    300.   	allow_customize = 0;
+
+crypto/mem.c:300:2: 
+    298.   	if (num <= 0) return NULL;
+    299.   
+    300. > 	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+
+crypto/mem.c:301:6: Taking true branch
+    299.   
+    300.   	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+                ^
+    302.   		{
+    303.   		allow_customize_debug = 0;
+
+crypto/mem.c:303:3: 
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+    303. > 		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+
+crypto/mem.c:304:3: Skipping __function_pointer__(): unresolved function pointer
+    302.   		{
+    303.   		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+             ^
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+
+crypto/mem.c:306:2: Skipping __function_pointer__(): unresolved function pointer
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+            ^
+    307.   #ifdef LEVITTE_DEBUG_MEM
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:310:6: Taking true branch
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+                ^
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+    312.   
+
+crypto/mem.c:311:3: Skipping __function_pointer__(): unresolved function pointer
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+             ^
+    312.   
+    313.   #ifndef OPENSSL_CPUID_OBJ
+
+crypto/mem.c:317:12: Taking false branch
+    315.            * sanitisation function can't be optimised out. NB: We only do
+    316.            * this for >2Kb so the overhead doesn't bother us. */
+    317.           if(ret && (num > 2048))
+                      ^
+    318.   	{	extern unsigned char cleanse_ctr;
+    319.                   ((unsigned char *)ret)[0] = cleanse_ctr;
+
+crypto/mem.c:323:2: 
+    321.   #endif
+    322.   
+    323. > 	return ret;
+    324.   	}
+    325.   
+
+crypto/mem.c:324:2: return from a call to CRYPTO_malloc
+    322.   
+    323.   	return ret;
+    324.   	}
+            ^
+    325.   
+    326.   void *CRYPTO_realloc(void *str, int num, const char *file, int line)
+
+crypto/bn/bn_lib.c:302:6: Taking true branch
+  300.   	BIGNUM *ret;
+  301.   
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+              ^
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/bn/bn_lib.c:304:3: 
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304. > 		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305.   		return(NULL);
+  306.   		}
+
+crypto/err/err.c:706:1: start of procedure ERR_put_error()
+    704.   /********************************************************/
+    705.   
+    706. > void ERR_put_error(int lib, int func, int reason, const char *file,
+    707.   	     int line)
+    708.   	{
+
+crypto/err/err.c:730:2: Skipping ERR_get_state(): empty list of specs
+    728.   	}
+    729.   #endif
+    730.   	es=ERR_get_state();
+            ^
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:732:2: 
+    730.   	es=ERR_get_state();
+    731.   
+    732. > 	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:733:6: Taking false branch
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+                ^
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+
+crypto/err/err.c:735:2: 
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735. > 	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+
+crypto/err/err.c:736:2: 
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+    736. > 	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+
+crypto/err/err.c:737:2: 
+    735.   	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737. > 	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+
+crypto/err/err.c:738:2: 
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738. > 	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+
+crypto/err/err.c:739:2: Taking true branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Taking false branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Loop condition is false. Leaving loop
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:740:2: return from a call to ERR_put_error
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+            ^
+    741.   
+    742.   void ERR_clear_error(void)
+
+crypto/bn/bn_lib.c:305:3: 
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305. > 		return(NULL);
+  306.   		}
+  307.   	ret->flags=BN_FLG_MALLOCED;
+
+crypto/bn/bn_lib.c:314:2: return from a call to BN_new
+  312.   	bn_check_top(ret);
+  313.   	return(ret);
+  314.   	}
+          ^
+  315.   
+  316.   /* This is used both by bn_expand2() and bn_dup_expand() */
+
+crypto/bn/bntest.c:1505:2: 
+1503.   	b[1]=BN_new();
+1504.   	c=BN_new();
+1505. > 	d=BN_new();
+1506.   	e=BN_new();
+1507.   	f=BN_new();
+
+crypto/bn/bn_lib.c:298:1: start of procedure BN_new()
+  296.   	}
+  297.   
+  298. > BIGNUM *BN_new(void)
+  299.   	{
+  300.   	BIGNUM *ret;
+
+crypto/bn/bn_lib.c:302:6: 
+  300.   	BIGNUM *ret;
+  301.   
+  302. > 	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/mem.c:294:1: start of procedure CRYPTO_malloc()
+    292.   	}
+    293.   
+    294. > void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296.   	void *ret = NULL;
+
+crypto/mem.c:296:2: 
+    294.   void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296. > 	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+
+crypto/mem.c:298:6: Taking false branch
+    296.   	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+                ^
+    299.   
+    300.   	allow_customize = 0;
+
+crypto/mem.c:300:2: 
+    298.   	if (num <= 0) return NULL;
+    299.   
+    300. > 	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+
+crypto/mem.c:301:6: Taking true branch
+    299.   
+    300.   	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+                ^
+    302.   		{
+    303.   		allow_customize_debug = 0;
+
+crypto/mem.c:303:3: 
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+    303. > 		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+
+crypto/mem.c:304:3: Skipping __function_pointer__(): unresolved function pointer
+    302.   		{
+    303.   		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+             ^
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+
+crypto/mem.c:306:2: Skipping __function_pointer__(): unresolved function pointer
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+            ^
+    307.   #ifdef LEVITTE_DEBUG_MEM
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:310:6: Taking true branch
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+                ^
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+    312.   
+
+crypto/mem.c:311:3: Skipping __function_pointer__(): unresolved function pointer
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+             ^
+    312.   
+    313.   #ifndef OPENSSL_CPUID_OBJ
+
+crypto/mem.c:317:12: Taking false branch
+    315.            * sanitisation function can't be optimised out. NB: We only do
+    316.            * this for >2Kb so the overhead doesn't bother us. */
+    317.           if(ret && (num > 2048))
+                      ^
+    318.   	{	extern unsigned char cleanse_ctr;
+    319.                   ((unsigned char *)ret)[0] = cleanse_ctr;
+
+crypto/mem.c:323:2: 
+    321.   #endif
+    322.   
+    323. > 	return ret;
+    324.   	}
+    325.   
+
+crypto/mem.c:324:2: return from a call to CRYPTO_malloc
+    322.   
+    323.   	return ret;
+    324.   	}
+            ^
+    325.   
+    326.   void *CRYPTO_realloc(void *str, int num, const char *file, int line)
+
+crypto/bn/bn_lib.c:302:6: Taking true branch
+  300.   	BIGNUM *ret;
+  301.   
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+              ^
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/bn/bn_lib.c:304:3: 
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304. > 		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305.   		return(NULL);
+  306.   		}
+
+crypto/err/err.c:706:1: start of procedure ERR_put_error()
+    704.   /********************************************************/
+    705.   
+    706. > void ERR_put_error(int lib, int func, int reason, const char *file,
+    707.   	     int line)
+    708.   	{
+
+crypto/err/err.c:730:2: Skipping ERR_get_state(): empty list of specs
+    728.   	}
+    729.   #endif
+    730.   	es=ERR_get_state();
+            ^
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:732:2: 
+    730.   	es=ERR_get_state();
+    731.   
+    732. > 	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:733:6: Taking false branch
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+                ^
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+
+crypto/err/err.c:735:2: 
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735. > 	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+
+crypto/err/err.c:736:2: 
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+    736. > 	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+
+crypto/err/err.c:737:2: 
+    735.   	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737. > 	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+
+crypto/err/err.c:738:2: 
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738. > 	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+
+crypto/err/err.c:739:2: Taking true branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Taking false branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Loop condition is false. Leaving loop
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:740:2: return from a call to ERR_put_error
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+            ^
+    741.   
+    742.   void ERR_clear_error(void)
+
+crypto/bn/bn_lib.c:305:3: 
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305. > 		return(NULL);
+  306.   		}
+  307.   	ret->flags=BN_FLG_MALLOCED;
+
+crypto/bn/bn_lib.c:314:2: return from a call to BN_new
+  312.   	bn_check_top(ret);
+  313.   	return(ret);
+  314.   	}
+          ^
+  315.   
+  316.   /* This is used both by bn_expand2() and bn_dup_expand() */
+
+crypto/bn/bntest.c:1506:2: 
+1504.   	c=BN_new();
+1505.   	d=BN_new();
+1506. > 	e=BN_new();
+1507.   	f=BN_new();
+1508.   
+
+crypto/bn/bn_lib.c:298:1: start of procedure BN_new()
+  296.   	}
+  297.   
+  298. > BIGNUM *BN_new(void)
+  299.   	{
+  300.   	BIGNUM *ret;
+
+crypto/bn/bn_lib.c:302:6: 
+  300.   	BIGNUM *ret;
+  301.   
+  302. > 	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/mem.c:294:1: start of procedure CRYPTO_malloc()
+    292.   	}
+    293.   
+    294. > void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296.   	void *ret = NULL;
+
+crypto/mem.c:296:2: 
+    294.   void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296. > 	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+
+crypto/mem.c:298:6: Taking false branch
+    296.   	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+                ^
+    299.   
+    300.   	allow_customize = 0;
+
+crypto/mem.c:300:2: 
+    298.   	if (num <= 0) return NULL;
+    299.   
+    300. > 	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+
+crypto/mem.c:301:6: Taking true branch
+    299.   
+    300.   	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+                ^
+    302.   		{
+    303.   		allow_customize_debug = 0;
+
+crypto/mem.c:303:3: 
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+    303. > 		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+
+crypto/mem.c:304:3: Skipping __function_pointer__(): unresolved function pointer
+    302.   		{
+    303.   		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+             ^
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+
+crypto/mem.c:306:2: Skipping __function_pointer__(): unresolved function pointer
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+            ^
+    307.   #ifdef LEVITTE_DEBUG_MEM
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:310:6: Taking true branch
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+                ^
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+    312.   
+
+crypto/mem.c:311:3: Skipping __function_pointer__(): unresolved function pointer
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+             ^
+    312.   
+    313.   #ifndef OPENSSL_CPUID_OBJ
+
+crypto/mem.c:317:12: Taking false branch
+    315.            * sanitisation function can't be optimised out. NB: We only do
+    316.            * this for >2Kb so the overhead doesn't bother us. */
+    317.           if(ret && (num > 2048))
+                      ^
+    318.   	{	extern unsigned char cleanse_ctr;
+    319.                   ((unsigned char *)ret)[0] = cleanse_ctr;
+
+crypto/mem.c:323:2: 
+    321.   #endif
+    322.   
+    323. > 	return ret;
+    324.   	}
+    325.   
+
+crypto/mem.c:324:2: return from a call to CRYPTO_malloc
+    322.   
+    323.   	return ret;
+    324.   	}
+            ^
+    325.   
+    326.   void *CRYPTO_realloc(void *str, int num, const char *file, int line)
+
+crypto/bn/bn_lib.c:302:6: Taking true branch
+  300.   	BIGNUM *ret;
+  301.   
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+              ^
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/bn/bn_lib.c:304:3: 
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304. > 		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305.   		return(NULL);
+  306.   		}
+
+crypto/err/err.c:706:1: start of procedure ERR_put_error()
+    704.   /********************************************************/
+    705.   
+    706. > void ERR_put_error(int lib, int func, int reason, const char *file,
+    707.   	     int line)
+    708.   	{
+
+crypto/err/err.c:730:2: Skipping ERR_get_state(): empty list of specs
+    728.   	}
+    729.   #endif
+    730.   	es=ERR_get_state();
+            ^
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:732:2: 
+    730.   	es=ERR_get_state();
+    731.   
+    732. > 	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:733:6: Taking false branch
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+                ^
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+
+crypto/err/err.c:735:2: 
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735. > 	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+
+crypto/err/err.c:736:2: 
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+    736. > 	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+
+crypto/err/err.c:737:2: 
+    735.   	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737. > 	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+
+crypto/err/err.c:738:2: 
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738. > 	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+
+crypto/err/err.c:739:2: Taking true branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Taking false branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Loop condition is false. Leaving loop
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:740:2: return from a call to ERR_put_error
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+            ^
+    741.   
+    742.   void ERR_clear_error(void)
+
+crypto/bn/bn_lib.c:305:3: 
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305. > 		return(NULL);
+  306.   		}
+  307.   	ret->flags=BN_FLG_MALLOCED;
+
+crypto/bn/bn_lib.c:314:2: return from a call to BN_new
+  312.   	bn_check_top(ret);
+  313.   	return(ret);
+  314.   	}
+          ^
+  315.   
+  316.   /* This is used both by bn_expand2() and bn_dup_expand() */
+
+crypto/bn/bntest.c:1507:2: 
+1505.   	d=BN_new();
+1506.   	e=BN_new();
+1507. > 	f=BN_new();
+1508.   
+1509.   	BN_GF2m_arr2poly(p0, b[0]);
+
+crypto/bn/bn_lib.c:298:1: start of procedure BN_new()
+  296.   	}
+  297.   
+  298. > BIGNUM *BN_new(void)
+  299.   	{
+  300.   	BIGNUM *ret;
+
+crypto/bn/bn_lib.c:302:6: 
+  300.   	BIGNUM *ret;
+  301.   
+  302. > 	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/mem.c:294:1: start of procedure CRYPTO_malloc()
+    292.   	}
+    293.   
+    294. > void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296.   	void *ret = NULL;
+
+crypto/mem.c:296:2: 
+    294.   void *CRYPTO_malloc(int num, const char *file, int line)
+    295.   	{
+    296. > 	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+
+crypto/mem.c:298:6: Taking false branch
+    296.   	void *ret = NULL;
+    297.   
+    298.   	if (num <= 0) return NULL;
+                ^
+    299.   
+    300.   	allow_customize = 0;
+
+crypto/mem.c:300:2: 
+    298.   	if (num <= 0) return NULL;
+    299.   
+    300. > 	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+
+crypto/mem.c:301:6: Taking true branch
+    299.   
+    300.   	allow_customize = 0;
+    301.   	if (malloc_debug_func != NULL)
+                ^
+    302.   		{
+    303.   		allow_customize_debug = 0;
+
+crypto/mem.c:303:3: 
+    301.   	if (malloc_debug_func != NULL)
+    302.   		{
+    303. > 		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+
+crypto/mem.c:304:3: Skipping __function_pointer__(): unresolved function pointer
+    302.   		{
+    303.   		allow_customize_debug = 0;
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+             ^
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+
+crypto/mem.c:306:2: Skipping __function_pointer__(): unresolved function pointer
+    304.   		malloc_debug_func(NULL, num, file, line, 0);
+    305.   		}
+    306.   	ret = malloc_ex_func(num,file,line);
+            ^
+    307.   #ifdef LEVITTE_DEBUG_MEM
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+
+crypto/mem.c:310:6: Taking true branch
+    308.   	fprintf(stderr, "LEVITTE_DEBUG_MEM:         > 0x%p (%d)\n", ret, num);
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+                ^
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+    312.   
+
+crypto/mem.c:311:3: Skipping __function_pointer__(): unresolved function pointer
+    309.   #endif
+    310.   	if (malloc_debug_func != NULL)
+    311.   		malloc_debug_func(ret, num, file, line, 1);
+             ^
+    312.   
+    313.   #ifndef OPENSSL_CPUID_OBJ
+
+crypto/mem.c:317:12: Taking false branch
+    315.            * sanitisation function can't be optimised out. NB: We only do
+    316.            * this for >2Kb so the overhead doesn't bother us. */
+    317.           if(ret && (num > 2048))
+                      ^
+    318.   	{	extern unsigned char cleanse_ctr;
+    319.                   ((unsigned char *)ret)[0] = cleanse_ctr;
+
+crypto/mem.c:323:2: 
+    321.   #endif
+    322.   
+    323. > 	return ret;
+    324.   	}
+    325.   
+
+crypto/mem.c:324:2: return from a call to CRYPTO_malloc
+    322.   
+    323.   	return ret;
+    324.   	}
+            ^
+    325.   
+    326.   void *CRYPTO_realloc(void *str, int num, const char *file, int line)
+
+crypto/bn/bn_lib.c:302:6: Taking true branch
+  300.   	BIGNUM *ret;
+  301.   
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+              ^
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+
+crypto/bn/bn_lib.c:304:3: 
+  302.   	if ((ret=(BIGNUM *)OPENSSL_malloc(sizeof(BIGNUM))) == NULL)
+  303.   		{
+  304. > 		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305.   		return(NULL);
+  306.   		}
+
+crypto/err/err.c:706:1: start of procedure ERR_put_error()
+    704.   /********************************************************/
+    705.   
+    706. > void ERR_put_error(int lib, int func, int reason, const char *file,
+    707.   	     int line)
+    708.   	{
+
+crypto/err/err.c:730:2: Skipping ERR_get_state(): empty list of specs
+    728.   	}
+    729.   #endif
+    730.   	es=ERR_get_state();
+            ^
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:732:2: 
+    730.   	es=ERR_get_state();
+    731.   
+    732. > 	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+
+crypto/err/err.c:733:6: Taking false branch
+    731.   
+    732.   	es->top=(es->top+1)%ERR_NUM_ERRORS;
+    733.   	if (es->top == es->bottom)
+                ^
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+
+crypto/err/err.c:735:2: 
+    733.   	if (es->top == es->bottom)
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735. > 	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+
+crypto/err/err.c:736:2: 
+    734.   		es->bottom=(es->bottom+1)%ERR_NUM_ERRORS;
+    735.   	es->err_flags[es->top]=0;
+    736. > 	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+
+crypto/err/err.c:737:2: 
+    735.   	es->err_flags[es->top]=0;
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737. > 	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+
+crypto/err/err.c:738:2: 
+    736.   	es->err_buffer[es->top]=ERR_PACK(lib,func,reason);
+    737.   	es->err_file[es->top]=file;
+    738. > 	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+
+crypto/err/err.c:739:2: Taking true branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Taking false branch
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:739:2: Loop condition is false. Leaving loop
+    737.   	es->err_file[es->top]=file;
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+            ^
+    740.   	}
+    741.   
+
+crypto/err/err.c:740:2: return from a call to ERR_put_error
+    738.   	es->err_line[es->top]=line;
+    739.   	err_clear_data(es,es->top);
+    740.   	}
+            ^
+    741.   
+    742.   void ERR_clear_error(void)
+
+crypto/bn/bn_lib.c:305:3: 
+  303.   		{
+  304.   		BNerr(BN_F_BN_NEW,ERR_R_MALLOC_FAILURE);
+  305. > 		return(NULL);
+  306.   		}
+  307.   	ret->flags=BN_FLG_MALLOCED;
+
+crypto/bn/bn_lib.c:314:2: return from a call to BN_new
+  312.   	bn_check_top(ret);
+  313.   	return(ret);
+  314.   	}
+          ^
+  315.   
+  316.   /* This is used both by bn_expand2() and bn_dup_expand() */
+
+crypto/bn/bntest.c:1509:2: 
+1507.   	f=BN_new();
+1508.   
+1509. > 	BN_GF2m_arr2poly(p0, b[0]);
+1510.   	BN_GF2m_arr2poly(p1, b[1]);
+1511.   
+
+crypto/bn/bn_gf2m.c:1018:1: start of procedure BN_GF2m_arr2poly()
+  1016.    * bit-string.  The array must be terminated by -1.
+  1017.    */
+  1018. > int BN_GF2m_arr2poly(const int p[], BIGNUM *a)
+  1019.   	{
+  1020.   	int i;
+
+crypto/bn/bn_gf2m.c:1023:2: 
+  1021.   
+  1022.   	bn_check_top(a);
+  1023. > 	BN_zero(a);
+  1024.   	for (i = 0; p[i] != -1; i++)
+  1025.   		{
+
+crypto/bn/bn_lib.c:586:1: start of procedure BN_set_word()
+    584.   	}
+    585.   
+    586. > int BN_set_word(BIGNUM *a, BN_ULONG w)
+    587.   	{
+    588.   	bn_check_top(a);
+
+crypto/bn/bn_lib.c:589:6: 
+    587.   	{
+    588.   	bn_check_top(a);
+    589. > 	if (bn_expand(a,(int)sizeof(BN_ULONG)*8) == NULL) return(0);
+    590.   	a->neg = 0;
+    591.   	a->d[0] = w;

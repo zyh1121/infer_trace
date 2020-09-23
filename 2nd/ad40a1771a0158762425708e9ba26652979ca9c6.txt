@@ -1,0 +1,51 @@
+#22401
+libswscale/swscale.c:1821: error: Integer Overflow L5
+  ([min(0, `c->dstY`), `c->dstH` - 3] × `c->vLumFilterSize`):signed32.
+
+libswscale/swscale.c:1713:9: <LHS trace>
+1711.         lumBufIndex=-1;
+1712.         chrBufIndex=-1;
+1713.         dstY=0;
+              ^
+1714.         lastInLumBuf= -1;
+1715.         lastInChrBuf= -1;
+
+libswscale/swscale.c:1713:9: Assignment
+1711.         lumBufIndex=-1;
+1712.         chrBufIndex=-1;
+1713.         dstY=0;
+              ^
+1714.         lastInLumBuf= -1;
+1715.         lastInChrBuf= -1;
+
+libswscale/swscale.c:1630:1: <RHS trace>
+1628. #define DEBUG_BUFFERS(...) if (DEBUG_SWSCALE_BUFFERS) av_log(c, AV_LOG_DEBUG, __VA_ARGS__)
+1629. 
+1630. static int swScale_c(SwsContext *c, const uint8_t* src[], int srcStride[],
+      ^
+1631.                      int srcSliceY, int srcSliceH, uint8_t* dst[], int dstStride[])
+1632. {
+
+libswscale/swscale.c:1630:1: Parameter `c->vLumFilterSize`
+1628. #define DEBUG_BUFFERS(...) if (DEBUG_SWSCALE_BUFFERS) av_log(c, AV_LOG_DEBUG, __VA_ARGS__)
+1629. 
+1630. static int swScale_c(SwsContext *c, const uint8_t* src[], int srcStride[],
+      ^
+1631.                      int srcSliceY, int srcSliceH, uint8_t* dst[], int dstStride[])
+1632. {
+
+libswscale/swscale.c:1654:5: Assignment
+1652.     int32_t *chrMmxFilter= c->chrMmxFilter;
+1653.     int32_t av_unused *alpMmxFilter= c->alpMmxFilter;
+1654.     const int vLumFilterSize= c->vLumFilterSize;
+          ^
+1655.     const int vChrFilterSize= c->vChrFilterSize;
+1656.     const int hLumFilterSize= c->hLumFilterSize;
+
+libswscale/swscale.c:1821:21: Binary operation: ([min(0, c->dstY), c->dstH - 3] × c->vLumFilterSize):signed32
+1819.                 if ((dstY&chrSkipMask) || isGray(dstFormat)) uDest=vDest= NULL; //FIXME split functions in lumi / chromi
+1820.                 if (is16BPS(dstFormat) || is9_OR_10BPS(dstFormat)) {
+1821.                     yuv2yuvX16inC(vLumFilter+dstY*vLumFilterSize   , lumSrcPtr, vLumFilterSize,
+                          ^
+1822.                                   vChrFilter+chrDstY*vChrFilterSize, chrUSrcPtr,
+1823.                                   chrVSrcPtr, vChrFilterSize,

@@ -1,0 +1,108 @@
+apps/pkcs12.c:836: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, +oo]) Size: [0, +oo] by call to `X509_STORE_CTX_cleanup`.
+Showing all 14 steps of the trace
+
+
+apps/pkcs12.c:825:6: Call
+823.   	 * function is less obvious. */
+824.   	X509_STORE_CTX_init(&store_ctx, store, cert, NULL);
+825.   	if (X509_verify_cert(&store_ctx) <= 0) {
+            ^
+826.   		i = X509_STORE_CTX_get_error (&store_ctx);
+827.   		if (i == 0)
+
+crypto/x509/x509_vfy.c:99:1: Parameter `*ctx->chain->data`
+  97.   #endif
+  98.   
+  99. > int X509_verify_cert(X509_STORE_CTX *ctx)
+  100.   	{
+  101.   	X509 *x,*xtmp,*chain_ss=NULL;
+
+apps/pkcs12.c:836:2: Call
+834.   		chn = X509_STORE_CTX_get1_chain(&store_ctx);
+835.   err:
+836.   	X509_STORE_CTX_cleanup(&store_ctx);
+        ^
+837.   	*chain = chn;
+838.   	
+
+crypto/x509/x509_vfy.c:1598:1: Parameter `*ctx->param->policies->data`
+  1596.   }
+  1597.   
+  1598. > void X509_STORE_CTX_cleanup(X509_STORE_CTX *ctx)
+  1599.   	{
+  1600.   	if (ctx->cleanup) ctx->cleanup(ctx);
+
+crypto/x509/x509_vfy.c:1601:2: Call
+  1599.   	{
+  1600.   	if (ctx->cleanup) ctx->cleanup(ctx);
+  1601.   	X509_VERIFY_PARAM_free(ctx->param);
+           ^
+  1602.   	if (ctx->tree)
+  1603.   		X509_policy_tree_free(ctx->tree);
+
+crypto/x509/x509_vpm.c:96:1: Parameter `*param->policies->data`
+    94.   	}
+    95.   
+    96. > void X509_VERIFY_PARAM_free(X509_VERIFY_PARAM *param)
+    97.   	{
+    98.   	x509_verify_param_zero(param);
+
+crypto/x509/x509_vpm.c:98:2: Call
+    96.   void X509_VERIFY_PARAM_free(X509_VERIFY_PARAM *param)
+    97.   	{
+    98.   	x509_verify_param_zero(param);
+            ^
+    99.   	OPENSSL_free(param);
+    100.   	}
+
+crypto/x509/x509_vpm.c:70:1: Parameter `*param->policies->data`
+      68.   /* X509_VERIFY_PARAM functions */
+      69.   
+      70. > static void x509_verify_param_zero(X509_VERIFY_PARAM *param)
+      71.   	{
+      72.   	if (!param)
+
+crypto/x509/x509_vpm.c:82:3: Call
+      80.   	if (param->policies)
+      81.   		{
+      82.   		sk_ASN1_OBJECT_pop_free(param->policies, ASN1_OBJECT_free);
+              ^
+      83.   		param->policies = NULL;
+      84.   		}
+
+crypto/stack/stack.c:283:1: <Offset trace>
+281.   	}
+282.   
+283. > void sk_pop_free(STACK *st, void (*func)(void *))
+284.   	{
+285.   	int i;
+
+crypto/stack/stack.c:283:1: Parameter `st->num`
+        281.   	}
+        282.   
+        283. > void sk_pop_free(STACK *st, void (*func)(void *))
+        284.   	{
+        285.   	int i;
+
+crypto/stack/stack.c:283:1: <Length trace>
+281.   	}
+282.   
+283. > void sk_pop_free(STACK *st, void (*func)(void *))
+284.   	{
+285.   	int i;
+
+crypto/stack/stack.c:283:1: Parameter `*st->data`
+        281.   	}
+        282.   
+        283. > void sk_pop_free(STACK *st, void (*func)(void *))
+        284.   	{
+        285.   	int i;
+
+crypto/stack/stack.c:289:7: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, +oo]) Size: [0, +oo] by call to `X509_STORE_CTX_cleanup` 
+        287.   	if (st == NULL) return;
+        288.   	for (i=0; i<st->num; i++)
+        289.   		if (st->data[i] != NULL)
+                     ^
+        290.   			func(st->data[i]);
+        291.   	sk_free(st);

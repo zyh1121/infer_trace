@@ -1,0 +1,67 @@
+#22188
+libavcodec/cavs.c:667: error: BUFFER_OVERRUN_L5
+  Offset added: [-oo, +oo] (⇐ [-oo, +oo] + 128) Size: [0, +oo] by call to `av_mallocz`.
+
+libavcodec/cavs.c:667:23: Call
+665.     h->col_mv       = av_malloc( h->mb_width*h->mb_height*4*sizeof(cavs_vector));
+666.     h->col_type_base = av_malloc(h->mb_width*h->mb_height);
+667.     h->block        = av_mallocz(64*sizeof(DCTELEM));
+                           ^
+668. }
+669. 
+
+libavutil/mem.c:184:1: <Offset trace>
+182. }
+183. 
+184. void *av_mallocz(size_t size)
+     ^
+185. {
+186.     void *ptr = av_malloc(size);
+
+libavutil/mem.c:184:1: Parameter `size`
+  182. }
+  183. 
+  184. void *av_mallocz(size_t size)
+       ^
+  185. {
+  186.     void *ptr = av_malloc(size);
+
+libavutil/mem.c:186:17: <Length trace>
+184. void *av_mallocz(size_t size)
+185. {
+186.     void *ptr = av_malloc(size);
+                     ^
+187.     if (ptr)
+188.         memset(ptr, 0, size);
+
+libavutil/mem.c:186:17: Call
+  184. void *av_mallocz(size_t size)
+  185. {
+  186.     void *ptr = av_malloc(size);
+                       ^
+  187.     if (ptr)
+  188.         memset(ptr, 0, size);
+
+libavutil/mem.c:83:9: Assignment
+    81.     /* let's disallow possible ambiguous cases */
+    82.     if (size > (max_alloc_size-32))
+    83.         return NULL;
+                ^
+    84. 
+    85. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:186:5: Assignment
+  184. void *av_mallocz(size_t size)
+  185. {
+  186.     void *ptr = av_malloc(size);
+           ^
+  187.     if (ptr)
+  188.         memset(ptr, 0, size);
+
+libavutil/mem.c:188:9: Array access: Offset added: [-oo, +oo] (⇐ [-oo, +oo] + 128) Size: [0, +oo] by call to `av_mallocz` 
+  186.     void *ptr = av_malloc(size);
+  187.     if (ptr)
+  188.         memset(ptr, 0, size);
+               ^
+  189.     return ptr;
+  190. }

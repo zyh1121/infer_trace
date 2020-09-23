@@ -1,0 +1,104 @@
+crypto/ec/ecp_smpl.c:257: error: BUFFER_OVERRUN_L4
+  Offset added: [4, +oo] Size: [4, +oo] by call to `BN_CTX_start`.
+Showing all 13 steps of the trace
+
+
+crypto/ec/ecp_smpl.c:242:1: Parameter `ctx->stack.depth`
+240.   }
+241.   
+242. > int ec_GFp_simple_group_check_discriminant(const EC_GROUP *group, BN_CTX *ctx)
+243.   {
+244.       int ret = 0;
+
+crypto/ec/ecp_smpl.c:257:5: Call
+255.           }
+256.       }
+257.       BN_CTX_start(ctx);
+           ^
+258.       a = BN_CTX_get(ctx);
+259.       b = BN_CTX_get(ctx);
+
+crypto/bn/bn_ctx.c:181:1: Parameter `ctx->stack.depth`
+  179.   }
+  180.   
+  181. > void BN_CTX_start(BN_CTX *ctx)
+  182.   {
+  183.       CTXDBG_ENTRY("BN_CTX_start", ctx);
+
+crypto/bn/bn_ctx.c:188:15: Call
+  186.           ctx->err_stack++;
+  187.       /* (Try to) get a new frame pointer */
+  188.       else if (!BN_STACK_push(&ctx->stack, ctx->used)) {
+                       ^
+  189.           BNerr(BN_F_BN_CTX_START, BN_R_TOO_MANY_TEMPORARY_VARIABLES);
+  190.           ctx->err_stack++;
+
+crypto/bn/bn_ctx.c:252:1: <Offset trace>
+250.   
+251.   
+252. > static int BN_STACK_push(BN_STACK *st, unsigned int idx)
+253.   {
+254.       if (st->depth == st->size) {
+
+crypto/bn/bn_ctx.c:252:1: Parameter `st->depth`
+    250.   
+    251.   
+    252. > static int BN_STACK_push(BN_STACK *st, unsigned int idx)
+    253.   {
+    254.       if (st->depth == st->size) {
+
+crypto/bn/bn_ctx.c:257:13: <Length trace>
+255.           /* Need to expand */
+256.           unsigned int newsize =
+257.               st->size ? (st->size * 3 / 2) : BN_CTX_START_FRAMES;
+                   ^
+258.           unsigned int *newitems = OPENSSL_malloc(sizeof(*newitems) * newsize);
+259.           if (newitems == NULL)
+
+crypto/bn/bn_ctx.c:257:13: Assignment
+    255.           /* Need to expand */
+    256.           unsigned int newsize =
+    257.               st->size ? (st->size * 3 / 2) : BN_CTX_START_FRAMES;
+                       ^
+    258.           unsigned int *newitems = OPENSSL_malloc(sizeof(*newitems) * newsize);
+    259.           if (newitems == NULL)
+
+crypto/bn/bn_ctx.c:256:9: Assignment
+    254.       if (st->depth == st->size) {
+    255.           /* Need to expand */
+    256.           unsigned int newsize =
+                   ^
+    257.               st->size ? (st->size * 3 / 2) : BN_CTX_START_FRAMES;
+    258.           unsigned int *newitems = OPENSSL_malloc(sizeof(*newitems) * newsize);
+
+crypto/bn/bn_ctx.c:258:34: Call
+    256.           unsigned int newsize =
+    257.               st->size ? (st->size * 3 / 2) : BN_CTX_START_FRAMES;
+    258.           unsigned int *newitems = OPENSSL_malloc(sizeof(*newitems) * newsize);
+                                            ^
+    259.           if (newitems == NULL)
+    260.               return 0;
+
+crypto/mem.c:165:9: Assignment
+      163.   
+      164.       if (num <= 0)
+      165.           return NULL;
+                     ^
+      166.   
+      167.       FAILTEST();
+
+crypto/bn/bn_ctx.c:258:9: Assignment
+    256.           unsigned int newsize =
+    257.               st->size ? (st->size * 3 / 2) : BN_CTX_START_FRAMES;
+    258.           unsigned int *newitems = OPENSSL_malloc(sizeof(*newitems) * newsize);
+                   ^
+    259.           if (newitems == NULL)
+    260.               return 0;
+
+crypto/bn/bn_ctx.c:262:13: Array access: Offset added: [4, +oo] Size: [4, +oo] by call to `BN_CTX_start` 
+    260.               return 0;
+    261.           if (st->depth)
+    262.               memcpy(newitems, st->indexes, sizeof(*newitems) * st->depth);
+                       ^
+    263.           OPENSSL_free(st->indexes);
+    264.           st->indexes = newitems;

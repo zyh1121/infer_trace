@@ -1,0 +1,91 @@
+#29545
+libavcodec/mpeg12dec.c:1355: error: Integer Overflow L5
+  ([-oo, +oo] + 16):unsigned32 by call to `get_bits`.
+
+libavcodec/mpeg12dec.c:1351:20: Call
+1349. 
+1350.     ref = get_bits(&s->gb, 10); /* temporal ref */
+1351.     s->pict_type = get_bits(&s->gb, 3);
+                         ^
+1352.     if (s->pict_type == 0 || s->pict_type > 3)
+1353.         return AVERROR_INVALIDDATA;
+
+libavcodec/get_bits.h:241:1: Parameter `n`
+  239.  * Read 1-25 bits.
+  240.  */
+  241. static inline unsigned int get_bits(GetBitContext *s, int n)
+       ^
+  242. {
+  243.     register int tmp;
+
+libavcodec/get_bits.h:247:5: Assignment
+  245.     UPDATE_CACHE(re, s);
+  246.     tmp = SHOW_UBITS(re, s, n);
+  247.     LAST_SKIP_BITS(re, s, n);
+           ^
+  248.     CLOSE_READER(re, s);
+  249.     return tmp;
+
+libavcodec/get_bits.h:247:5: Assignment
+  245.     UPDATE_CACHE(re, s);
+  246.     tmp = SHOW_UBITS(re, s, n);
+  247.     LAST_SKIP_BITS(re, s, n);
+           ^
+  248.     CLOSE_READER(re, s);
+  249.     return tmp;
+
+libavcodec/get_bits.h:248:5: Assignment
+  246.     tmp = SHOW_UBITS(re, s, n);
+  247.     LAST_SKIP_BITS(re, s, n);
+  248.     CLOSE_READER(re, s);
+           ^
+  249.     return tmp;
+  250. }
+
+libavcodec/mpeg12dec.c:1355:17: Call
+1353.         return AVERROR_INVALIDDATA;
+1354. 
+1355.     vbv_delay = get_bits(&s->gb, 16);
+                      ^
+1356.     if (s->pict_type == AV_PICTURE_TYPE_P ||
+1357.         s->pict_type == AV_PICTURE_TYPE_B) {
+
+libavcodec/get_bits.h:241:1: <LHS trace>
+239.  * Read 1-25 bits.
+240.  */
+241. static inline unsigned int get_bits(GetBitContext *s, int n)
+     ^
+242. {
+243.     register int tmp;
+
+libavcodec/get_bits.h:241:1: Parameter `n`
+  239.  * Read 1-25 bits.
+  240.  */
+  241. static inline unsigned int get_bits(GetBitContext *s, int n)
+       ^
+  242. {
+  243.     register int tmp;
+
+libavcodec/get_bits.h:241:1: <RHS trace>
+239.  * Read 1-25 bits.
+240.  */
+241. static inline unsigned int get_bits(GetBitContext *s, int n)
+     ^
+242. {
+243.     register int tmp;
+
+libavcodec/get_bits.h:241:1: Parameter `n`
+  239.  * Read 1-25 bits.
+  240.  */
+  241. static inline unsigned int get_bits(GetBitContext *s, int n)
+       ^
+  242. {
+  243.     register int tmp;
+
+libavcodec/get_bits.h:247:5: Binary operation: ([-oo, +oo] + 16):unsigned32 by call to `get_bits` 
+  245.     UPDATE_CACHE(re, s);
+  246.     tmp = SHOW_UBITS(re, s, n);
+  247.     LAST_SKIP_BITS(re, s, n);
+           ^
+  248.     CLOSE_READER(re, s);
+  249.     return tmp;

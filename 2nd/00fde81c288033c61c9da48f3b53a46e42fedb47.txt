@@ -1,0 +1,99 @@
+#33455
+libavformat/hlsenc.c:483: error: NULLPTR_DEREFERENCE
+  call to `av_free()` eventually accesses memory that is the null pointer on line 448 indirectly during the call to `av_strdup()`.
+
+libavformat/hlsenc.c:448:31: invalidation part of the trace starts here
+446.     if ((hls->flags & (HLS_SECOND_LEVEL_SEGMENT_SIZE | HLS_SECOND_LEVEL_SEGMENT_DURATION)) &&
+447.         strlen(hls->current_segment_final_filename_fmt)) {
+448.         char * old_filename = av_strdup(hls->avf->filename);  // %%s will be %s after strftime
+                                   ^
+449.         av_strlcpy(hls->avf->filename, hls->current_segment_final_filename_fmt, sizeof(hls->avf->filename));
+450.         if (hls->flags & HLS_SECOND_LEVEL_SEGMENT_SIZE) {
+
+libavformat/hlsenc.c:448:31: when calling `av_strdup` here
+  446.     if ((hls->flags & (HLS_SECOND_LEVEL_SEGMENT_SIZE | HLS_SECOND_LEVEL_SEGMENT_DURATION)) &&
+  447.         strlen(hls->current_segment_final_filename_fmt)) {
+  448.         char * old_filename = av_strdup(hls->avf->filename);  // %%s will be %s after strftime
+                                     ^
+  449.         av_strlcpy(hls->avf->filename, hls->current_segment_final_filename_fmt, sizeof(hls->avf->filename));
+  450.         if (hls->flags & HLS_SECOND_LEVEL_SEGMENT_SIZE) {
+
+libavutil/mem.c:272:15: when calling `av_realloc` here
+    270.     if (s) {
+    271.         size_t len = strlen(s) + 1;
+    272.         ptr = av_realloc(NULL, len);
+                       ^
+    273.         if (ptr)
+    274.             memcpy(ptr, s, len);
+
+libavutil/mem.c:153:9: assigned
+      151.     /* let's disallow possibly ambiguous cases */
+      152.     if (size > (max_alloc_size - 32))
+      153.         return NULL;
+                   ^
+      154. 
+      155. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:153:9: is the null pointer
+      151.     /* let's disallow possibly ambiguous cases */
+      152.     if (size > (max_alloc_size - 32))
+      153.         return NULL;
+                   ^
+      154. 
+      155. #if CONFIG_MEMALIGN_HACK
+
+libavformat/hlsenc.c:448:31: use-after-lifetime part of the trace starts here
+446.     if ((hls->flags & (HLS_SECOND_LEVEL_SEGMENT_SIZE | HLS_SECOND_LEVEL_SEGMENT_DURATION)) &&
+447.         strlen(hls->current_segment_final_filename_fmt)) {
+448.         char * old_filename = av_strdup(hls->avf->filename);  // %%s will be %s after strftime
+                                   ^
+449.         av_strlcpy(hls->avf->filename, hls->current_segment_final_filename_fmt, sizeof(hls->avf->filename));
+450.         if (hls->flags & HLS_SECOND_LEVEL_SEGMENT_SIZE) {
+
+libavformat/hlsenc.c:448:31: passed as argument to `av_strdup`
+  446.     if ((hls->flags & (HLS_SECOND_LEVEL_SEGMENT_SIZE | HLS_SECOND_LEVEL_SEGMENT_DURATION)) &&
+  447.         strlen(hls->current_segment_final_filename_fmt)) {
+  448.         char * old_filename = av_strdup(hls->avf->filename);  // %%s will be %s after strftime
+                                     ^
+  449.         av_strlcpy(hls->avf->filename, hls->current_segment_final_filename_fmt, sizeof(hls->avf->filename));
+  450.         if (hls->flags & HLS_SECOND_LEVEL_SEGMENT_SIZE) {
+
+libavformat/hlsenc.c:448:31: return from call to `av_strdup`
+  446.     if ((hls->flags & (HLS_SECOND_LEVEL_SEGMENT_SIZE | HLS_SECOND_LEVEL_SEGMENT_DURATION)) &&
+  447.         strlen(hls->current_segment_final_filename_fmt)) {
+  448.         char * old_filename = av_strdup(hls->avf->filename);  // %%s will be %s after strftime
+                                     ^
+  449.         av_strlcpy(hls->avf->filename, hls->current_segment_final_filename_fmt, sizeof(hls->avf->filename));
+  450.         if (hls->flags & HLS_SECOND_LEVEL_SEGMENT_SIZE) {
+
+libavformat/hlsenc.c:448:9: assigned
+  446.     if ((hls->flags & (HLS_SECOND_LEVEL_SEGMENT_SIZE | HLS_SECOND_LEVEL_SEGMENT_DURATION)) &&
+  447.         strlen(hls->current_segment_final_filename_fmt)) {
+  448.         char * old_filename = av_strdup(hls->avf->filename);  // %%s will be %s after strftime
+               ^
+  449.         av_strlcpy(hls->avf->filename, hls->current_segment_final_filename_fmt, sizeof(hls->avf->filename));
+  450.         if (hls->flags & HLS_SECOND_LEVEL_SEGMENT_SIZE) {
+
+libavformat/hlsenc.c:483:9: when calling `av_free` here
+  481.         }
+  482.         ff_rename(old_filename, hls->avf->filename, hls);
+  483.         av_free(old_filename);
+               ^
+  484.     }
+  485. 
+
+libavutil/mem.c:228:1: parameter `ptr` of av_free
+    226. }
+    227. 
+    228. void av_free(void *ptr)
+         ^
+    229. {
+    230. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:239:5: invalid access occurs here
+    237.     _aligned_free(ptr);
+    238. #else
+    239.     free(ptr);
+             ^
+    240. #endif
+    241. }

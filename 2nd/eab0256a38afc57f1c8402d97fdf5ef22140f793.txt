@@ -1,0 +1,107 @@
+#24230
+libavfilter/buffersink.c:258: error: INTEGER_OVERFLOW_L5
+  (16 + [-oo, +oo]):signed32 by call to `av_opt_set_int`.
+
+libavfilter/buffersink.c:247:1: Parameter `*ctx->priv`
+245. }
+246. 
+247. static av_cold int asink_init(AVFilterContext *ctx, void *opaque)
+     ^
+248. {
+249.     BufferSinkContext *buf = ctx->priv;
+
+libavfilter/buffersink.c:258:20: Call
+256.             (ret = av_opt_set_int_list(buf, "channel_layouts", params->channel_layouts, -1, 0)) < 0 ||
+257.             (ret = av_opt_set_int_list(buf, "channel_counts",  params->channel_counts,  -1, 0)) < 0 ||
+258.             (ret = av_opt_set_int(buf, "all_channel_counts", params->all_channel_counts, 0)) < 0)
+                        ^
+259.             return ret;
+260.     }
+
+libavutil/opt.c:558:1: Parameter `*obj`
+  556. }
+  557. 
+  558. int av_opt_set_int(void *obj, const char *name, int64_t val, int search_flags)
+       ^
+  559. {
+  560.     return set_number(obj, name, 1, 1, val, search_flags);
+
+libavutil/opt.c:560:12: Call
+  558. int av_opt_set_int(void *obj, const char *name, int64_t val, int search_flags)
+  559. {
+  560.     return set_number(obj, name, 1, 1, val, search_flags);
+                  ^
+  561. }
+  562. 
+
+libavutil/opt.c:542:1: Parameter `*obj`
+    540. OPT_EVAL_NUMBER(q,      AV_OPT_TYPE_RATIONAL, AVRational)
+    541. 
+    542. static int set_number(void *obj, const char *name, double num, int den, int64_t intnum,
+         ^
+    543.                       int search_flags)
+    544. {
+
+libavutil/opt.c:555:12: Call
+    553. 
+    554.     dst = ((uint8_t *)target_obj) + o->offset;
+    555.     return write_number(obj, o, dst, num, den, intnum);
+                    ^
+    556. }
+    557. 
+
+libavutil/opt.c:97:1: Parameter `*obj`
+      95. }
+      96. 
+      97. static int write_number(void *obj, const AVOption *o, void *dst, double num, int den, int64_t intnum)
+          ^
+      98. {
+      99.     if (o->type != AV_OPT_TYPE_FLAGS &&
+
+libavutil/opt.c:102:9: Call
+      100.         (!den || o->max * den < num * intnum || o->min * den > num * intnum)) {
+      101.         num = den ? num * intnum / den : (num && intnum ? INFINITY : NAN);
+      102.         av_log(obj, AV_LOG_ERROR, "Value %f for parameter '%s' out of range [%g - %g]\n",
+                   ^
+      103.                num, o->name, o->min, o->max);
+      104.         return AVERROR(ERANGE);
+
+libavutil/log.c:367:1: <LHS trace>
+365.     av_log_default_callback;
+366. 
+367. void av_log(void* avcl, int level, const char *fmt, ...)
+     ^
+368. {
+369.     AVClass* avc = avcl ? *(AVClass **) avcl : NULL;
+
+libavutil/log.c:367:1: Parameter `level`
+        365.     av_log_default_callback;
+        366. 
+        367. void av_log(void* avcl, int level, const char *fmt, ...)
+             ^
+        368. {
+        369.     AVClass* avc = avcl ? *(AVClass **) avcl : NULL;
+
+libavutil/log.c:367:1: <RHS trace>
+365.     av_log_default_callback;
+366. 
+367. void av_log(void* avcl, int level, const char *fmt, ...)
+     ^
+368. {
+369.     AVClass* avc = avcl ? *(AVClass **) avcl : NULL;
+
+libavutil/log.c:367:1: Parameter `*avcl`
+        365.     av_log_default_callback;
+        366. 
+        367. void av_log(void* avcl, int level, const char *fmt, ...)
+             ^
+        368. {
+        369.     AVClass* avc = avcl ? *(AVClass **) avcl : NULL;
+
+libavutil/log.c:374:9: Binary operation: (16 + [-oo, +oo]):signed32 by call to `av_opt_set_int` 
+        372.     if (avc && avc->version >= (50 << 16 | 15 << 8 | 2) &&
+        373.         avc->log_level_offset_offset && level >= AV_LOG_FATAL)
+        374.         level += *(int *) (((uint8_t *) avcl) + avc->log_level_offset_offset);
+                     ^
+        375.     av_vlog(avcl, level, fmt, vl);
+        376.     va_end(vl);

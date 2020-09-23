@@ -1,0 +1,35 @@
+#34339
+libavcodec/rv34.c:1529: error: Integer Overflow L5
+  ([-oo, +oo] + 15):signed32 by call to `ff_mpv_common_init`.
+
+libavcodec/rv34.c:1529:20: Call
+1527.         r->tmp_b_block_base = NULL;
+1528.         ff_mpv_idct_init(&r->s);
+1529.         if ((err = ff_mpv_common_init(&r->s)) < 0)
+                         ^
+1530.             return err;
+1531.         if ((err = rv34_decoder_alloc(r)) < 0) {
+
+libavcodec/mpegvideo.c:762:1: <LHS trace>
+760.  * this assumes that some variables like width/height are already set
+761.  */
+762. av_cold int ff_mpv_common_init(MpegEncContext *s)
+     ^
+763. {
+764.     int i;
+
+libavcodec/mpegvideo.c:762:1: Parameter `s->height`
+  760.  * this assumes that some variables like width/height are already set
+  761.  */
+  762. av_cold int ff_mpv_common_init(MpegEncContext *s)
+       ^
+  763. {
+  764.     int i;
+
+libavcodec/mpegvideo.c:775:9: Binary operation: ([-oo, +oo] + 15):signed32 by call to `ff_mpv_common_init` 
+  773.         s->mb_height = (s->height + 31) / 32 * 2;
+  774.     else
+  775.         s->mb_height = (s->height + 15) / 16;
+               ^
+  776. 
+  777.     if (s->avctx->pix_fmt == AV_PIX_FMT_NONE) {

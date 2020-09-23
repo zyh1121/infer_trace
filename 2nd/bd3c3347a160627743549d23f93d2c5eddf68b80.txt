@@ -1,0 +1,59 @@
+#847
+libavcodec/hevc_parse.c:93: error: INTEGER_OVERFLOW_L5
+  ([0, +oo] + 32):unsigned64 by call to `av_fast_malloc`.
+
+libavcodec/hevc_parse.c:32:1: Parameter `length`
+30. /* FIXME: This is adapted from ff_h264_decode_nal, avoiding duplication
+31.  * between these functions would be nice. */
+32. int ff_hevc_extract_rbsp(HEVCContext *s, const uint8_t *src, int length,
+    ^
+33.                          HEVCNAL *nal)
+34. {
+
+libavcodec/hevc_parse.c:93:5: Call
+91.     }
+92. 
+93.     av_fast_malloc(&nal->rbsp_buffer, &nal->rbsp_buffer_size,
+        ^
+94.                    length + FF_INPUT_BUFFER_PADDING_SIZE);
+95.     if (!nal->rbsp_buffer)
+
+libavutil/mem.c:513:1: Parameter `min_size`
+  511. }
+  512. 
+  513. void av_fast_malloc(void *ptr, unsigned int *size, size_t min_size)
+       ^
+  514. {
+  515.     ff_fast_malloc(ptr, size, min_size, 0);
+
+libavutil/mem.c:515:5: Call
+  513. void av_fast_malloc(void *ptr, unsigned int *size, size_t min_size)
+  514. {
+  515.     ff_fast_malloc(ptr, size, min_size, 0);
+           ^
+  516. }
+  517. 
+
+libavutil/mem.c:497:1: <LHS trace>
+495. }
+496. 
+497. static inline int ff_fast_malloc(void *ptr, unsigned int *size, size_t min_size, int zero_realloc)
+     ^
+498. {
+499.     void *val;
+
+libavutil/mem.c:497:1: Parameter `min_size`
+    495. }
+    496. 
+    497. static inline int ff_fast_malloc(void *ptr, unsigned int *size, size_t min_size, int zero_realloc)
+         ^
+    498. {
+    499.     void *val;
+
+libavutil/mem.c:503:16: Binary operation: ([0, +oo] + 32):unsigned64 by call to `av_fast_malloc` 
+    501.     if (min_size < *size)
+    502.         return 0;
+    503.     min_size = FFMAX(17 * min_size / 16 + 32, min_size);
+                        ^
+    504.     av_freep(ptr);
+    505.     val = zero_realloc ? av_mallocz(min_size) : av_malloc(min_size);

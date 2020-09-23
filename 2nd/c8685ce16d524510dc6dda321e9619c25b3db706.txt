@@ -1,0 +1,131 @@
+crypto/bn/bn_blind.c:265: error: INTEGER_OVERFLOW_L5
+  ([0, +oo] - [0, +oo]):unsigned32 by call to `BN_BLINDING_update`.
+Showing all 17 steps of the trace
+
+
+crypto/bn/bn_blind.c:259:9: Call
+257.   
+258.   	if (r != NULL)
+259.   		ret = BN_mod_mul(n, n, r, b->mod, ctx);
+               ^
+260.   	else
+261.   		ret = BN_mod_mul(n, n, b->Ai, b->mod, ctx);
+
+crypto/bn/bn_mod.c:200:2: Call
+  198.   	ret=1;
+  199.   err:
+  200.   	BN_CTX_end(ctx);
+          ^
+  201.   	return(ret);
+  202.   	}
+
+crypto/bn/bn_ctx.c:272:1: Parameter `ctx->used`
+    270.   	}
+    271.   
+    272. > void BN_CTX_end(BN_CTX *ctx)
+    273.   	{
+    274.   	CTXDBG_ENTRY("BN_CTX_end", ctx);
+
+crypto/bn/bn_blind.c:265:8: Call
+263.   	if (ret >= 0)
+264.   		{
+265.   		if (!BN_BLINDING_update(b,ctx))
+              ^
+266.   			return(0);
+267.   		}
+
+crypto/bn/bn_blind.c:185:1: Parameter `ctx->used`
+  183.   	}
+  184.   
+  185. > int BN_BLINDING_update(BN_BLINDING *b, BN_CTX *ctx)
+  186.   	{
+  187.   	int ret=0;
+
+crypto/bn/bn_blind.c:204:8: Call
+  202.   	else if (!(b->flags & BN_BLINDING_NO_UPDATE))
+  203.   		{
+  204.   		if (!BN_mod_mul(b->A,b->A,b->A,b->mod,ctx)) goto err;
+                ^
+  205.   		if (!BN_mod_mul(b->Ai,b->Ai,b->Ai,b->mod,ctx)) goto err;
+  206.   		}
+
+crypto/bn/bn_mod.c:180:1: Parameter `ctx->used`
+    178.   
+    179.   /* slow but works */
+    180. > int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
+    181.   	BN_CTX *ctx)
+    182.   	{
+
+crypto/bn/bn_mod.c:191:11: Call
+    189.   
+    190.   	BN_CTX_start(ctx);
+    191.   	if ((t = BN_CTX_get(ctx)) == NULL) goto err;
+                     ^
+    192.   	if (a == b)
+    193.   		{ if (!BN_sqr(t,a,ctx)) goto err; }
+
+crypto/bn/bn_ctx.c:290:1: Parameter `ctx->used`
+      288.   	}
+      289.   
+      290. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+      291.   	{
+      292.   	BIGNUM *ret;
+
+crypto/bn/bn_mod.c:195:10: Call
+    193.   		{ if (!BN_sqr(t,a,ctx)) goto err; }
+    194.   	else
+    195.   		{ if (!BN_mul(t,a,b,ctx)) goto err; }
+                    ^
+    196.   	if (!BN_nnmod(r,t,m,ctx)) goto err;
+    197.   	bn_check_top(r);
+
+crypto/bn/bn_mul.c:943:1: Parameter `ctx->used`
+      941.   #endif /* BN_RECURSION */
+      942.   
+      943. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+      944.   	{
+      945.   	int ret=0;
+
+crypto/bn/bn_mul.c:1100:2: Call
+      1098.   err:
+      1099.   	bn_check_top(r);
+      1100.   	BN_CTX_end(ctx);
+               ^
+      1101.   	return(ret);
+      1102.   	}
+
+crypto/bn/bn_ctx.c:272:1: <LHS trace>
+270.   	}
+271.   
+272. > void BN_CTX_end(BN_CTX *ctx)
+273.   	{
+274.   	CTXDBG_ENTRY("BN_CTX_end", ctx);
+
+crypto/bn/bn_ctx.c:272:1: Parameter `ctx->used`
+        270.   	}
+        271.   
+        272. > void BN_CTX_end(BN_CTX *ctx)
+        273.   	{
+        274.   	CTXDBG_ENTRY("BN_CTX_end", ctx);
+
+crypto/bn/bn_ctx.c:272:1: <RHS trace>
+270.   	}
+271.   
+272. > void BN_CTX_end(BN_CTX *ctx)
+273.   	{
+274.   	CTXDBG_ENTRY("BN_CTX_end", ctx);
+
+crypto/bn/bn_ctx.c:272:1: Parameter `ctx->used`
+        270.   	}
+        271.   
+        272. > void BN_CTX_end(BN_CTX *ctx)
+        273.   	{
+        274.   	CTXDBG_ENTRY("BN_CTX_end", ctx);
+
+crypto/bn/bn_ctx.c:282:4: Binary operation: ([0, +oo] - [0, +oo]):unsigned32 by call to `BN_BLINDING_update` 
+        280.   		/* Does this stack frame have anything to release? */
+        281.   		if(fp < ctx->used)
+        282.   			BN_POOL_release(&ctx->pool, ctx->used - fp);
+                  ^
+        283.   		ctx->used = fp;
+        284.   		/* Unjam "too_many" in case "get" had failed */

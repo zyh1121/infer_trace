@@ -1,0 +1,100 @@
+ssl/ssl_lib.c:2639: error: BUFFER_OVERRUN_L4
+  Offset: [0, +oo] Size: [1, +oo] by call to `update_cipher_list`.
+Showing all 13 steps of the trace
+
+
+ssl/ssl_lib.c:2633:1: Parameter `s->tls13_ciphersuites->num`
+2631.   }
+2632.   
+2633. > int SSL_set_ciphersuites(SSL *s, const char *str)
+2634.   {
+2635.       int ret = set_ciphersuites(&(s->tls13_ciphersuites), str);
+
+ssl/ssl_lib.c:2639:16: Call
+2637.       if (ret && s->cipher_list != NULL) {
+2638.           /* We already have a cipher_list, so we need to update it */
+2639.           return update_cipher_list(s->cipher_list, s->tls13_ciphersuites);
+                       ^
+2640.       }
+2641.   
+
+ssl/ssl_lib.c:2614:10: Assignment
+  2612.   
+  2613.       /* Insert the new TLSv1.3 ciphersuites */
+  2614.       for (i = 0; i < sk_SSL_CIPHER_num(tls13_ciphersuites); i++)
+                   ^
+  2615.           sk_SSL_CIPHER_insert(cipher_list,
+  2616.                                sk_SSL_CIPHER_value(tls13_ciphersuites, i), i);
+
+ssl/ssl_lib.c:2615:9: Call
+  2613.       /* Insert the new TLSv1.3 ciphersuites */
+  2614.       for (i = 0; i < sk_SSL_CIPHER_num(tls13_ciphersuites); i++)
+  2615.           sk_SSL_CIPHER_insert(cipher_list,
+                  ^
+  2616.                                sk_SSL_CIPHER_value(tls13_ciphersuites, i), i);
+  2617.   
+
+include/openssl/ssl.h:938:1: Parameter `idx`
+    936.    * in VisualStudio 2015
+    937.    */
+    938. > DEFINE_STACK_OF_CONST(SSL_CIPHER)
+    939.   DEFINE_STACK_OF(SSL_COMP)
+    940.   
+
+include/openssl/ssl.h:938:1: Call
+    936.    * in VisualStudio 2015
+    937.    */
+    938. > DEFINE_STACK_OF_CONST(SSL_CIPHER)
+    939.   DEFINE_STACK_OF(SSL_COMP)
+    940.   
+
+crypto/stack/stack.c:233:1: <Offset trace>
+231.   }
+232.   
+233. > int OPENSSL_sk_insert(OPENSSL_STACK *st, const void *data, int loc)
+234.   {
+235.       if (st == NULL || st->num == max_nodes)
+
+crypto/stack/stack.c:233:1: Parameter `loc`
+      231.   }
+      232.   
+      233. > int OPENSSL_sk_insert(OPENSSL_STACK *st, const void *data, int loc)
+      234.   {
+      235.       if (st == NULL || st->num == max_nodes)
+
+crypto/stack/stack.c:233:1: <Length trace>
+231.   }
+232.   
+233. > int OPENSSL_sk_insert(OPENSSL_STACK *st, const void *data, int loc)
+234.   {
+235.       if (st == NULL || st->num == max_nodes)
+
+crypto/stack/stack.c:233:1: Parameter `*st->data`
+      231.   }
+      232.   
+      233. > int OPENSSL_sk_insert(OPENSSL_STACK *st, const void *data, int loc)
+      234.   {
+      235.       if (st == NULL || st->num == max_nodes)
+
+crypto/stack/stack.c:238:10: Call
+      236.           return 0;
+      237.   
+      238.       if (!sk_reserve(st, 1, 0))
+                      ^
+      239.           return 0;
+      240.   
+
+crypto/stack/stack.c:156:1: Parameter `*st->data`
+        154.   
+        155.   /* internal STACK storage allocation */
+        156. > static int sk_reserve(OPENSSL_STACK *st, int n, int exact)
+        157.   {
+        158.       const void **tmpdata;
+
+crypto/stack/stack.c:246:9: Array access: Offset: [0, +oo] Size: [1, +oo] by call to `update_cipher_list` 
+      244.           memmove(&st->data[loc + 1], &st->data[loc],
+      245.                   sizeof(st->data[0]) * (st->num - loc));
+      246.           st->data[loc] = data;
+                     ^
+      247.       }
+      248.       st->num++;

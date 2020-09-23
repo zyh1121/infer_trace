@@ -1,0 +1,209 @@
+apps/s_client.c:244: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] + [0, 127]):signed32 by call to `BN_mod_exp`.
+Showing all 27 steps of the trace
+
+
+apps/s_client.c:238:9: Call
+236.       int ret =
+237.           g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
+238.           BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
+               ^
+239.           p != NULL && BN_rshift1(p, N) &&
+240.           /* p = (N-1)/2 */
+
+crypto/bn/bn_prime.c:150:12: Call
+  148.                      BN_GENCB *cb)
+  149.   {
+  150.       return BN_is_prime_fasttest_ex(a, checks, ctx_passed, 0, cb);
+                    ^
+  151.   }
+  152.   
+
+crypto/bn/bn_prime.c:153:1: Parameter `a->top`
+    151.   }
+    152.   
+    153. > int BN_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
+    154.                               int do_trial_division, BN_GENCB *cb)
+    155.   {
+
+crypto/bn/bn_prime.c:163:9: Call
+    161.       const BIGNUM *A = NULL;
+    162.   
+    163.       if (BN_cmp(a, BN_value_one()) <= 0)
+                   ^
+    164.           return 0;
+    165.   
+
+crypto/bn/bn_lib.c:577:1: Parameter `a->top`
+      575.   }
+      576.   
+      577. > int BN_cmp(const BIGNUM *a, const BIGNUM *b)
+      578.   {
+      579.       int i;
+
+apps/s_client.c:239:22: Call
+237.           g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
+238.           BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
+239.           p != NULL && BN_rshift1(p, N) &&
+                            ^
+240.           /* p = (N-1)/2 */
+241.           BN_is_prime_ex(p, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
+
+crypto/bn/bn_shift.c:54:9: Call
+  52.       bn_check_top(a);
+  53.   
+  54.       if (BN_is_zero(a)) {
+                ^
+  55.           BN_zero(r);
+  56.           return (1);
+
+crypto/bn/bn_lib.c:852:1: Parameter `a->top`
+    850.   }
+    851.   
+    852. > int BN_is_zero(const BIGNUM *a)
+    853.   {
+    854.       return a->top == 0;
+
+apps/s_client.c:244:9: Call
+242.           r != NULL &&
+243.           /* verify g^((N-1)/2) == -1 (mod N) */
+244.           BN_mod_exp(r, g, p, N, bn_ctx) &&
+               ^
+245.           BN_add_word(r, 1) && BN_cmp(r, N) == 0;
+246.   
+
+crypto/bn/bn_exp.c:91:1: Parameter `m->top`
+  89.   }
+  90.   
+  91. > int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
+  92.                  BN_CTX *ctx)
+  93.   {
+
+crypto/bn/bn_exp.c:136:9: Call
+  134.   
+  135.   #ifdef MONT_MUL_MOD
+  136.       if (BN_is_odd(m)) {
+                 ^
+  137.   # ifdef MONT_EXP_WORD
+  138.           if (a->top == 1 && !a->neg
+
+crypto/bn/bn_lib.c:867:1: Parameter `a->top`
+    865.   }
+    866.   
+    867. > int BN_is_odd(const BIGNUM *a)
+    868.   {
+    869.       return (a->top > 0) && (a->d[0] & 1);
+
+crypto/bn/bn_exp.c:141:19: Call
+  139.               && (BN_get_flags(p, BN_FLG_CONSTTIME) == 0)) {
+  140.               BN_ULONG A = a->d[0];
+  141.               ret = BN_mod_exp_mont_word(r, A, p, m, ctx, NULL);
+                           ^
+  142.           } else
+  143.   # endif
+
+crypto/bn/bn_exp.c:1091:1: Parameter `m->top`
+    1089.   }
+    1090.   
+    1091. > int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
+    1092.                            const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+    1093.   {
+
+crypto/bn/bn_exp.c:1126:10: Call
+    1124.       bn_check_top(m);
+    1125.   
+    1126.       if (!BN_is_odd(m)) {
+                     ^
+    1127.           BNerr(BN_F_BN_MOD_EXP_MONT_WORD, BN_R_CALLED_WITH_EVEN_MODULUS);
+    1128.           return (0);
+
+crypto/bn/bn_lib.c:867:1: Parameter `a->top`
+      865.   }
+      866.   
+      867. > int BN_is_odd(const BIGNUM *a)
+      868.   {
+      869.       return (a->top > 0) && (a->d[0] & 1);
+
+crypto/bn/bn_exp.c:1181:22: Call
+    1179.                   r_is_one = 0;
+    1180.               } else {
+    1181.                   if (!BN_MOD_MUL_WORD(r, w, m))
+                                 ^
+    1182.                       goto err;
+    1183.               }
+
+crypto/bn/bn_div.c:205:31: Call
+      203.   
+      204.       /* First we normalise the numbers */
+      205.       norm_shift = BN_BITS2 - ((BN_num_bits(divisor)) % BN_BITS2);
+                                           ^
+      206.       if (!(BN_lshift(sdiv, divisor, norm_shift)))
+      207.           goto err;
+
+crypto/bn/bn_lib.c:167:9: Assignment
+        165.   
+        166.       if (BN_is_zero(a))
+        167.           return 0;
+                       ^
+        168.       return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
+        169.   }
+
+crypto/bn/bn_div.c:205:5: Assignment
+      203.   
+      204.       /* First we normalise the numbers */
+      205.       norm_shift = BN_BITS2 - ((BN_num_bits(divisor)) % BN_BITS2);
+                 ^
+      206.       if (!(BN_lshift(sdiv, divisor, norm_shift)))
+      207.           goto err;
+
+crypto/bn/bn_div.c:206:11: Call
+      204.       /* First we normalise the numbers */
+      205.       norm_shift = BN_BITS2 - ((BN_num_bits(divisor)) % BN_BITS2);
+      206.       if (!(BN_lshift(sdiv, divisor, norm_shift)))
+                       ^
+      207.           goto err;
+      208.       sdiv->neg = 0;
+
+crypto/bn/bn_shift.c:83:1: <LHS trace>
+81.   }
+82.   
+83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+84.   {
+85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:83:1: Parameter `a->top`
+        81.   }
+        82.   
+        83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+        84.   {
+        85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:83:1: <RHS trace>
+81.   }
+82.   
+83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+84.   {
+85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:83:1: Parameter `n`
+        81.   }
+        82.   
+        83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+        84.   {
+        85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:97:5: Assignment
+        95.       }
+        96.   
+        97.       nw = n / BN_BITS2;
+                   ^
+        98.       if (bn_wexpand(r, a->top + nw + 1) == NULL)
+        99.           return (0);
+
+crypto/bn/bn_shift.c:98:9: Binary operation: ([-oo, +oo] + [0, 127]):signed32 by call to `BN_mod_exp` 
+        96.   
+        97.       nw = n / BN_BITS2;
+        98.       if (bn_wexpand(r, a->top + nw + 1) == NULL)
+                       ^
+        99.           return (0);
+        100.       r->neg = a->neg;

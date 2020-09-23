@@ -1,0 +1,99 @@
+#23575
+libavcodec/mpegvideo_enc.c:952: error: INTEGER_OVERFLOW_L5
+  ([1, +oo] + 32):signed32 by call to `ff_alloc_picture`.
+
+libavcodec/mpegvideo_enc.c:952:17: Call
+950.             pic->reference = 3;
+951. 
+952.             if (ff_alloc_picture(s, pic, 0) < 0) {
+                     ^
+953.                 return -1;
+954.             }
+
+libavcodec/mpegvideo.c:587:1: Parameter `pic->f.nb_samples`
+  585.  * The pixels are allocated/set by calling get_buffer() if shared = 0
+  586.  */
+  587. int ff_alloc_picture(MpegEncContext *s, Picture *pic, int shared)
+       ^
+  588. {
+  589.     int i, ret;
+
+libavcodec/mpegvideo.c:597:13: Call
+  595.         assert(!pic->f.buf[0]);
+  596. 
+  597.         if (alloc_frame_buffer(s, pic) < 0)
+                   ^
+  598.             return -1;
+  599. 
+
+libavcodec/mpegvideo.c:424:1: Parameter `pic->f.nb_samples`
+    422.  * Allocate a frame buffer
+    423.  */
+    424. static int alloc_frame_buffer(MpegEncContext *s, Picture *pic)
+         ^
+    425. {
+    426.     int edges_needed = av_codec_is_encoder(s->avctx->codec);
+
+libavcodec/mpegvideo.c:444:13: Call
+    442.         pic->f.height = s->avctx->height;
+    443.         pic->f.format = s->avctx->pix_fmt;
+    444.         r = avcodec_default_get_buffer2(s->avctx, &pic->f, 0);
+                     ^
+    445.     }
+    446. 
+
+libavcodec/utils.c:524:1: Parameter `frame->nb_samples`
+      522. }
+      523. 
+      524. int avcodec_default_get_buffer2(AVCodecContext *avctx, AVFrame *frame, int flags)
+           ^
+      525. {
+      526.     int ret;
+
+libavcodec/utils.c:528:16: Call
+      526.     int ret;
+      527. 
+      528.     if ((ret = update_frame_pool(avctx, frame)) < 0)
+                          ^
+      529.         return ret;
+      530. 
+
+libavcodec/utils.c:327:1: Parameter `frame->nb_samples`
+        325. }
+        326. 
+        327. static int update_frame_pool(AVCodecContext *avctx, AVFrame *frame)
+             ^
+        328. {
+        329.     FramePool *pool = avctx->internal->pool;
+
+libavcodec/utils.c:399:15: Call
+        397. 
+        398.         av_buffer_pool_uninit(&pool->pools[0]);
+        399.         ret = av_samples_get_buffer_size(&pool->linesize[0], ch,
+                           ^
+        400.                                          frame->nb_samples, frame->format, 0);
+        401.         if (ret < 0)
+
+libavutil/samplefmt.c:108:1: <LHS trace>
+106. }
+107. 
+108. int av_samples_get_buffer_size(int *linesize, int nb_channels, int nb_samples,
+     ^
+109.                                enum AVSampleFormat sample_fmt, int align)
+110. {
+
+libavutil/samplefmt.c:108:1: Parameter `nb_samples`
+          106. }
+          107. 
+          108. int av_samples_get_buffer_size(int *linesize, int nb_channels, int nb_samples,
+               ^
+          109.                                enum AVSampleFormat sample_fmt, int align)
+          110. {
+
+libavutil/samplefmt.c:122:9: Binary operation: ([1, +oo] + 32):signed32 by call to `ff_alloc_picture` 
+          120.     if (!align) {
+          121.         align = 1;
+          122.         nb_samples = FFALIGN(nb_samples, 32);
+                       ^
+          123.     }
+          124. 

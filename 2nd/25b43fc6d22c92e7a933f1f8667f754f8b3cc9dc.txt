@@ -1,0 +1,125 @@
+crypto/srp/srp_lib.c:235: error: BUFFER_OVERRUN_L5
+  Offset added: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_add`.
+Showing all 16 steps of the trace
+
+
+crypto/srp/srp_lib.c:225:10: Call
+223.           goto err;
+224.   
+225.       if (!BN_mod_exp(tmp, g, x, N, bn_ctx))
+                ^
+226.           goto err;
+227.       if ((k = srp_Calc_k(N, g)) == NULL)
+
+crypto/bn/bn_exp.c:155:15: Call
+  153.   #ifdef RECP_MUL_MOD
+  154.       {
+  155.           ret = BN_mod_exp_recp(r, a, p, m, ctx);
+                       ^
+  156.       }
+  157.   #else
+
+crypto/bn/bn_exp.c:167:1: Parameter `*r->d`
+    165.   }
+    166.   
+    167. > int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
+    168.                       const BIGNUM *m, BN_CTX *ctx)
+    169.   {
+
+crypto/srp/srp_lib.c:235:10: Call
+233.       if (!BN_mul(tmp3, u, x, bn_ctx))
+234.           goto err;
+235.       if (!BN_add(tmp2, a, tmp3))
+                ^
+236.           goto err;
+237.       K = BN_new();
+
+crypto/bn/bn_add.c:14:1: Parameter `*r->d`
+  12.   
+  13.   /* r can == a or b */
+  14. > int BN_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+  15.   {
+  16.       const BIGNUM *tmp;
+
+crypto/bn/bn_add.c:39:18: Call
+  37.   
+  38.           if (BN_ucmp(a, b) < 0) {
+  39.               if (!BN_usub(r, b, a))
+                         ^
+  40.                   return (0);
+  41.               r->neg = 1;
+
+crypto/bn/bn_add.c:117:1: <Offset trace>
+115.   
+116.   /* unsigned subtraction of b from a, a must be larger than b. */
+117. > int BN_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+118.   {
+119.       int max, min, dif;
+
+crypto/bn/bn_add.c:117:1: Parameter `a->top`
+    115.   
+    116.   /* unsigned subtraction of b from a, a must be larger than b. */
+    117. > int BN_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+    118.   {
+    119.       int max, min, dif;
+
+crypto/bn/bn_add.c:127:5: Assignment
+    125.       bn_check_top(b);
+    126.   
+    127.       max = a->top;
+               ^
+    128.       min = b->top;
+    129.       dif = max - min;
+
+crypto/bn/bn_add.c:129:5: Assignment
+    127.       max = a->top;
+    128.       min = b->top;
+    129.       dif = max - min;
+               ^
+    130.   
+    131.       if (dif < 0) {              /* hmm... should not be happening */
+
+crypto/bn/bn_add.c:117:1: <Length trace>
+115.   
+116.   /* unsigned subtraction of b from a, a must be larger than b. */
+117. > int BN_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+118.   {
+119.       int max, min, dif;
+
+crypto/bn/bn_add.c:117:1: Parameter `*r->d`
+    115.   
+    116.   /* unsigned subtraction of b from a, a must be larger than b. */
+    117. > int BN_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+    118.   {
+    119.       int max, min, dif;
+
+crypto/bn/bn_add.c:136:9: Call
+    134.       }
+    135.   
+    136.       if (bn_wexpand(r, max) == NULL)
+                   ^
+    137.           return (0);
+    138.   
+
+crypto/bn/bn_lib.c:1016:1: Parameter `*a->d`
+      1014.   }
+      1015.   
+      1016. > BIGNUM *bn_wexpand(BIGNUM *a, int words)
+      1017.   {
+      1018.       return (words <= a->dmax) ? a : bn_expand2(a, words);
+
+crypto/bn/bn_add.c:141:5: Assignment
+    139.       ap = a->d;
+    140.       bp = b->d;
+    141.       rp = r->d;
+               ^
+    142.   
+    143.   #if 1
+
+crypto/bn/bn_add.c:177:9: Array access: Offset added: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_add` 
+    175.       }
+    176.       if (dif && ap != rp)
+    177.           memcpy(rp, ap, sizeof(*rp) * dif);
+                   ^
+    178.   
+    179.       r->top = max;

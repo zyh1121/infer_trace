@@ -1,0 +1,86 @@
+crypto/ec/ec_mult.c:186: error: INTEGER_OVERFLOW_L5
+  ([0, +oo] + 16):unsigned32 by call to `BN_mul`.
+Showing all 11 steps of the trace
+
+
+crypto/ec/ec_mult.c:133:1: Parameter `ctx->pool.size`
+131.    * Returns 1 on success, 0 otherwise.
+132.    */
+133. > static
+134.   int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
+135.                            const BIGNUM *scalar, const EC_POINT *point,
+
+crypto/ec/ec_mult.c:178:19: Call
+176.       EC_POINT_BN_set_flags(s, BN_FLG_CONSTTIME);
+177.   
+178.       cardinality = BN_CTX_get(ctx);
+                         ^
+179.       lambda = BN_CTX_get(ctx);
+180.       k = BN_CTX_get(ctx);
+
+crypto/bn/bn_ctx.c:212:1: Parameter `ctx->pool.size`
+  210.   }
+  211.   
+  212. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+  213.   {
+  214.       BIGNUM *ret;
+
+crypto/ec/ec_mult.c:186:10: Call
+184.       }
+185.   
+186.       if (!BN_mul(cardinality, group->order, group->cofactor, ctx)) {
+                ^
+187.           ECerr(EC_F_EC_SCALAR_MUL_LADDER, ERR_R_BN_LIB);
+188.           goto err;
+
+crypto/bn/bn_mul.c:497:1: Parameter `ctx->pool.size`
+  495.   #endif                          /* BN_RECURSION */
+  496.   
+  497. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+  498.   {
+  499.       int ret = 0;
+
+crypto/bn/bn_mul.c:525:19: Call
+  523.       BN_CTX_start(ctx);
+  524.       if ((r == a) || (r == b)) {
+  525.           if ((rr = BN_CTX_get(ctx)) == NULL)
+                           ^
+  526.               goto err;
+  527.       } else
+
+crypto/bn/bn_ctx.c:212:1: Parameter `ctx->pool.size`
+    210.   }
+    211.   
+    212. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+    213.   {
+    214.       BIGNUM *ret;
+
+crypto/bn/bn_ctx.c:219:16: Call
+    217.       if (ctx->err_stack || ctx->too_many)
+    218.           return NULL;
+    219.       if ((ret = BN_POOL_get(&ctx->pool, ctx->flags)) == NULL) {
+                          ^
+    220.           /*
+    221.            * Setting too_many prevents repeated "get" attempts from cluttering
+
+crypto/bn/bn_ctx.c:305:1: <LHS trace>
+303.   
+304.   
+305. > static BIGNUM *BN_POOL_get(BN_POOL *p, int flag)
+306.   {
+307.       BIGNUM *bn;
+
+crypto/bn/bn_ctx.c:305:1: Parameter `p->size`
+      303.   
+      304.   
+      305. > static BIGNUM *BN_POOL_get(BN_POOL *p, int flag)
+      306.   {
+      307.       BIGNUM *bn;
+
+crypto/bn/bn_ctx.c:333:9: Binary operation: ([0, +oo] + 16):unsigned32 by call to `BN_mul` 
+      331.               p->current = item;
+      332.           }
+      333.           p->size += BN_CTX_POOL_SIZE;
+                     ^
+      334.           p->used++;
+      335.           /* Return the first bignum from the new pool */

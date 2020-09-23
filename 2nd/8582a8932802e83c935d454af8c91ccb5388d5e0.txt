@@ -1,0 +1,43 @@
+#19529
+libavcodec/vorbisdec.c:1380: error: Integer Overflow L5
+  ([0, +oo] + 1):unsigned64.
+
+libavcodec/vorbisdec.c:1269:1: <LHS trace>
+1267. // Read and decode residue
+1268. 
+1269. static av_always_inline int vorbis_residue_decode_internal(vorbis_context *vc,
+      ^
+1270.                                                            vorbis_residue *vr,
+1271.                                                            uint_fast8_t ch,
+
+libavcodec/vorbisdec.c:1269:1: Parameter `vr->begin`
+1267. // Read and decode residue
+1268. 
+1269. static av_always_inline int vorbis_residue_decode_internal(vorbis_context *vc,
+      ^
+1270.                                                            vorbis_residue *vr,
+1271.                                                            uint_fast8_t ch,
+
+libavcodec/vorbisdec.c:1303:9: Assignment
+1301.         uint_fast16_t j_times_ptns_to_read;
+1302. 
+1303.         voffset = vr->begin;
+              ^
+1304.         for (partition_count = 0; partition_count < ptns_to_read;) {  // SPEC        error
+1305.             if (!pass) {
+
+libavcodec/vorbisdec.c:1361:33: Assignment
+1359.                                 }
+1360.                             } else if (vr_type == 2 && ch == 2 && (voffset & 1) == 0 && (dim & 1) == 0) { // most frequent case optimized
+1361.                                 voffs = voffset >> 1;
+                                      ^
+1362. 
+1363.                                 if (dim == 2) {
+
+libavcodec/vorbisdec.c:1380:66: Binary operation: ([0, +oo] + 1):unsigned64
+1378.                                 for (k = 0; k < step; ++k) {
+1379.                                     coffs = get_vlc2(gb, codebook.vlc.table, codebook.nb_bits, 3) * dim;
+1380.                                     for (l = 0; l < dim; l += 2, voffs++) {
+                                                                       ^
+1381.                                         vec[voffs       ] += codebook.codevectors[coffs + l    ];  // FPMATH
+1382.                                         vec[voffs + vlen] += codebook.codevectors[coffs + l + 1];  // FPMATH

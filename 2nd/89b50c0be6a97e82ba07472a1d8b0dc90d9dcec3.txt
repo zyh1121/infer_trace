@@ -1,0 +1,99 @@
+#16570
+libavcodec/cbs_h264_syntax_template.c:336: error: INTEGER_OVERFLOW_L5
+  ([0, +oo] + 32):unsigned32 by call to `cbs_read_ue_golomb`.
+
+libavcodec/cbs_h264_syntax_template.c:334:5: Call
+332.                                 1 << H264_NAL_SPS_EXT));
+333. 
+334.     ue(seq_parameter_set_id, 0, 31);
+         ^
+335. 
+336.     ue(aux_format_idc, 0, 3);
+
+libavcodec/cbs_h2645.c:34:1: Parameter `bc->bits_left`
+  32. 
+  33. 
+  34. static int cbs_read_ue_golomb(CodedBitstreamContext *ctx, BitstreamContext *bc,
+      ^
+  35.                               const char *name, uint32_t *write_to,
+  36.                               uint32_t range_min, uint32_t range_max)
+
+libavcodec/cbs_h264_syntax_template.c:336:5: Call
+334.     ue(seq_parameter_set_id, 0, 31);
+335. 
+336.     ue(aux_format_idc, 0, 3);
+         ^
+337. 
+338.     if (current->aux_format_idc != 0) {
+
+libavcodec/cbs_h2645.c:34:1: Parameter `bc->bits_left`
+  32. 
+  33. 
+  34. static int cbs_read_ue_golomb(CodedBitstreamContext *ctx, BitstreamContext *bc,
+      ^
+  35.                               const char *name, uint32_t *write_to,
+  36.                               uint32_t range_min, uint32_t range_max)
+
+libavcodec/cbs_h2645.c:71:17: Call
+  69.         ff_cbs_trace_syntax_element(ctx, position, name, bits, value);
+  70.     } else {
+  71.         value = get_ue_golomb_long(bc);
+                      ^
+  72.     }
+  73. 
+
+libavcodec/golomb.h:77:1: Parameter `bc->bits_left`
+    75.  * Read an unsigned Exp-Golomb code in the range 0 to UINT32_MAX-1.
+    76.  */
+    77. static inline unsigned get_ue_golomb_long(BitstreamContext *bc)
+        ^
+    78. {
+    79.     unsigned buf, log;
+
+libavcodec/golomb.h:81:11: Call
+    79.     unsigned buf, log;
+    80. 
+    81.     buf = bitstream_peek(bc, 32);
+                  ^
+    82.     log = 31 - av_log2(buf);
+    83.     bitstream_skip(bc, log);
+
+libavcodec/bitstream.h:214:1: Parameter `n`
+      212. /* Return n bits from the buffer, but do not change the buffer state.
+      213.  * n has to be in the 0-32 range. */
+      214. static inline unsigned bitstream_peek(BitstreamContext *bc, unsigned n)
+           ^
+      215. {
+      216.     if (n > bc->bits_left)
+
+libavcodec/bitstream.h:217:9: Call
+      215. {
+      216.     if (n > bc->bits_left)
+      217.         refill_32(bc);
+                   ^
+      218. 
+      219.     return show_val(bc, n);
+
+libavcodec/bitstream.h:59:1: <LHS trace>
+57. }
+58. 
+59. static inline void refill_32(BitstreamContext *bc)
+    ^
+60. {
+61.     if (bc->ptr >= bc->buffer_end)
+
+libavcodec/bitstream.h:59:1: Parameter `bc->bits_left`
+        57. }
+        58. 
+        59. static inline void refill_32(BitstreamContext *bc)
+            ^
+        60. {
+        61.     if (bc->ptr >= bc->buffer_end)
+
+libavcodec/bitstream.h:70:5: Binary operation: ([0, +oo] + 32):unsigned32 by call to `cbs_read_ue_golomb` 
+        68. #endif
+        69.     bc->ptr       += 4;
+        70.     bc->bits_left += 32;
+                ^
+        71. }
+        72. 

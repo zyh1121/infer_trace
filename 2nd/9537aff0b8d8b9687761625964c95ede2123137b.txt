@@ -1,0 +1,206 @@
+test/bntest.c:1005: error: BUFFER_OVERRUN_L3
+  Offset: [8, +oo] (⇐ [8, +oo] + [0, +oo]) Size: [0, 8388607] by call to `BN_mod_exp`.
+Showing all 27 steps of the trace
+
+
+test/bntest.c:1002:5: Call
+1000.       e = BN_new();
+1001.   
+1002.       BN_one(a);
+            ^
+1003.       BN_one(b);
+1004.       BN_zero(c);
+
+crypto/bn/bn_lib.c:463:1: Parameter `*a->d`
+  461.   }
+  462.   
+  463. > int BN_set_word(BIGNUM *a, BN_ULONG w)
+  464.   {
+  465.       bn_check_top(a);
+
+crypto/bn/bn_lib.c:466:9: Call
+  464.   {
+  465.       bn_check_top(a);
+  466.       if (bn_expand(a, (int)sizeof(BN_ULONG) * 8) == NULL)
+                 ^
+  467.           return (0);
+  468.       a->neg = 0;
+
+crypto/bn/bn_lcl.h:676:1: Parameter `*a->d`
+    674.   int bn_probable_prime_dh_coprime(BIGNUM *rnd, int bits, BN_CTX *ctx);
+    675.   
+    676. > static ossl_inline BIGNUM *bn_expand(BIGNUM *a, int bits)
+    677.   {
+    678.       if (bits > (INT_MAX - BN_BITS2 + 1))
+
+test/bntest.c:1005:9: Call
+1003.       BN_one(b);
+1004.       BN_zero(c);
+1005.       if (BN_mod_exp(d, a, b, c, ctx)) {
+                ^
+1006.           fprintf(stderr, "BN_mod_exp with zero modulus succeeded!\n");
+1007.           return 0;
+
+crypto/bn/bn_exp.c:91:1: Parameter `*a->d`
+  89.   }
+  90.   
+  91. > int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
+  92.                  BN_CTX *ctx)
+  93.   {
+
+crypto/bn/bn_exp.c:151:19: Call
+  149.           } else
+  150.   # endif
+  151.               ret = BN_mod_exp_mont(r, a, p, m, ctx, NULL);
+                           ^
+  152.       } else
+  153.   #endif
+
+crypto/bn/bn_exp.c:301:1: Parameter `*a->d`
+    299.   }
+    300.   
+    301. > int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+    302.                       const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+    303.   {
+
+crypto/bn/bn_exp.c:313:16: Call
+    311.   
+    312.       if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0) {
+    313.           return BN_mod_exp_mont_consttime(rr, a, p, m, ctx, in_mont);
+                          ^
+    314.       }
+    315.   
+
+crypto/bn/bn_exp.c:601:1: Parameter `*a->d`
+      599.    * http://www.daemonology.net/hyperthreading-considered-harmful/)
+      600.    */
+      601. > int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+      602.                                 const BIGNUM *m, BN_CTX *ctx,
+      603.                                 BN_MONT_CTX *in_mont)
+
+crypto/bn/bn_exp.c:758:17: Call
+      756.           if (!BN_to_montgomery(&am, &am, mont, ctx))
+      757.               goto err;
+      758.       } else if (!BN_to_montgomery(&am, a, mont, ctx))
+                             ^
+      759.           goto err;
+      760.   
+
+crypto/bn/bn_lib.c:945:1: Parameter `*a->d`
+        943.   }
+        944.   
+        945. > int BN_to_montgomery(BIGNUM *r, const BIGNUM *a, BN_MONT_CTX *mont,
+        946.                        BN_CTX *ctx)
+        947.   {
+
+crypto/bn/bn_lib.c:948:12: Call
+        946.                        BN_CTX *ctx)
+        947.   {
+        948.       return BN_mod_mul_montgomery(r, a, &(mont->RR), mont, ctx);
+                          ^
+        949.   }
+        950.   
+
+crypto/bn/bn_mont.c:26:1: Parameter `*a->d`
+          24.   #endif
+          25.   
+          26. > int BN_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+          27.                             BN_MONT_CTX *mont, BN_CTX *ctx)
+          28.   {
+
+crypto/bn/bn_mont.c:56:14: Call
+          54.               goto err;
+          55.       } else {
+          56.           if (!BN_mul(tmp, a, b, ctx))
+                             ^
+          57.               goto err;
+          58.       }
+
+crypto/bn/bn_mul.c:828:1: Parameter `*a->d`
+            826.   #endif                          /* BN_RECURSION */
+            827.   
+            828. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+            829.   {
+            830.       int ret = 0;
+
+crypto/bn/bn_mul.c:909:17: Call
+            907.                   if (bn_wexpand(rr, k * 4) == NULL)
+            908.                       goto err;
+            909.                   bn_mul_part_recursive(rr->d, a->d, b->d,
+                                   ^
+            910.                                         j, al - j, bl - j, t->d);
+            911.               } else {            /* al <= j || bl <= j */
+
+crypto/bn/bn_mul.c:480:1: Parameter `n`
+              478.    */
+              479.   /* tnX may not be negative but less than n */
+              480. > void bn_mul_part_recursive(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b, int n,
+              481.                              int tna, int tnb, BN_ULONG *t)
+              482.   {
+
+crypto/bn/bn_mul.c:493:10: Call
+              491.   
+              492.       /* r=(a[0]-a[1])*(b[1]-b[0]) */
+              493.       c1 = bn_cmp_part_words(a, &(a[n]), tna, n - tna);
+                              ^
+              494.       c2 = bn_cmp_part_words(&(b[n]), b, tnb, tnb - n);
+              495.       neg = 0;
+
+crypto/bn/bn_lib.c:803:1: Parameter `cl`
+                801.    */
+                802.   
+                803. > int bn_cmp_part_words(const BN_ULONG *a, const BN_ULONG *b, int cl, int dl)
+                804.   {
+                805.       int n, i;
+
+crypto/bn/bn_lib.c:820:12: Call
+                818.           }
+                819.       }
+                820.       return bn_cmp_words(a, b, cl);
+                                  ^
+                821.   }
+                822.   
+
+crypto/bn/bn_lib.c:776:1: <Offset trace>
+774.   }
+775.   
+776. > int bn_cmp_words(const BN_ULONG *a, const BN_ULONG *b, int n)
+777.   {
+778.       int i;
+
+crypto/bn/bn_lib.c:776:1: Parameter `n`
+                  774.   }
+                  775.   
+                  776. > int bn_cmp_words(const BN_ULONG *a, const BN_ULONG *b, int n)
+                  777.   {
+                  778.       int i;
+
+crypto/bn/bn_lib.c:785:10: Assignment
+                  783.       if (aa != bb)
+                  784.           return ((aa > bb) ? 1 : -1);
+                  785.       for (i = n - 2; i >= 0; i--) {
+                                  ^
+                  786.           aa = a[i];
+                  787.           bb = b[i];
+
+crypto/bn/bn_lib.c:776:1: <Length trace>
+774.   }
+775.   
+776. > int bn_cmp_words(const BN_ULONG *a, const BN_ULONG *b, int n)
+777.   {
+778.       int i;
+
+crypto/bn/bn_lib.c:776:1: Parameter `*b`
+                  774.   }
+                  775.   
+                  776. > int bn_cmp_words(const BN_ULONG *a, const BN_ULONG *b, int n)
+                  777.   {
+                  778.       int i;
+
+crypto/bn/bn_lib.c:787:14: Array access: Offset: [8, +oo] (⇐ [8, +oo] + [0, +oo]) Size: [0, 8388607] by call to `BN_mod_exp` 
+                  785.       for (i = n - 2; i >= 0; i--) {
+                  786.           aa = a[i];
+                  787.           bb = b[i];
+                                      ^
+                  788.           if (aa != bb)
+                  789.               return ((aa > bb) ? 1 : -1);

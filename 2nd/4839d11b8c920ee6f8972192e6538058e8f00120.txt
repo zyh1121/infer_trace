@@ -1,0 +1,83 @@
+#28376
+libavcodec/mpegvideo_enc.c:1524: error: Buffer Overrun L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, 3]) Size: [0, +oo] by call to `frame_start`.
+
+libavcodec/mpegvideo_enc.c:1519:13: Call
+1517.             uint8_t *end   = pkt->data + (size_t)(((int64_t) pkt->size) *   end_y / h);
+1518. 
+1519.             init_put_bits(&s->thread_context[i]->pb, start, end - start);
+                  ^
+1520.         }
+1521. 
+
+libavcodec/put_bits.h:60:5: Assignment
+  58.     s->buf_end      = s->buf + buffer_size;
+  59.     s->buf_ptr      = s->buf;
+  60.     s->bit_left     = 32;
+          ^
+  61.     s->bit_buf      = 0;
+  62. }
+
+libavcodec/mpegvideo_enc.c:1524:15: Call
+1522.         s->pict_type = s->new_picture.f.pict_type;
+1523.         //emms_c();
+1524.         ret = frame_start(s);
+                    ^
+1525.         if (ret < 0)
+1526.             return ret;
+
+libavcodec/mpegvideo_enc.c:1454:14: <Offset trace>
+1452.     if (s->picture_structure!= PICT_FRAME) {
+1453.         int i;
+1454.         for (i = 0; i < 4; i++) {
+                   ^
+1455.             if (s->picture_structure == PICT_BOTTOM_FIELD) {
+1456.                 s->current_picture.f.data[i] +=
+
+libavcodec/mpegvideo_enc.c:1454:14: Assignment
+  1452.     if (s->picture_structure!= PICT_FRAME) {
+  1453.         int i;
+  1454.         for (i = 0; i < 4; i++) {
+                     ^
+  1455.             if (s->picture_structure == PICT_BOTTOM_FIELD) {
+  1456.                 s->current_picture.f.data[i] +=
+
+libavcodec/mpegvideo_enc.c:1412:1: <Length trace>
+1410. }
+1411. 
+1412. static int frame_start(MpegEncContext *s)
+      ^
+1413. {
+1414.     int ret;
+
+libavcodec/mpegvideo_enc.c:1412:1: Parameter `*s->current_picture.f.data[*]`
+  1410. }
+  1411. 
+  1412. static int frame_start(MpegEncContext *s)
+        ^
+  1413. {
+  1414.     int ret;
+
+libavcodec/mpegvideo_enc.c:1427:16: Call
+  1425. 
+  1426.     ff_mpeg_unref_picture(s, &s->current_picture);
+  1427.     if ((ret = ff_mpeg_ref_picture(s, &s->current_picture,
+                       ^
+  1428.                                    s->current_picture_ptr)) < 0)
+  1429.         return ret;
+
+libavcodec/mpegvideo.c:699:1: Parameter `dst->f.data[*]`
+    697. }
+    698. 
+    699. int ff_mpeg_ref_picture(MpegEncContext *s, Picture *dst, Picture *src)
+         ^
+    700. {
+    701.     int ret;
+
+libavcodec/mpegvideo_enc.c:1456:17: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, 3]) Size: [0, +oo] by call to `frame_start` 
+  1454.         for (i = 0; i < 4; i++) {
+  1455.             if (s->picture_structure == PICT_BOTTOM_FIELD) {
+  1456.                 s->current_picture.f.data[i] +=
+                        ^
+  1457.                     s->current_picture.f.linesize[i];
+  1458.             }

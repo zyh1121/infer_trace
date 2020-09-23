@@ -1,0 +1,86 @@
+crypto/bn/bn_prime.c:517: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, +oo]) Size: [0, +oo] by call to `BN_mod_word`.
+Showing all 11 steps of the trace
+
+
+crypto/bn/bn_prime.c:505:7: Call
+503.   
+504.   	if (!BN_mod(t1,rnd,add,ctx)) goto err;
+505.   	if (!BN_sub(rnd,rnd,t1)) goto err;
+             ^
+506.   	if (rem == NULL)
+507.   		{ if (!BN_add_word(rnd,1)) goto err; }
+
+crypto/bn/bn_add.c:265:1: Parameter `*r->d`
+  263.   	}
+  264.   
+  265. > int BN_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+  266.   	{
+  267.   	int max;
+
+crypto/bn/bn_prime.c:507:10: Call
+505.   	if (!BN_sub(rnd,rnd,t1)) goto err;
+506.   	if (rem == NULL)
+507.   		{ if (!BN_add_word(rnd,1)) goto err; }
+                ^
+508.   	else
+509.   		{ if (!BN_add(rnd,rnd,rem)) goto err; }
+
+crypto/bn/bn_word.c:126:1: Parameter `*a->d`
+  124.   	}
+  125.   
+  126. > int BN_add_word(BIGNUM *a, BN_ULONG w)
+  127.   	{
+  128.   	BN_ULONG l;
+
+crypto/bn/bn_prime.c:517:7: Call
+515.   		{
+516.   		/* check that rnd is a prime */
+517.   		if (BN_mod_word(rnd,(BN_ULONG)primes[i]) <= 1)
+             ^
+518.   			{
+519.   			if (!BN_add(rnd,rnd,add)) goto err;
+
+crypto/bn/bn_word.c:63:1: <Offset trace>
+61.   #include "bn_lcl.h"
+62.   
+63. > BN_ULONG BN_mod_word(const BIGNUM *a, BN_ULONG w)
+64.   	{
+65.   #ifndef BN_LLONG
+
+crypto/bn/bn_word.c:63:1: Parameter `a->top`
+  61.   #include "bn_lcl.h"
+  62.   
+  63. > BN_ULONG BN_mod_word(const BIGNUM *a, BN_ULONG w)
+  64.   	{
+  65.   #ifndef BN_LLONG
+
+crypto/bn/bn_word.c:77:7: Assignment
+  75.   	bn_check_top(a);
+  76.   	w&=BN_MASK2;
+  77.   	for (i=a->top-1; i>=0; i--)
+              ^
+  78.   		{
+  79.   #ifndef BN_LLONG
+
+crypto/bn/bn_word.c:63:1: <Length trace>
+61.   #include "bn_lcl.h"
+62.   
+63. > BN_ULONG BN_mod_word(const BIGNUM *a, BN_ULONG w)
+64.   	{
+65.   #ifndef BN_LLONG
+
+crypto/bn/bn_word.c:63:1: Parameter `*a->d`
+  61.   #include "bn_lcl.h"
+  62.   
+  63. > BN_ULONG BN_mod_word(const BIGNUM *a, BN_ULONG w)
+  64.   	{
+  65.   #ifndef BN_LLONG
+
+crypto/bn/bn_word.c:80:26: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, +oo]) Size: [0, +oo] by call to `BN_mod_word` 
+  78.   		{
+  79.   #ifndef BN_LLONG
+  80.   		ret=((ret<<BN_BITS4)|((a->d[i]>>BN_BITS4)&BN_MASK2l))%w;
+                                 ^
+  81.   		ret=((ret<<BN_BITS4)|(a->d[i]&BN_MASK2l))%w;
+  82.   #else

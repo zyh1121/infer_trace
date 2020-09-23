@@ -1,0 +1,139 @@
+crypto/srp/srp_lib.c:106: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] + 1):signed32 by call to `BN_mod_mul`.
+Showing all 18 steps of the trace
+
+
+crypto/srp/srp_lib.c:104:10: Call
+102.       /* B = g**b + k*v */
+103.   
+104.       if (!BN_mod_exp(gb, g, b, N, bn_ctx)
+                ^
+105.           || (k = srp_Calc_k(N, g)) == NULL
+106.           || !BN_mod_mul(kv, v, k, N, bn_ctx)
+
+crypto/bn/bn_exp.c:89:1: Parameter `ctx->err_stack`
+  87.   }
+  88.   
+  89. > int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
+  90.                  BN_CTX *ctx)
+  91.   {
+
+crypto/bn/bn_exp.c:141:19: Call
+  139.               && (BN_get_flags(m, BN_FLG_CONSTTIME) == 0)) {
+  140.               BN_ULONG A = a->d[0];
+  141.               ret = BN_mod_exp_mont_word(r, A, p, m, ctx, NULL);
+                           ^
+  142.           } else
+  143.   # endif
+
+crypto/bn/bn_exp.c:1127:1: Parameter `ctx->err_stack`
+    1125.   }
+    1126.   
+    1127. > int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
+    1128.                            const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+    1129.   {
+
+crypto/srp/srp_lib.c:106:13: Call
+104.       if (!BN_mod_exp(gb, g, b, N, bn_ctx)
+105.           || (k = srp_Calc_k(N, g)) == NULL
+106.           || !BN_mod_mul(kv, v, k, N, bn_ctx)
+                   ^
+107.           || !BN_mod_add(B, gb, kv, N, bn_ctx)) {
+108.           BN_free(B);
+
+crypto/bn/bn_mod.c:193:1: Parameter `ctx->err_stack`
+  191.   
+  192.   /* slow but works */
+  193. > int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
+  194.                  BN_CTX *ctx)
+  195.   {
+
+crypto/bn/bn_mod.c:203:5: Call
+  201.       bn_check_top(m);
+  202.   
+  203.       BN_CTX_start(ctx);
+             ^
+  204.       if ((t = BN_CTX_get(ctx)) == NULL)
+  205.           goto err;
+
+crypto/bn/bn_ctx.c:181:1: Parameter `ctx->err_stack`
+    179.   }
+    180.   
+    181. > void BN_CTX_start(BN_CTX *ctx)
+    182.   {
+    183.       CTXDBG_ENTRY("BN_CTX_start", ctx);
+
+crypto/bn/bn_mod.c:204:14: Call
+  202.   
+  203.       BN_CTX_start(ctx);
+  204.       if ((t = BN_CTX_get(ctx)) == NULL)
+                      ^
+  205.           goto err;
+  206.       if (a == b) {
+
+crypto/bn/bn_ctx.c:212:1: Parameter `ctx->err_stack`
+    210.   }
+    211.   
+    212. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+    213.   {
+    214.       BIGNUM *ret;
+
+crypto/bn/bn_mod.c:210:14: Call
+  208.               goto err;
+  209.       } else {
+  210.           if (!BN_mul(t, a, b, ctx))
+                      ^
+  211.               goto err;
+  212.       }
+
+crypto/bn/bn_mul.c:497:1: Parameter `ctx->err_stack`
+    495.   #endif                          /* BN_RECURSION */
+    496.   
+    497. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+    498.   {
+    499.       int ret = bn_mul_fixed_top(r, a, b, ctx);
+
+crypto/bn/bn_mul.c:499:15: Call
+    497.   int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+    498.   {
+    499.       int ret = bn_mul_fixed_top(r, a, b, ctx);
+                         ^
+    500.   
+    501.       bn_correct_top(r);
+
+crypto/bn/bn_mul.c:507:1: Parameter `ctx->err_stack`
+      505.   }
+      506.   
+      507. > int bn_mul_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+      508.   {
+      509.       int ret = 0;
+
+crypto/bn/bn_mul.c:533:5: Call
+      531.       top = al + bl;
+      532.   
+      533.       BN_CTX_start(ctx);
+                 ^
+      534.       if ((r == a) || (r == b)) {
+      535.           if ((rr = BN_CTX_get(ctx)) == NULL)
+
+crypto/bn/bn_ctx.c:181:1: <LHS trace>
+179.   }
+180.   
+181. > void BN_CTX_start(BN_CTX *ctx)
+182.   {
+183.       CTXDBG_ENTRY("BN_CTX_start", ctx);
+
+crypto/bn/bn_ctx.c:181:1: Parameter `ctx->err_stack`
+        179.   }
+        180.   
+        181. > void BN_CTX_start(BN_CTX *ctx)
+        182.   {
+        183.       CTXDBG_ENTRY("BN_CTX_start", ctx);
+
+crypto/bn/bn_ctx.c:186:9: Binary operation: ([-oo, +oo] + 1):signed32 by call to `BN_mod_mul` 
+        184.       /* If we're already overflowing ... */
+        185.       if (ctx->err_stack || ctx->too_many)
+        186.           ctx->err_stack++;
+                       ^
+        187.       /* (Try to) get a new frame pointer */
+        188.       else if (!BN_STACK_push(&ctx->stack, ctx->used)) {

@@ -1,0 +1,59 @@
+#22749
+libavcodec/wmaprodec.c:1567: error: INTEGER_OVERFLOW_L5
+  ([max(0, `avctx->priv_data->samples_per_frame`), max(0, `avctx->priv_data->samples_per_frame`)] × 4):unsigned64 by call to `decode_frame`.
+
+libavcodec/wmaprodec.c:1475:1: Parameter `avctx->priv_data->samples_per_frame`
+1473.  *@return number of bytes that were read from the input buffer
+1474.  */
+1475. static int decode_packet(AVCodecContext *avctx,
+      ^
+1476.                          void *data, int *data_size, AVPacket* avpkt)
+1477. {
+
+libavcodec/wmaprodec.c:1567:31: Call
+1565.                 the "previous frame" data from the next packet so that
+1566.                 we get a buffer that only contains full frames */
+1567.             s->packet_done = !decode_frame(s);
+                                    ^
+1568.         } else
+1569.             s->packet_done = 1;
+
+libavcodec/wmaprodec.c:1281:1: <LHS trace>
+1279.  *        1 if there are additional frames
+1280.  */
+1281. static int decode_frame(WMAProDecodeCtx *s)
+      ^
+1282. {
+1283.     GetBitContext* gb = &s->gb;
+
+libavcodec/wmaprodec.c:1281:1: Parameter `s->samples_per_frame`
+  1279.  *        1 if there are additional frames
+  1280.  */
+  1281. static int decode_frame(WMAProDecodeCtx *s)
+        ^
+  1282. {
+  1283.     GetBitContext* gb = &s->gb;
+
+libavcodec/wmaprodec.c:1305:9: Call
+  1303. 
+  1304.     /** decode tile information */
+  1305.     if (decode_tilehdr(s)) {
+                ^
+  1306.         s->packet_loss = 1;
+  1307.         return 0;
+
+libavcodec/wmaprodec.c:512:1: Parameter `s->min_samples_per_subframe`
+    510.  *@return 0 on success, < 0 in case of an error
+    511.  */
+    512. static int decode_tilehdr(WMAProDecodeCtx *s)
+         ^
+    513. {
+    514.     uint16_t num_samples[WMAPRO_MAX_CHANNELS];        /**< sum of samples for all currently known subframes of a channel */
+
+libavcodec/wmaprodec.c:1370:9: Binary operation: ([max(0, avctx->priv_data->samples_per_frame), max(0, avctx->priv_data->samples_per_frame)] × 4):unsigned64 by call to `decode_frame` 
+  1368.     for (i = 0; i < s->num_channels; i++) {
+  1369.         /** reuse second half of the IMDCT output for the next frame */
+  1370.         memcpy(&s->channel[i].out[0],
+                ^
+  1371.                &s->channel[i].out[s->samples_per_frame],
+  1372.                s->samples_per_frame * sizeof(*s->channel[i].out) >> 1);

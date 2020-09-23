@@ -1,0 +1,147 @@
+#22971
+libavcodec/ac3enc.c:1846: error: Integer Overflow L5
+  (5 × [-oo, +oo]):signed32 by call to `quantize_mantissas`.
+
+libavcodec/ac3enc.c:1838:5: Call
+1836.     apply_rematrixing(s);
+1837. 
+1838.     process_exponents(s);
+          ^
+1839. 
+1840.     ret = compute_bit_allocation(s);
+
+libavcodec/ac3enc.c:581:5: Call
+  579.     encode_exponents(s);
+  580. 
+  581.     group_exponents(s);
+           ^
+  582. 
+  583.     emms_c();
+
+libavcodec/ac3enc.c:513:1: Parameter `**s->blocks[*].grouped_exp`
+    511.  * varies depending on exponent strategy and bandwidth.
+    512.  */
+    513. static void group_exponents(AC3EncodeContext *s)
+         ^
+    514. {
+    515.     int blk, ch, i, cpl;
+
+libavcodec/ac3enc.c:1840:11: Call
+1838.     process_exponents(s);
+1839. 
+1840.     ret = compute_bit_allocation(s);
+                ^
+1841.     if (ret) {
+1842.         av_log(avctx, AV_LOG_ERROR, "Bit allocation failed. Try increasing the bitrate.\n");
+
+libavcodec/ac3enc.c:1031:1: Parameter `s->blocks[*].new_snr_offsets`
+  1029.  * used to quantize the mantissas.
+  1030.  */
+  1031. static int compute_bit_allocation(AC3EncodeContext *s)
+        ^
+  1032. {
+  1033.     count_frame_bits(s);
+
+libavcodec/ac3enc.c:1033:5: Call
+  1031. static int compute_bit_allocation(AC3EncodeContext *s)
+  1032. {
+  1033.     count_frame_bits(s);
+            ^
+  1034. 
+  1035.     bit_alloc_masking(s);
+
+libavcodec/ac3enc.c:721:1: Parameter `s->blocks[*].new_snr_offsets`
+    719.  * have to add the bits based on parameters that change during encoding.
+    720.  */
+    721. static void count_frame_bits(AC3EncodeContext *s)
+         ^
+    722. {
+    723.     AC3EncOptions *opt = &s->options;
+
+libavcodec/ac3enc.c:1846:5: Call
+1844.     }
+1845. 
+1846.     quantize_mantissas(s);
+          ^
+1847. 
+1848.     output_frame(s, frame);
+
+libavcodec/ac3enc.c:1166:1: Parameter `**s->blocks[*].fixed_coef`
+  1164.  * Quantize mantissas using coefficients, exponents, and bit allocation pointers.
+  1165.  */
+  1166. static void quantize_mantissas(AC3EncodeContext *s)
+        ^
+  1167. {
+  1168.     int blk, ch, ch0=0, got_cpl;
+
+libavcodec/ac3enc.c:1181:13: Call
+  1179.                 got_cpl = 1;
+  1180.             }
+  1181.             quantize_mantissas_blk_ch(&m, block->fixed_coef[ch],
+                    ^
+  1182.                                       s->blocks[s->exp_ref_block[ch][blk]].exp[ch],
+  1183.                                       s->ref_bap[ch][blk], block->qmant[ch],
+
+libavcodec/ac3enc.c:1071:1: Parameter `*fixed_coef`
+    1069.  * Quantize a set of mantissas for a single channel in a single block.
+    1070.  */
+    1071. static void quantize_mantissas_blk_ch(AC3Mant *s, int32_t *fixed_coef,
+          ^
+    1072.                                       uint8_t *exp, uint8_t *bap,
+    1073.                                       int16_t *qmant, int start_freq,
+
+libavcodec/ac3enc.c:1080:9: Assignment
+    1078.     for (i = start_freq; i < end_freq; i++) {
+    1079.         int v;
+    1080.         int c = fixed_coef[i];
+                  ^
+    1081.         int e = exp[i];
+    1082.         int b = bap[i];
+
+libavcodec/ac3enc.c:1108:17: Call
+    1106.             break;
+    1107.         case 2:
+    1108.             v = sym_quant(c, e, 5);
+                          ^
+    1109.             switch (s->mant2_cnt) {
+    1110.             case 0:
+
+libavcodec/ac3enc.c:1044:1: <LHS trace>
+1042.  * Symmetric quantization on 'levels' levels.
+1043.  */
+1044. static inline int sym_quant(int c, int e, int levels)
+      ^
+1045. {
+1046.     int v = (((levels * c) >> (24 - e)) + levels) >> 1;
+
+libavcodec/ac3enc.c:1044:1: Parameter `levels`
+      1042.  * Symmetric quantization on 'levels' levels.
+      1043.  */
+      1044. static inline int sym_quant(int c, int e, int levels)
+            ^
+      1045. {
+      1046.     int v = (((levels * c) >> (24 - e)) + levels) >> 1;
+
+libavcodec/ac3enc.c:1044:1: <RHS trace>
+1042.  * Symmetric quantization on 'levels' levels.
+1043.  */
+1044. static inline int sym_quant(int c, int e, int levels)
+      ^
+1045. {
+1046.     int v = (((levels * c) >> (24 - e)) + levels) >> 1;
+
+libavcodec/ac3enc.c:1044:1: Parameter `c`
+      1042.  * Symmetric quantization on 'levels' levels.
+      1043.  */
+      1044. static inline int sym_quant(int c, int e, int levels)
+            ^
+      1045. {
+      1046.     int v = (((levels * c) >> (24 - e)) + levels) >> 1;
+
+libavcodec/ac3enc.c:1046:5: Binary operation: (5 × [-oo, +oo]):signed32 by call to `quantize_mantissas` 
+      1044. static inline int sym_quant(int c, int e, int levels)
+      1045. {
+      1046.     int v = (((levels * c) >> (24 - e)) + levels) >> 1;
+                ^
+      1047.     av_assert2(v >= 0 && v < levels);
+      1048.     return v;

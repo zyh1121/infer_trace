@@ -1,0 +1,174 @@
+crypto/asn1/a_int.c:276: error: NULL_DEREFERENCE
+  pointer `null` is dereferenced by call to `c2i_ibuf()` at line 276, column 9.
+Showing all 23 steps of the trace
+
+
+crypto/asn1/a_int.c:269:1: start of procedure c2i_ASN1_INTEGER()
+267.   
+268.   /* Convert ASN1 INTEGER content octets to ASN1_INTEGER structure */
+269. > ASN1_INTEGER *c2i_ASN1_INTEGER(ASN1_INTEGER **a, const unsigned char **pp,
+270.                                  long len)
+271.   {
+
+crypto/asn1/a_int.c:272:5: 
+270.                                  long len)
+271.   {
+272. >     ASN1_INTEGER *ret = NULL;
+273.       size_t r;
+274.       int neg;
+
+crypto/asn1/a_int.c:276:5: 
+274.       int neg;
+275.   
+276. >     r = c2i_ibuf(NULL, NULL, *pp, len);
+277.   
+278.       if (r == 0)
+
+crypto/asn1/a_int.c:148:1: start of procedure c2i_ibuf()
+  146.    */
+  147.   
+  148. > static size_t c2i_ibuf(unsigned char *b, int *pneg,
+  149.                          const unsigned char *p, size_t plen)
+  150.   {
+
+crypto/asn1/a_int.c:153:9: Taking false branch
+  151.       int neg, pad;
+  152.       /* Zero content length is illegal */
+  153.       if (plen == 0) {
+                 ^
+  154.           ASN1err(ASN1_F_C2I_IBUF, ASN1_R_ILLEGAL_ZERO_CONTENT);
+  155.           return 0;
+
+crypto/asn1/a_int.c:157:5: 
+  155.           return 0;
+  156.       }
+  157. >     neg = p[0] & 0x80;
+  158.       if (pneg)
+  159.           *pneg = neg;
+
+crypto/asn1/a_int.c:158:9: Taking false branch
+  156.       }
+  157.       neg = p[0] & 0x80;
+  158.       if (pneg)
+                 ^
+  159.           *pneg = neg;
+  160.       /* Handle common case where length is 1 octet separately */
+
+crypto/asn1/a_int.c:161:9: Taking false branch
+  159.           *pneg = neg;
+  160.       /* Handle common case where length is 1 octet separately */
+  161.       if (plen == 1) {
+                 ^
+  162.           if (b != NULL) {
+  163.               if (neg)
+
+crypto/asn1/a_int.c:170:9: Taking false branch
+  168.           return 1;
+  169.       }
+  170.       if (p[0] == 0 || p[0] == 0xFF)
+                 ^
+  171.           pad = 1;
+  172.       else
+
+crypto/asn1/a_int.c:170:22: Taking false branch
+  168.           return 1;
+  169.       }
+  170.       if (p[0] == 0 || p[0] == 0xFF)
+                              ^
+  171.           pad = 1;
+  172.       else
+
+crypto/asn1/a_int.c:173:9: 
+  171.           pad = 1;
+  172.       else
+  173. >         pad = 0;
+  174.       /* reject illegal padding: first two octets MSB can't match */
+  175.       if (pad && (neg == (p[1] & 0x80))) {
+
+crypto/asn1/a_int.c:175:9: Taking false branch
+  173.           pad = 0;
+  174.       /* reject illegal padding: first two octets MSB can't match */
+  175.       if (pad && (neg == (p[1] & 0x80))) {
+                 ^
+  176.           ASN1err(ASN1_F_C2I_IBUF, ASN1_R_ILLEGAL_PADDING);
+  177.           return 0;
+
+crypto/asn1/a_int.c:181:5: 
+  179.   
+  180.       /* skip over pad */
+  181. >     p += pad;
+  182.       plen -= pad;
+  183.   
+
+crypto/asn1/a_int.c:182:5: 
+  180.       /* skip over pad */
+  181.       p += pad;
+  182. >     plen -= pad;
+  183.   
+  184.       if (b != NULL)
+
+crypto/asn1/a_int.c:184:9: Taking true branch
+  182.       plen -= pad;
+  183.   
+  184.       if (b != NULL)
+                 ^
+  185.           twos_complement(b, p, plen, neg ? 0xffU : 0);
+  186.   
+
+crypto/asn1/a_int.c:185:37: Condition is true
+  183.   
+  184.       if (b != NULL)
+  185.           twos_complement(b, p, plen, neg ? 0xffU : 0);
+                                             ^
+  186.   
+  187.       return plen;
+
+crypto/asn1/a_int.c:185:9: 
+  183.   
+  184.       if (b != NULL)
+  185. >         twos_complement(b, p, plen, neg ? 0xffU : 0);
+  186.   
+  187.       return plen;
+
+crypto/asn1/a_int.c:76:1: start of procedure twos_complement()
+    74.    * used elsewhere below...
+    75.    */
+    76. > static void twos_complement(unsigned char *dst, const unsigned char *src,
+    77.                               size_t len, unsigned char pad)
+    78.   {
+
+crypto/asn1/a_int.c:79:5: 
+    77.                               size_t len, unsigned char pad)
+    78.   {
+    79. >     unsigned int carry = pad & 1;
+    80.   
+    81.       /* Begin at the end of the encoding */
+
+crypto/asn1/a_int.c:82:5: 
+    80.   
+    81.       /* Begin at the end of the encoding */
+    82. >     dst += len;
+    83.       src += len;
+    84.       /* two's complement value: ~value + 1 */
+
+crypto/asn1/a_int.c:83:5: 
+    81.       /* Begin at the end of the encoding */
+    82.       dst += len;
+    83. >     src += len;
+    84.       /* two's complement value: ~value + 1 */
+    85.       while (len-- != 0) {
+
+crypto/asn1/a_int.c:85:12: Loop condition is true. Entering loop body
+    83.       src += len;
+    84.       /* two's complement value: ~value + 1 */
+    85.       while (len-- != 0) {
+                     ^
+    86.           *(--dst) = (unsigned char)(carry += *(--src) ^ pad);
+    87.           carry >>= 8;
+
+crypto/asn1/a_int.c:86:9: 
+    84.       /* two's complement value: ~value + 1 */
+    85.       while (len-- != 0) {
+    86. >         *(--dst) = (unsigned char)(carry += *(--src) ^ pad);
+    87.           carry >>= 8;
+    88.       }

@@ -1,0 +1,154 @@
+crypto/ec/ec2_oct.c:304: error: BUFFER_OVERRUN_L3
+  Offset: [1, +oo] Size: [0, 8388607] by call to `EC_POINT_set_compressed_coordinates`.
+Showing all 20 steps of the trace
+
+
+crypto/ec/ec2_oct.c:296:10: Call
+294.           goto err;
+295.   
+296.       if (!BN_bin2bn(buf + 1, field_len, x))
+                ^
+297.           goto err;
+298.       if (BN_ucmp(x, group->field) >= 0) {
+
+crypto/bn/bn_lib.c:372:1: Parameter `ret->top`
+  370.   }
+  371.   
+  372. > BIGNUM *BN_bin2bn(const unsigned char *s, int len, BIGNUM *ret)
+  373.   {
+  374.       unsigned int i, m;
+
+crypto/ec/ec2_oct.c:304:14: Call
+302.   
+303.       if (form == POINT_CONVERSION_COMPRESSED) {
+304.           if (!EC_POINT_set_compressed_coordinates(group, point, x, y_bit, ctx))
+                    ^
+305.               goto err;
+306.       } else {
+
+crypto/ec/ec_oct.c:18:1: Parameter `x->top`
+  16.   #include "ec_lcl.h"
+  17.   
+  18. > int EC_POINT_set_compressed_coordinates(const EC_GROUP *group, EC_POINT *point,
+  19.                                           const BIGNUM *x, int y_bit, BN_CTX *ctx)
+  20.   {
+
+crypto/ec/ec_oct.c:34:20: Call
+  32.       if (group->meth->flags & EC_FLAGS_DEFAULT_OCT) {
+  33.           if (group->meth->field_type == NID_X9_62_prime_field)
+  34.               return ec_GFp_simple_set_compressed_coordinates(group, point, x,
+                           ^
+  35.                                                               y_bit, ctx);
+  36.           else
+
+crypto/ec/ecp_oct.c:16:1: Parameter `x_->top`
+    14.   #include "ec_lcl.h"
+    15.   
+    16. > int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
+    17.                                                EC_POINT *point,
+    18.                                                const BIGNUM *x_, int y_bit,
+
+crypto/ec/ecp_oct.c:51:10: Call
+    49.   
+    50.       /* tmp1 := x^3 */
+    51.       if (!BN_nnmod(x, x_, group->field, ctx))
+                   ^
+    52.           goto err;
+    53.       if (group->meth->field_decode == 0) {
+
+crypto/bn/bn_mod.c:13:1: Parameter `m->top`
+      11.   #include "bn_lcl.h"
+      12.   
+      13. > int BN_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx)
+      14.   {
+      15.       /*
+
+crypto/bn/bn_mod.c:20:11: Call
+      18.        */
+      19.   
+      20.       if (!(BN_mod(r, m, d, ctx)))
+                      ^
+      21.           return 0;
+      22.       if (!r->neg)
+
+crypto/bn/bn_div.c:188:1: Parameter `num->top`
+        186.    * If 'dv' or 'rm' is NULL, the respective value is not returned.
+        187.    */
+        188. > int BN_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
+        189.              BN_CTX *ctx)
+        190.   {
+
+crypto/bn/bn_div.c:255:11: Call
+        253.       sdiv->neg = 0;
+        254.       norm_shift += BN_BITS2;
+        255.       if (!(BN_lshift(snum, num, norm_shift)))
+                         ^
+        256.           goto err;
+        257.       snum->neg = 0;
+
+crypto/bn/bn_shift.c:83:1: <Offset trace>
+81.   }
+82.   
+83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+84.   {
+85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:83:1: Parameter `n`
+          81.   }
+          82.   
+          83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+          84.   {
+          85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:97:5: Assignment
+          95.       }
+          96.   
+          97.       nw = n / BN_BITS2;
+                     ^
+          98.       if (bn_wexpand(r, a->top + nw + 1) == NULL)
+          99.           return 0;
+
+crypto/bn/bn_shift.c:83:1: <Length trace>
+81.   }
+82.   
+83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+84.   {
+85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:83:1: Parameter `*r->d`
+          81.   }
+          82.   
+          83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+          84.   {
+          85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:98:9: Call
+          96.   
+          97.       nw = n / BN_BITS2;
+          98.       if (bn_wexpand(r, a->top + nw + 1) == NULL)
+                         ^
+          99.           return 0;
+          100.       r->neg = a->neg;
+
+crypto/bn/bn_lib.c:939:1: Parameter `*a->d`
+            937.   }
+            938.   
+            939. > BIGNUM *bn_wexpand(BIGNUM *a, int words)
+            940.   {
+            941.       return (words <= a->dmax) ? a : bn_expand2(a, words);
+
+crypto/bn/bn_shift.c:104:5: Assignment
+          102.       rb = BN_BITS2 - lb;
+          103.       f = a->d;
+          104.       t = r->d;
+                     ^
+          105.       t[a->top + nw] = 0;
+          106.       if (lb == 0)
+
+crypto/bn/bn_shift.c:112:13: Array access: Offset: [1, +oo] Size: [0, 8388607] by call to `EC_POINT_set_compressed_coordinates` 
+          110.           for (i = a->top - 1; i >= 0; i--) {
+          111.               l = f[i];
+          112.               t[nw + i + 1] |= (l >> rb) & BN_MASK2;
+                             ^
+          113.               t[nw + i] = (l << lb) & BN_MASK2;
+          114.           }

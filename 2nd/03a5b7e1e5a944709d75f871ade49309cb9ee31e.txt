@@ -1,0 +1,67 @@
+#43392
+libavutil/frame.c:651: error: BUFFER_OVERRUN_L5
+  Offset added: [-oo, +oo] (⇐ [-oo, +oo] + 40) Size: [0, +oo] by call to `av_mallocz`.
+
+libavutil/frame.c:651:11: Call
+649.     frame->side_data = tmp;
+650. 
+651.     ret = av_mallocz(sizeof(*ret));
+               ^
+652.     if (!ret)
+653.         return NULL;
+
+libavutil/mem.c:252:1: <Offset trace>
+250. }
+251. 
+252. void *av_mallocz(size_t size)
+     ^
+253. {
+254.     void *ptr = av_malloc(size);
+
+libavutil/mem.c:252:1: Parameter `size`
+  250. }
+  251. 
+  252. void *av_mallocz(size_t size)
+       ^
+  253. {
+  254.     void *ptr = av_malloc(size);
+
+libavutil/mem.c:254:17: <Length trace>
+252. void *av_mallocz(size_t size)
+253. {
+254.     void *ptr = av_malloc(size);
+                     ^
+255.     if (ptr)
+256.         memset(ptr, 0, size);
+
+libavutil/mem.c:254:17: Call
+  252. void *av_mallocz(size_t size)
+  253. {
+  254.     void *ptr = av_malloc(size);
+                       ^
+  255.     if (ptr)
+  256.         memset(ptr, 0, size);
+
+libavutil/mem.c:86:9: Assignment
+    84.     /* let's disallow possibly ambiguous cases */
+    85.     if (size > (max_alloc_size - 32))
+    86.         return NULL;
+                ^
+    87. 
+    88. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:254:5: Assignment
+  252. void *av_mallocz(size_t size)
+  253. {
+  254.     void *ptr = av_malloc(size);
+           ^
+  255.     if (ptr)
+  256.         memset(ptr, 0, size);
+
+libavutil/mem.c:256:9: Array access: Offset added: [-oo, +oo] (⇐ [-oo, +oo] + 40) Size: [0, +oo] by call to `av_mallocz` 
+  254.     void *ptr = av_malloc(size);
+  255.     if (ptr)
+  256.         memset(ptr, 0, size);
+               ^
+  257.     return ptr;
+  258. }

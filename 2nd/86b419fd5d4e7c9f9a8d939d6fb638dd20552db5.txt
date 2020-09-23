@@ -1,0 +1,35 @@
+#33495
+libavformat/omadec.c:426: error: BUFFER_OVERRUN_U5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + 1) Size: [0, +oo].
+
+libavformat/omadec.c:405:11: <Length trace>
+403.     }
+404. 
+405.     ret = avio_read(s->pb, buf, EA3_HEADER_SIZE);
+               ^
+406.     if (ret < EA3_HEADER_SIZE)
+407.         return -1;
+
+libavformat/omadec.c:405:11: Call
+403.     }
+404. 
+405.     ret = avio_read(s->pb, buf, EA3_HEADER_SIZE);
+               ^
+406.     if (ret < EA3_HEADER_SIZE)
+407.         return -1;
+
+libavformat/aviobuf.c:642:27: Unknown value from: non-const function
+  640.                 // bypass the buffer and read data directly into buf
+  641.                 if(s->read_packet)
+  642.                     len = s->read_packet(s->opaque, buf, size);
+                                 ^
+  643.                 else
+  644.                     len = AVERROR_EOF;
+
+libavformat/omadec.c:426:20: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + 1) Size: [0, +oo]
+424.     ff_id3v2_free_extra_meta(&extra_meta);
+425. 
+426.     codec_params = AV_RB24(&buf[33]);
+                        ^
+427. 
+428.     st = avformat_new_stream(s, NULL);

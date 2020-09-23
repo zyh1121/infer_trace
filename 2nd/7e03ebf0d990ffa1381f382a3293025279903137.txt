@@ -1,0 +1,155 @@
+crypto/pkcs12/p12_kiss.c:188: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] - 1):signed64 by call to `parse_bag`.
+Showing all 20 steps of the trace
+
+
+crypto/pkcs12/p12_kiss.c:188:8: Call
+186.   	int i;
+187.   	for (i = 0; i < sk_PKCS12_SAFEBAG_num(bags); i++) {
+188.   		if (!parse_bag(sk_PKCS12_SAFEBAG_value (bags, i),
+              ^
+189.   			 pass, passlen, pkey, cert, ca, keyid,
+190.   							 keymatch)) return 0;
+
+crypto/pkcs12/p12_kiss.c:252:12: Call
+  250.   								 return 1;
+  251.   		if (!(x509 = PKCS12_certbag2x509(bag))) return 0;
+  252.   		if(ckid) X509_keyid_set1(x509, ckid->data, ckid->length);
+                    ^
+  253.   		if(fname) {
+  254.   			int len;
+
+crypto/asn1/x_x509a.c:99:1: Parameter `x->aux->keyid->length`
+    97.   }
+    98.   
+    99. > int X509_keyid_set1(X509 *x, unsigned char *id, int len)
+    100.   {
+    101.   	X509_CERT_AUX *aux;
+
+crypto/pkcs12/p12_kiss.c:188:8: Call
+186.   	int i;
+187.   	for (i = 0; i < sk_PKCS12_SAFEBAG_num(bags); i++) {
+188.   		if (!parse_bag(sk_PKCS12_SAFEBAG_value (bags, i),
+              ^
+189.   			 pass, passlen, pkey, cert, ca, keyid,
+190.   							 keymatch)) return 0;
+
+crypto/pkcs12/p12_kiss.c:199:1: Parameter `bag->value.bag->value.octet->length`
+  197.   #define MATCH_ALL  0x3
+  198.   
+  199. > static int parse_bag(PKCS12_SAFEBAG *bag, const char *pass, int passlen,
+  200.   		      EVP_PKEY **pkey, X509 **cert, STACK_OF(X509) **ca,
+  201.   		      ASN1_OCTET_STRING **keyid,
+
+crypto/pkcs12/p12_kiss.c:251:16: Call
+  249.   		if (M_PKCS12_cert_bag_type(bag) != NID_x509Certificate )
+  250.   								 return 1;
+  251.   		if (!(x509 = PKCS12_certbag2x509(bag))) return 0;
+                        ^
+  252.   		if(ckid) X509_keyid_set1(x509, ckid->data, ckid->length);
+  253.   		if(fname) {
+
+crypto/pkcs12/p12_utl.c:133:1: Parameter `bag->value.bag->value.octet->length`
+    131.   }
+    132.   
+    133. > X509 *PKCS12_certbag2x509(PKCS12_SAFEBAG *bag)
+    134.   {
+    135.   	if(M_PKCS12_bag_type(bag) != NID_certBag) return NULL;
+
+crypto/pkcs12/p12_utl.c:137:9: Call
+    135.   	if(M_PKCS12_bag_type(bag) != NID_certBag) return NULL;
+    136.   	if(M_PKCS12_cert_bag_type(bag) != NID_x509Certificate) return NULL;
+    137.   	return ASN1_item_unpack(bag->value.bag->value.octet, ASN1_ITEM_rptr(X509));
+                   ^
+    138.   }
+    139.   
+
+crypto/asn1/asn_pack.c:182:1: Parameter `oct->length`
+      180.   /* Extract an ASN1 object from an ASN1_STRING */
+      181.   
+      182. > void *ASN1_item_unpack(ASN1_STRING *oct, const ASN1_ITEM *it)
+      183.   {
+      184.   	unsigned char *p;
+
+crypto/asn1/asn_pack.c:188:13: Call
+      186.   
+      187.   	p = oct->data;
+      188.   	if(!(ret = ASN1_item_d2i(NULL, &p, oct->length, it)))
+                         ^
+      189.   		ASN1err(ASN1_F_ASN1_UNPACK_STRING,ASN1_R_DECODE_ERROR);
+      190.   	return ret;
+
+crypto/asn1/tasn_dec.c:109:1: Parameter `len`
+        107.    */
+        108.   
+        109. > ASN1_VALUE *ASN1_item_d2i(ASN1_VALUE **pval, unsigned char **in, long len, const ASN1_ITEM *it)
+        110.   {
+        111.   	ASN1_TLC c;
+
+crypto/asn1/tasn_dec.c:115:5: Call
+        113.   	if(!pval) pval = &ptmpval;
+        114.   	asn1_tlc_clear(&c);
+        115.   	if(ASN1_item_ex_d2i(pval, in, len, it, -1, 0, 0, &c) > 0) 
+                   ^
+        116.   		return *pval;
+        117.   	return NULL;
+
+crypto/asn1/tasn_dec.c:132:1: Parameter `len`
+          130.    */
+          131.   
+          132. > int ASN1_item_ex_d2i(ASN1_VALUE **pval, unsigned char **in, long len, const ASN1_ITEM *it,
+          133.   				int tag, int aclass, char opt, ASN1_TLC *ctx)
+          134.   {
+
+crypto/asn1/tasn_dec.c:172:9: Call
+          170.   		p = *in;
+          171.   		/* Just read in tag and class */
+          172.   		ret = asn1_check_tlen(NULL, &otag, &oclass, NULL, NULL, &p, len, -1, 0, 1, ctx);
+                         ^
+          173.   		if(!ret) {
+          174.   			ASN1err(ASN1_F_ASN1_ITEM_EX_D2I, ERR_R_NESTED_ASN1_ERROR);
+
+crypto/asn1/tasn_dec.c:891:1: Parameter `len`
+            889.    */
+            890.   
+            891. > static int asn1_check_tlen(long *olen, int *otag, unsigned char *oclass, char *inf, char *cst,
+            892.   		unsigned char **in, long len, int exptag, int expclass, char opt, ASN1_TLC *ctx)
+            893.   {
+
+crypto/asn1/tasn_dec.c:908:7: Call
+            906.   		p += ctx->hdrlen;
+            907.   	} else {
+            908.   		i = ASN1_get_object(&p, &plen, &ptag, &pclass, len);
+                         ^
+            909.   		if(ctx) {
+            910.   			ctx->ret = i;
+
+crypto/asn1/asn1_lib.c:83:1: <LHS trace>
+81.   
+82.   
+83. > int ASN1_get_object(unsigned char **pp, long *plength, int *ptag, int *pclass,
+84.   	     long omax)
+85.   	{
+
+crypto/asn1/asn1_lib.c:83:1: Parameter `omax`
+              81.   
+              82.   
+              83. > int ASN1_get_object(unsigned char **pp, long *plength, int *ptag, int *pclass,
+              84.   	     long omax)
+              85.   	{
+
+crypto/asn1/asn1_lib.c:90:2: Assignment
+              88.   	unsigned char *p= *pp;
+              89.   	int tag,xclass,inf;
+              90.   	long max=omax;
+                     ^
+              91.   
+              92.   	if (!max) goto err;
+
+crypto/asn1/asn1_lib.c:99:7: Binary operation: ([-oo, +oo] - 1):signed64 by call to `parse_bag` 
+              97.   		{		/* high-tag */
+              98.   		p++;
+              99.   		if (--max == 0) goto err;
+                           ^
+              100.   		l=0;
+              101.   		while (*p&0x80)

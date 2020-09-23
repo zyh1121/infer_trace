@@ -1,0 +1,139 @@
+#12824
+libavcodec/h261dec.c:521: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] + [0, 16]):signed32 by call to `h261_decode_mb_skipped`.
+
+libavcodec/h261dec.c:508:1: Parameter `h->s.mv[*][*][*]`
+506. }
+507. 
+508. static int h261_decode_gob(H261Context *h){
+     ^
+509.     MpegEncContext * const s = &h->s;
+510. 
+
+libavcodec/h261dec.c:521:17: Call
+519.         if(ret<0){
+520.             if(ret==SLICE_END){
+521.                 h261_decode_mb_skipped(h, h->current_mba, 33);
+                     ^
+522.                 return 0;
+523.             }
+
+libavcodec/h261dec.c:197:1: Parameter `h->s.mv[*][*][*]`
+  195.  * @return 0
+  196.  */
+  197. static int h261_decode_mb_skipped(H261Context *h, int mba1, int mba2 )
+       ^
+  198. {
+  199.     MpegEncContext * const s = &h->s;
+
+libavcodec/h261dec.c:224:9: Call
+  222.         h->mtype &= ~MB_TYPE_H261_FIL;
+  223. 
+  224.         MPV_decode_mb(s, s->block);
+               ^
+  225.     }
+  226. 
+
+libavcodec/mpegvideo.c:2089:1: Parameter `s->mv[*][*][*]`
+    2087. }
+    2088. 
+    2089. void MPV_decode_mb(MpegEncContext *s, DCTELEM block[12][64]){
+          ^
+    2090. #if !CONFIG_SMALL
+    2091.     if(s->out_format == FMT_MPEG1) {
+
+libavcodec/mpegvideo.c:2096:26: Call
+    2094.     } else
+    2095. #endif
+    2096.     if(s->avctx->lowres) MPV_decode_mb_internal(s, block, 1, 0);
+                                   ^
+    2097.     else                  MPV_decode_mb_internal(s, block, 0, 0);
+    2098. }
+
+libavcodec/mpegvideo.c:1853:1: Parameter `s->mv[*][*][*]`
+      1851.    s->interlaced_dct : true if interlaced dct used (mpeg2)
+      1852.  */
+      1853. static av_always_inline
+            ^
+      1854. void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
+      1855.                             int lowres_flag, int is_mpeg12)
+
+libavcodec/mpegvideo.c:1960:25: Call
+      1958.                     }
+      1959.                     if (s->mv_dir & MV_DIR_FORWARD) {
+      1960.                         MPV_motion(s, dest_y, dest_cb, dest_cr, 0, s->last_picture.data, op_pix, op_qpix);
+                                    ^
+      1961.                         op_pix = s->dsp.avg_pixels_tab;
+      1962.                         op_qpix= s->me.qpel_avg;
+
+libavcodec/mpegvideo_common.h:883:1: Parameter `s->mv[*][*][*]`
+        881. }
+        882. 
+        883. static inline void MPV_motion(MpegEncContext *s,
+             ^
+        884.                               uint8_t *dest_y, uint8_t *dest_cb,
+        885.                               uint8_t *dest_cr, int dir,
+
+libavcodec/mpegvideo_common.h:892:9: Call
+        890. #if !CONFIG_SMALL
+        891.     if(s->out_format == FMT_MPEG1)
+        892.         MPV_motion_internal(s, dest_y, dest_cb, dest_cr, dir,
+                     ^
+        893.                             ref_picture, pix_op, qpix_op, 1);
+        894.     else
+
+libavcodec/mpegvideo_common.h:636:1: <LHS trace>
+634.  * the motion vectors are taken from s->mv and the MV type from s->mv_type
+635.  */
+636. static av_always_inline void MPV_motion_internal(MpegEncContext *s,
+     ^
+637.                               uint8_t *dest_y, uint8_t *dest_cb,
+638.                               uint8_t *dest_cr, int dir,
+
+libavcodec/mpegvideo_common.h:636:1: Parameter `s->mv[*][*][*]`
+          634.  * the motion vectors are taken from s->mv and the MV type from s->mv_type
+          635.  */
+          636. static av_always_inline void MPV_motion_internal(MpegEncContext *s,
+               ^
+          637.                               uint8_t *dest_y, uint8_t *dest_cb,
+          638.                               uint8_t *dest_cr, int dir,
+
+libavcodec/mpegvideo_common.h:650:5: Call
+          648.     mb_y = s->mb_y;
+          649. 
+          650.     prefetch_motion(s, ref_picture, dir);
+                   ^
+          651. 
+          652.     if(!is_mpeg12 && s->obmc && s->pict_type != AV_PICTURE_TYPE_B){
+
+libavcodec/mpegvideo_common.h:612:1: Parameter `s->mv[*][*][*]`
+            610. }
+            611. 
+            612. static inline void prefetch_motion(MpegEncContext *s, uint8_t **pix, int dir){
+                 ^
+            613.     /* fetch pixels for estimated mv 4 macroblocks ahead
+            614.      * optimized for 64byte cache lines */
+
+libavcodec/mpegvideo_common.h:830:13: <RHS trace>
+828.         break;
+829.     case MV_TYPE_16X8:
+830.         for(i=0; i<2; i++){
+                 ^
+831.             uint8_t ** ref2picture;
+832. 
+
+libavcodec/mpegvideo_common.h:830:13: Assignment
+          828.         break;
+          829.     case MV_TYPE_16X8:
+          830.         for(i=0; i<2; i++){
+                           ^
+          831.             uint8_t ** ref2picture;
+          832. 
+
+libavcodec/mpegvideo_common.h:840:13: Binary operation: ([-oo, +oo] + [0, 16]):signed32 by call to `h261_decode_mb_skipped` 
+          838.             }
+          839. 
+          840.             mpeg_motion(s, dest_y, dest_cb, dest_cr,
+                           ^
+          841.                         0, 0, s->field_select[dir][i],
+          842.                         ref2picture, pix_op,

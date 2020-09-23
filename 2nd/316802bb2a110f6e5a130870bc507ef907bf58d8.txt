@@ -1,0 +1,95 @@
+crypto/rsa/rsa_ossl.c:910: error: INTEGER_OVERFLOW_U5
+  (0 - [0, +oo]):unsigned64 by call to `BN_div`.
+Showing all 12 steps of the trace
+
+
+crypto/rsa/rsa_ossl.c:893:18: Unknown value from: non-const function
+891.           } else {
+892.               bn_correct_top(r0);
+893.               if (!rsa->meth->bn_mod_exp(vrfy, r0, rsa->e, rsa->n, ctx,
+                        ^
+894.                                          rsa->_method_mod_n))
+895.                   goto err;
+
+crypto/rsa/rsa_ossl.c:903:14: Call
+901.            * absolute equality, just congruency.
+902.            */
+903.           if (!BN_sub(vrfy, vrfy, I))
+                    ^
+904.               goto err;
+905.           if (BN_is_zero(vrfy)) {
+
+crypto/bn/bn_add.c:45:1: Parameter `*a->d`
+  43.   
+  44.   /* signed sub of b from a. */
+  45. > int BN_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+  46.   {
+  47.       int ret, r_neg, cmp_res;
+
+crypto/rsa/rsa_ossl.c:910:14: Call
+908.               goto err;   /* not actually error */
+909.           }
+910.           if (!BN_mod(vrfy, vrfy, rsa->n, ctx))
+                    ^
+911.               goto err;
+912.           if (BN_is_negative(vrfy))
+
+crypto/bn/bn_div.c:188:1: Parameter `*divisor->d`
+  186.    * If 'dv' or 'rm' is NULL, the respective value is not returned.
+  187.    */
+  188. > int BN_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
+  189.              BN_CTX *ctx)
+  190.   {
+
+crypto/bn/bn_div.c:250:31: Call
+  248.   
+  249.       /* First we normalise the numbers */
+  250.       norm_shift = BN_BITS2 - ((BN_num_bits(divisor)) % BN_BITS2);
+                                       ^
+  251.       if (!(BN_lshift(sdiv, divisor, norm_shift)))
+  252.           goto err;
+
+crypto/bn/bn_lib.c:135:1: Parameter `*a->d`
+    133.   }
+    134.   
+    135. > int BN_num_bits(const BIGNUM *a)
+    136.   {
+    137.       int i = a->top - 1;
+
+crypto/bn/bn_lib.c:142:30: Call
+    140.       if (BN_is_zero(a))
+    141.           return 0;
+    142.       return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
+                                        ^
+    143.   }
+    144.   
+
+crypto/bn/bn_lib.c:90:1: <RHS trace>
+88.   }
+89.   
+90. > int BN_num_bits_word(BN_ULONG l)
+91.   {
+92.       BN_ULONG x, mask;
+
+crypto/bn/bn_lib.c:90:1: Parameter `l`
+      88.   }
+      89.   
+      90. > int BN_num_bits_word(BN_ULONG l)
+      91.   {
+      92.       BN_ULONG x, mask;
+
+crypto/bn/bn_lib.c:96:5: Assignment
+      94.   
+      95.   #if BN_BITS2 > 32
+      96.       x = l >> 32;
+                ^
+      97.       mask = (0 - x) & BN_MASK2;
+      98.       mask = (0 - (mask >> (BN_BITS2 - 1)));
+
+crypto/bn/bn_lib.c:97:5: Binary operation: (0 - [0, +oo]):unsigned64 by call to `BN_div` 
+      95.   #if BN_BITS2 > 32
+      96.       x = l >> 32;
+      97.       mask = (0 - x) & BN_MASK2;
+                 ^
+      98.       mask = (0 - (mask >> (BN_BITS2 - 1)));
+      99.       bits += 32 & mask;

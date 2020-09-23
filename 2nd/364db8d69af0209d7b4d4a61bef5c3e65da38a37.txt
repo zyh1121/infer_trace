@@ -1,0 +1,43 @@
+#1302
+libavcore/imgutils.c:95: error: Integer Overflow L5
+  (`*linesize` × [-oo, +oo]):signed32.
+
+libavcore/imgutils.c:62:1: <LHS trace>
+60. }
+61. 
+62. int av_fill_image_pointers(uint8_t *data[4], enum PixelFormat pix_fmt, int height,
+    ^
+63.                            uint8_t *ptr, const int linesize[4])
+64. {
+
+libavcore/imgutils.c:62:1: Parameter `*linesize`
+60. }
+61. 
+62. int av_fill_image_pointers(uint8_t *data[4], enum PixelFormat pix_fmt, int height,
+    ^
+63.                            uint8_t *ptr, const int linesize[4])
+64. {
+
+libavcore/imgutils.c:94:9: <RHS trace>
+92.         return size + 2 * size2;
+93.     case PIX_FMT_YUVA420P:
+94.         h2 = (height + (1 << desc->log2_chroma_h) - 1) >> desc->log2_chroma_h;
+            ^
+95.         size2 = linesize[1] * h2;
+96.         data[0] = ptr;
+
+libavcore/imgutils.c:94:9: Assignment
+92.         return size + 2 * size2;
+93.     case PIX_FMT_YUVA420P:
+94.         h2 = (height + (1 << desc->log2_chroma_h) - 1) >> desc->log2_chroma_h;
+            ^
+95.         size2 = linesize[1] * h2;
+96.         data[0] = ptr;
+
+libavcore/imgutils.c:95:9: Binary operation: (*linesize × [-oo, +oo]):signed32
+93.     case PIX_FMT_YUVA420P:
+94.         h2 = (height + (1 << desc->log2_chroma_h) - 1) >> desc->log2_chroma_h;
+95.         size2 = linesize[1] * h2;
+            ^
+96.         data[0] = ptr;
+97.         data[1] = data[0] + size;

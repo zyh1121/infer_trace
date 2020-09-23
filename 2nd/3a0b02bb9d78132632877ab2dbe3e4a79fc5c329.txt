@@ -1,0 +1,43 @@
+#34464
+ffmpeg.c:1938: error: BUFFER_OVERRUN_L5
+  Offset added: [-oo, +oo] (⇐ [-oo, +oo] + 488) Size: [0, +oo] by call to `avcodec_get_frame_defaults`.
+
+ffmpeg.c:1976:25: Assignment
+1974.                     filtered_frame->pts = frame_pts;
+1975.                     if (!ost->frame_aspect_ratio)
+1976.                         ost->st->codec->sample_aspect_ratio = picref->video->sample_aspect_ratio;
+                              ^
+1977. 
+1978.                     do_video_out(of->ctx, ost, filtered_frame,
+
+ffmpeg.c:1938:17: Call
+1936.                 return AVERROR(ENOMEM);
+1937.             } else
+1938.                 avcodec_get_frame_defaults(ost->filtered_frame);
+                      ^
+1939.             filtered_frame = ost->filtered_frame;
+1940. 
+
+libavcodec/utils.c:667:1: <Length trace>
+665. }
+666. 
+667. void avcodec_get_frame_defaults(AVFrame *pic){
+     ^
+668.     memset(pic, 0, sizeof(AVFrame));
+669. 
+
+libavcodec/utils.c:667:1: Parameter `*pic`
+  665. }
+  666. 
+  667. void avcodec_get_frame_defaults(AVFrame *pic){
+       ^
+  668.     memset(pic, 0, sizeof(AVFrame));
+  669. 
+
+libavcodec/utils.c:668:5: Array access: Offset added: [-oo, +oo] (⇐ [-oo, +oo] + 488) Size: [0, +oo] by call to `avcodec_get_frame_defaults` 
+  666. 
+  667. void avcodec_get_frame_defaults(AVFrame *pic){
+  668.     memset(pic, 0, sizeof(AVFrame));
+           ^
+  669. 
+  670.     pic->pts = pic->pkt_dts = pic->pkt_pts = pic->best_effort_timestamp = AV_NOPTS_VALUE;

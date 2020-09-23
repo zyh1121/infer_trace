@@ -1,0 +1,102 @@
+engines/ccgost/gost_sign.c:201: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] × 64):signed32 by call to `BN_mod_exp`.
+Showing all 13 steps of the trace
+
+
+engines/ccgost/gost_sign.c:199:5: Call
+197.           BN_one(md);
+198.       }
+199.       BN_copy(q2, dsa->q);
+           ^
+200.       BN_sub_word(q2, 2);
+201.       BN_mod_exp(v, md, q2, dsa->q, ctx);
+
+crypto/bn/bn_lib.c:430:1: Parameter `a->top`
+  428.   }
+  429.   
+  430. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+  431.   {
+  432.       int i;
+
+engines/ccgost/gost_sign.c:200:5: Call
+198.       }
+199.       BN_copy(q2, dsa->q);
+200.       BN_sub_word(q2, 2);
+           ^
+201.       BN_mod_exp(v, md, q2, dsa->q, ctx);
+202.       BN_mod_mul(z1, sig->s, v, dsa->q, ctx);
+
+crypto/bn/bn_word.c:159:1: Parameter `a->top`
+  157.   }
+  158.   
+  159. > int BN_sub_word(BIGNUM *a, BN_ULONG w)
+  160.   {
+  161.       int i;
+
+engines/ccgost/gost_sign.c:201:5: Call
+199.       BN_copy(q2, dsa->q);
+200.       BN_sub_word(q2, 2);
+201.       BN_mod_exp(v, md, q2, dsa->q, ctx);
+           ^
+202.       BN_mod_mul(z1, sig->s, v, dsa->q, ctx);
+203.       BN_sub(tmp, dsa->q, sig->r);
+
+crypto/bn/bn_exp.c:191:1: Parameter `p->top`
+  189.   }
+  190.   
+  191. > int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
+  192.                  BN_CTX *ctx)
+  193.   {
+
+crypto/bn/bn_exp.c:248:19: Call
+  246.               && (BN_get_flags(p, BN_FLG_CONSTTIME) == 0)) {
+  247.               BN_ULONG A = a->d[0];
+  248.               ret = BN_mod_exp_mont_word(r, A, p, m, ctx, NULL);
+                           ^
+  249.           } else
+  250.   # endif
+
+crypto/bn/bn_exp.c:1134:1: Parameter `p->top`
+    1132.   }
+    1133.   
+    1134. > int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
+    1135.                            const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+    1136.   {
+
+crypto/bn/bn_exp.c:1176:12: Call
+    1174.           a %= m->d[0];           /* make sure that 'a' is reduced */
+    1175.   
+    1176.       bits = BN_num_bits(p);
+                       ^
+    1177.       if (bits == 0) {
+    1178.           /* x**0 mod 1 is still zero. */
+
+crypto/bn/bn_lib.c:214:1: <LHS trace>
+212.   }
+213.   
+214. > int BN_num_bits(const BIGNUM *a)
+215.   {
+216.       int i = a->top - 1;
+
+crypto/bn/bn_lib.c:214:1: Parameter `a->top`
+      212.   }
+      213.   
+      214. > int BN_num_bits(const BIGNUM *a)
+      215.   {
+      216.       int i = a->top - 1;
+
+crypto/bn/bn_lib.c:216:5: Assignment
+      214.   int BN_num_bits(const BIGNUM *a)
+      215.   {
+      216.       int i = a->top - 1;
+                 ^
+      217.       bn_check_top(a);
+      218.   
+
+crypto/bn/bn_lib.c:221:5: Binary operation: ([-oo, +oo] × 64):signed32 by call to `BN_mod_exp` 
+      219.       if (BN_is_zero(a))
+      220.           return 0;
+      221.       return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
+                 ^
+      222.   }
+      223.   

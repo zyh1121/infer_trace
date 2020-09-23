@@ -1,0 +1,67 @@
+#15573
+libavformat/nutenc.c:714: error: Integer Overflow L5
+  ([`pkt->size` + 30, `pkt->size` + 30] + [-oo, +oo]):signed64.
+
+libavformat/nutenc.c:694:1: <LHS trace>
+692. }
+693. 
+694. static int write_packet(AVFormatContext *s, AVPacket *pkt){
+     ^
+695.     NUTContext *nut = s->priv_data;
+696.     StreamContext *nus= &nut->stream[pkt->stream_index];
+
+libavformat/nutenc.c:694:1: Parameter `pkt->size`
+692. }
+693. 
+694. static int write_packet(AVFormatContext *s, AVPacket *pkt){
+     ^
+695.     NUTContext *nut = s->priv_data;
+696.     StreamContext *nus= &nut->stream[pkt->stream_index];
+
+libavformat/nutenc.c:714:40: <RHS trace>
+712.         store_sp= 1;
+713. 
+714.     if(pkt->size + 30/*FIXME check*/ + avio_tell(bc) >= nut->last_syncpoint_pos + nut->max_distance)
+                                            ^
+715.         store_sp= 1;
+716. 
+
+libavformat/nutenc.c:714:40: Call
+712.         store_sp= 1;
+713. 
+714.     if(pkt->size + 30/*FIXME check*/ + avio_tell(bc) >= nut->last_syncpoint_pos + nut->max_distance)
+                                            ^
+715.         store_sp= 1;
+716. 
+
+libavformat/avio.h:452:12: Call
+  450. static av_always_inline int64_t avio_tell(AVIOContext *s)
+  451. {
+  452.     return avio_seek(s, 0, SEEK_CUR);
+                  ^
+  453. }
+  454. 
+
+libavformat/aviobuf.c:191:9: Assignment
+    189. 
+    190.     if(!s)
+    191.         return AVERROR(EINVAL);
+                 ^
+    192. 
+    193.     pos = s->pos - (s->write_flag ? 0 : (s->buf_end - s->buffer));
+
+libavformat/avio.h:452:5: Assignment
+  450. static av_always_inline int64_t avio_tell(AVIOContext *s)
+  451. {
+  452.     return avio_seek(s, 0, SEEK_CUR);
+           ^
+  453. }
+  454. 
+
+libavformat/nutenc.c:714:8: Binary operation: ([pkt->size + 30, pkt->size + 30] + [-oo, +oo]):signed64
+712.         store_sp= 1;
+713. 
+714.     if(pkt->size + 30/*FIXME check*/ + avio_tell(bc) >= nut->last_syncpoint_pos + nut->max_distance)
+            ^
+715.         store_sp= 1;
+716. 

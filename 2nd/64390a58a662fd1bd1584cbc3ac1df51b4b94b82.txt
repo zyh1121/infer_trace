@@ -1,0 +1,131 @@
+#54167
+libavcodec/mpeg12dec.c:1801: error: NULLPTR_DEREFERENCE
+  call to `skip_1stop_8data_bits()` eventually accesses memory that is the null pointer on line 1786 indirectly during the call to `init_get_bits()`.
+
+libavcodec/mpeg12dec.c:1773:1: invalidation part of the trace starts here
+1771.  *         DECODE_SLICE_OK if this slice is OK
+1772.  */
+1773. static int mpeg_decode_slice(MpegEncContext *s, int mb_y,
+      ^
+1774.                              const uint8_t **buf, int buf_size)
+1775. {
+
+libavcodec/mpeg12dec.c:1773:1: parameter `s` of mpeg_decode_slice
+  1771.  *         DECODE_SLICE_OK if this slice is OK
+  1772.  */
+  1773. static int mpeg_decode_slice(MpegEncContext *s, int mb_y,
+        ^
+  1774.                              const uint8_t **buf, int buf_size)
+  1775. {
+
+libavcodec/mpeg12dec.c:1786:5: when calling `init_get_bits` here
+  1784.     av_assert0(mb_y < s->mb_height);
+  1785. 
+  1786.     init_get_bits(&s->gb, *buf, buf_size * 8);
+            ^
+  1787.     if (s->codec_id != AV_CODEC_ID_MPEG1VIDEO && s->mb_height > 2800/16)
+  1788.         skip_bits(&s->gb, 3);
+
+libavcodec/get_bits.h:418:9: assigned
+    416.     if (bit_size >= INT_MAX - 7 || bit_size < 0 || !buffer) {
+    417.         bit_size    = 0;
+    418.         buffer      = NULL;
+                 ^
+    419.         ret         = AVERROR_INVALIDDATA;
+    420.     }
+
+libavcodec/get_bits.h:418:9: is the null pointer
+    416.     if (bit_size >= INT_MAX - 7 || bit_size < 0 || !buffer) {
+    417.         bit_size    = 0;
+    418.         buffer      = NULL;
+                 ^
+    419.         ret         = AVERROR_INVALIDDATA;
+    420.     }
+
+libavcodec/mpeg12dec.c:1773:1: use-after-lifetime part of the trace starts here
+1771.  *         DECODE_SLICE_OK if this slice is OK
+1772.  */
+1773. static int mpeg_decode_slice(MpegEncContext *s, int mb_y,
+      ^
+1774.                              const uint8_t **buf, int buf_size)
+1775. {
+
+libavcodec/mpeg12dec.c:1773:1: parameter `s` of mpeg_decode_slice
+  1771.  *         DECODE_SLICE_OK if this slice is OK
+  1772.  */
+  1773. static int mpeg_decode_slice(MpegEncContext *s, int mb_y,
+        ^
+  1774.                              const uint8_t **buf, int buf_size)
+  1775. {
+
+libavcodec/mpeg12dec.c:1786:5: passed as argument to `init_get_bits`
+  1784.     av_assert0(mb_y < s->mb_height);
+  1785. 
+  1786.     init_get_bits(&s->gb, *buf, buf_size * 8);
+            ^
+  1787.     if (s->codec_id != AV_CODEC_ID_MPEG1VIDEO && s->mb_height > 2800/16)
+  1788.         skip_bits(&s->gb, 3);
+
+libavcodec/get_bits.h:418:9: assigned
+    416.     if (bit_size >= INT_MAX - 7 || bit_size < 0 || !buffer) {
+    417.         bit_size    = 0;
+    418.         buffer      = NULL;
+                 ^
+    419.         ret         = AVERROR_INVALIDDATA;
+    420.     }
+
+libavcodec/get_bits.h:424:5: assigned
+    422.     buffer_size = (bit_size + 7) >> 3;
+    423. 
+    424.     s->buffer             = buffer;
+             ^
+    425.     s->size_in_bits       = bit_size;
+    426.     s->size_in_bits_plus8 = bit_size + 8;
+
+libavcodec/mpeg12dec.c:1786:5: return from call to `init_get_bits`
+  1784.     av_assert0(mb_y < s->mb_height);
+  1785. 
+  1786.     init_get_bits(&s->gb, *buf, buf_size * 8);
+            ^
+  1787.     if (s->codec_id != AV_CODEC_ID_MPEG1VIDEO && s->mb_height > 2800/16)
+  1788.         skip_bits(&s->gb, 3);
+
+libavcodec/mpeg12dec.c:1801:9: when calling `skip_1stop_8data_bits` here
+  1799. 
+  1800.     /* extra slice info */
+  1801.     if (skip_1stop_8data_bits(&s->gb) < 0)
+                ^
+  1802.         return AVERROR_INVALIDDATA;
+  1803. 
+
+libavcodec/get_bits.h:593:1: parameter `gb` of skip_1stop_8data_bits
+    591. }
+    592. 
+    593. static inline int skip_1stop_8data_bits(GetBitContext *gb)
+         ^
+    594. {
+    595.     if (get_bits_left(gb) <= 0)
+
+libavcodec/get_bits.h:598:12: when calling `get_bits1` here
+    596.         return AVERROR_INVALIDDATA;
+    597. 
+    598.     while (get_bits1(gb)) {
+                    ^
+    599.         skip_bits(gb, 8);
+    600.         if (get_bits_left(gb) <= 0)
+
+libavcodec/get_bits.h:304:1: parameter `s` of get_bits1
+      302. }
+      303. 
+      304. static inline unsigned int get_bits1(GetBitContext *s)
+           ^
+      305. {
+      306.     unsigned int index = s->index;
+
+libavcodec/get_bits.h:307:26: invalid access occurs here
+      305. {
+      306.     unsigned int index = s->index;
+      307.     uint8_t result     = s->buffer[index >> 3];
+                                    ^
+      308. #ifdef BITSTREAM_READER_LE
+      309.     result >>= index & 7;

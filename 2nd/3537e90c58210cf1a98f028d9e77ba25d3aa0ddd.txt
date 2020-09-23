@@ -1,0 +1,93 @@
+crypto/bn/bn_prime.c:204: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + 3) Size: [0, +oo] by call to `BN_pseudo_rand`.
+Showing all 12 steps of the trace
+
+
+crypto/bn/bn_prime.c:160:1: Parameter `*ctx_passed->bn[*].d`
+158.   	}
+159.   
+160. > int BN_is_prime_fasttest(BIGNUM *a, int checks,
+161.   		void (*callback)(int,int,void *),
+162.   		BN_CTX *ctx_passed, BN_CTX *ctx2_passed, void *cb_arg,
+
+crypto/bn/bn_prime.c:204:8: Call
+202.   	for (i=0; i<checks; i++)
+203.   		{
+204.   		if (!BN_pseudo_rand(check,BN_num_bits(a),0,0)) goto err;
+              ^
+205.   		if (BN_cmp(check, a) >= 0)
+206.   			BN_sub(check, check, a);
+
+crypto/bn/bn_rand.c:133:1: Parameter `*rnd->d`
+  131.   	}
+  132.   
+  133. > int     BN_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  134.   	{
+  135.   	return bnrand(1, rnd, bits, top, bottom);
+
+crypto/bn/bn_rand.c:135:9: Call
+  133.   int     BN_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  134.   	{
+  135.   	return bnrand(1, rnd, bits, top, bottom);
+                 ^
+  136.   	}
+
+crypto/bn/bn_rand.c:65:1: Parameter `*rnd->d`
+    63.   #include <openssl/rand.h>
+    64.   
+    65. > static int bnrand(int pseudorand, BIGNUM *rnd, int bits, int top, int bottom)
+    66.   	{
+    67.   	unsigned char *buf=NULL;
+
+crypto/bn/bn_rand.c:117:7: Call
+    115.   	if (bottom) /* set bottom bits to whatever odd is */
+    116.   		buf[bytes-1]|=1;
+    117.   	if (!BN_bin2bn(buf,bytes,rnd)) goto err;
+                 ^
+    118.   	ret=1;
+    119.   err:
+
+crypto/bn/bn_lib.c:602:1: Parameter `*ret->d`
+      600.   
+      601.   /* ignore negative */
+      602. > BIGNUM *BN_bin2bn(const unsigned char *s, int len, BIGNUM *ret)
+      603.   	{
+      604.   	unsigned int i,m;
+
+crypto/bn/bn_lib.c:617:6: Call
+      615.   		return(ret);
+      616.   		}
+      617.   	if (bn_expand(ret,(int)(n+2)*8) == NULL)
+                  ^
+      618.   		return(NULL);
+      619.   	i=((n-1)/BN_BYTES)+1;
+
+crypto/bn/bn_lib.c:349:1: <Length trace>
+347.    * NULL is returned. if not, 'b' is returned.
+348.    */
+349. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+350.   	{
+351.   	BN_ULONG *A,*a;
+
+crypto/bn/bn_lib.c:349:1: Parameter `*b->d`
+        347.    * NULL is returned. if not, 'b' is returned.
+        348.    */
+        349. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+        350.   	{
+        351.   	BN_ULONG *A,*a;
+
+crypto/bn/bn_lib.c:372:3: Assignment
+        370.   			}
+        371.   #if 1
+        372.   		B=b->d;
+                 ^
+        373.   		/* Check if the previous number needs to be copied */
+        374.   		if (B != NULL)
+
+crypto/bn/bn_lib.c:452:35: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + 3) Size: [0, +oo] by call to `BN_pseudo_rand` 
+        450.   				 */
+        451.   				BN_ULONG a0,a1,a2,a3;
+        452.   				a0=B[0]; a1=B[1]; a2=B[2]; a3=B[3];
+                                                 ^
+        453.   				A[0]=a0; A[1]=a1; A[2]=a2; A[3]=a3;
+        454.   				}

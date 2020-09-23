@@ -1,0 +1,131 @@
+#29001
+libavcodec/mpegvideo.c:1769: error: Buffer Overrun L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, 255]) Size: [0, +oo] by call to `ff_alloc_picture`.
+
+libavcodec/mpegvideo.c:1697:16: Call
+1695.     s->current_picture_ptr->f.key_frame = s->pict_type == AV_PICTURE_TYPE_I;
+1696. 
+1697.     if ((ret = ff_mpeg_ref_picture(s, &s->current_picture,
+                     ^
+1698.                                    s->current_picture_ptr)) < 0)
+1699.         return ret;
+
+libavcodec/mpegvideo.c:699:1: Parameter `**src->f.side_data`
+  697. }
+  698. 
+  699. int ff_mpeg_ref_picture(MpegEncContext *s, Picture *dst, Picture *src)
+       ^
+  700. {
+  701.     int ret;
+
+libavcodec/mpegvideo.c:1769:13: Call
+1767.         s->next_picture_ptr->f.pict_type = AV_PICTURE_TYPE_I;
+1768. 
+1769.         if (ff_alloc_picture(s, s->next_picture_ptr, 0) < 0) {
+                  ^
+1770.             s->next_picture_ptr = NULL;
+1771.             return -1;
+
+libavcodec/mpegvideo.c:583:1: Parameter `*pic->f.data[*]`
+  581.  * The pixels are allocated/set by calling get_buffer() if shared = 0
+  582.  */
+  583. int ff_alloc_picture(MpegEncContext *s, Picture *pic, int shared)
+       ^
+  584. {
+  585.     int i, ret;
+
+libavcodec/mpegvideo.c:593:13: Call
+  591.         assert(!pic->f.buf[0]);
+  592. 
+  593.         if (alloc_frame_buffer(s, pic) < 0)
+                   ^
+  594.             return -1;
+  595. 
+
+libavcodec/mpegvideo.c:420:1: Parameter `*pic->f.data[*]`
+    418.  * Allocate a frame buffer
+    419.  */
+    420. static int alloc_frame_buffer(MpegEncContext *s, Picture *pic)
+         ^
+    421. {
+    422.     int edges_needed = av_codec_is_encoder(s->avctx->codec);
+
+libavcodec/mpegvideo.c:440:13: Call
+    438.         pic->f.height = s->avctx->height;
+    439.         pic->f.format = s->avctx->pix_fmt;
+    440.         r = avcodec_default_get_buffer2(s->avctx, &pic->f, 0);
+                     ^
+    441.     }
+    442. 
+
+libavcodec/utils.c:524:1: Parameter `*frame->data[*]`
+      522. }
+      523. 
+      524. int avcodec_default_get_buffer2(AVCodecContext *avctx, AVFrame *frame, int flags)
+           ^
+      525. {
+      526.     int ret;
+
+libavcodec/utils.c:539:16: Call
+      537.     switch (avctx->codec_type) {
+      538.     case AVMEDIA_TYPE_VIDEO:
+      539.         return video_get_buffer(avctx, frame);
+                          ^
+      540.     case AVMEDIA_TYPE_AUDIO:
+      541.         return audio_get_buffer(avctx, frame);
+
+libavcodec/utils.c:471:1: Parameter `*pic->data[*]`
+        469. }
+        470. 
+        471. static int video_get_buffer(AVCodecContext *s, AVFrame *pic)
+             ^
+        472. {
+        473.     FramePool *pool = s->internal->pool;
+
+libavcodec/utils.c:513:9: Call
+        511.     }
+        512.     if (pic->data[1] && !pic->data[2])
+        513.         avpriv_set_systematic_pal2((uint32_t *)pic->data[1], s->pix_fmt);
+                     ^
+        514. 
+        515.     if (s->debug & FF_DEBUG_BUFFERS)
+
+libavutil/imgutils.c:143:10: <Offset trace>
+141.     int i;
+142. 
+143.     for (i = 0; i < 256; i++) {
+              ^
+144.         int r, g, b;
+145. 
+
+libavutil/imgutils.c:143:10: Assignment
+          141.     int i;
+          142. 
+          143.     for (i = 0; i < 256; i++) {
+                        ^
+          144.         int r, g, b;
+          145. 
+
+libavutil/imgutils.c:139:1: <Length trace>
+137. }
+138. 
+139. int avpriv_set_systematic_pal2(uint32_t pal[256], enum AVPixelFormat pix_fmt)
+     ^
+140. {
+141.     int i;
+
+libavutil/imgutils.c:139:1: Parameter `*pal`
+          137. }
+          138. 
+          139. int avpriv_set_systematic_pal2(uint32_t pal[256], enum AVPixelFormat pix_fmt)
+               ^
+          140. {
+          141.     int i;
+
+libavutil/imgutils.c:173:9: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [0, 255]) Size: [0, +oo] by call to `ff_alloc_picture` 
+          171.             return AVERROR(EINVAL);
+          172.         }
+          173.         pal[i] = b + (g<<8) + (r<<16);
+                       ^
+          174.     }
+          175. 

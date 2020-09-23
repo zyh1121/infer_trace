@@ -1,0 +1,72 @@
+crypto/x509v3/v3_scts.c:191: error: BUFFER_OVERRUN_L4
+  Offset: [1, +oo] Size: 17 by call to `BIO_printf`.
+Showing all 9 steps of the trace
+
+
+crypto/x509v3/v3_scts.c:191:4: Call
+189.   				return 0;
+190.   			sctlen -= fieldlen;
+191.   			BIO_printf(out, "\n%*sExtensions: ", indent + 4, "");
+          ^
+192.   			if (fieldlen == 0)
+193.   				BIO_printf(out, "none");
+
+crypto/bio/b_print.c:768:1: Parameter `*format`
+  766.   /***************************************************************************/
+  767.   
+  768. > int BIO_printf (BIO *bio, const char *format, ...)
+  769.   	{
+  770.   	va_list args;
+
+crypto/bio/b_print.c:775:8: Call
+  773.   	va_start(args, format);
+  774.   
+  775.   	ret = BIO_vprintf(bio, format, args);
+                ^
+  776.   
+  777.   	va_end(args);
+
+crypto/bio/b_print.c:781:1: Parameter `*format`
+    779.   	}
+    780.   
+    781. > int BIO_vprintf (BIO *bio, const char *format, va_list args)
+    782.   	{
+    783.   	int ret;
+
+crypto/bio/b_print.c:795:2: Call
+    793.   	dynbuf = NULL;
+    794.   	CRYPTO_push_info("doapr()");
+    795.   	_dopr(&hugebufp, &dynbuf, &hugebufsize,
+            ^
+    796.   		&retlen, &ignored, format, args);
+    797.   	if (dynbuf)
+
+crypto/bio/b_print.c:168:1: <Length trace>
+166.   #define OSSL_MAX(p,q) ((p >= q) ? p : q)
+167.   
+168. > static void
+169.   _dopr(
+170.       char **sbuffer,
+
+crypto/bio/b_print.c:168:1: Parameter `*format`
+      166.   #define OSSL_MAX(p,q) ((p >= q) ? p : q)
+      167.   
+      168. > static void
+      169.   _dopr(
+      170.       char **sbuffer,
+
+crypto/bio/b_print.c:192:11: Assignment
+      190.       flags = currlen = cflags = min = 0;
+      191.       max = -1;
+      192.       ch = *format++;
+                       ^
+      193.   
+      194.       while (state != DP_S_DONE) {
+
+crypto/bio/b_print.c:204:18: Array access: Offset: [1, +oo] Size: 17 by call to `BIO_printf` 
+      202.               else
+      203.                   doapr_outch(sbuffer,buffer, &currlen, maxlen, ch);
+      204.               ch = *format++;
+                              ^
+      205.               break;
+      206.           case DP_S_FLAGS:

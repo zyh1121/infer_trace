@@ -1,0 +1,126 @@
+apps/prime.c:124: error: BUFFER_OVERRUN_U5
+  Offset: [0, +oo] Size: 256 by call to `BN_is_prime_ex`.
+Showing all 16 steps of the trace
+
+
+apps/prime.c:43:17: Call
+41.   
+42.       prog = opt_init(argc, argv, prime_options);
+43.       while ((o = opt_next()) != OPT_EOF) {
+                      ^
+44.           switch (o) {
+45.           case OPT_EOF:
+
+apps/opt.c:636:9: Unknown value from: strcmp
+  634.       /* Hit "--" ? We're done. */
+  635.       opt_index++;
+  636.       if (strcmp(p, "--") == 0)
+                 ^
+  637.           return 0;
+  638.   
+
+apps/prime.c:124:24: Call
+122.               BIO_printf(bio_out, " (%s) %s prime\n",
+123.                          argv[0],
+124.                          BN_is_prime_ex(bn, checks, NULL, NULL)
+                              ^
+125.                              ? "is" : "is not");
+126.           }
+
+crypto/bn/bn_prime.c:145:1: Parameter `*a->d`
+  143.   }
+  144.   
+  145. > int BN_is_prime_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
+  146.                      BN_GENCB *cb)
+  147.   {
+
+crypto/bn/bn_prime.c:148:12: Call
+  146.                      BN_GENCB *cb)
+  147.   {
+  148.       return BN_is_prime_fasttest_ex(a, checks, ctx_passed, 0, cb);
+                    ^
+  149.   }
+  150.   
+
+crypto/bn/bn_prime.c:151:1: Parameter `*a->d`
+    149.   }
+    150.   
+    151. > int BN_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
+    152.                               int do_trial_division, BN_GENCB *cb)
+    153.   {
+
+crypto/bn/bn_prime.c:160:9: Call
+    158.       BN_MONT_CTX *mont = NULL;
+    159.   
+    160.       if (BN_cmp(a, BN_value_one()) <= 0)
+                   ^
+    161.           return 0;
+    162.   
+
+crypto/bn/bn_lib.c:566:1: Parameter `*a->d`
+      564.   }
+      565.   
+      566. > int BN_cmp(const BIGNUM *a, const BIGNUM *b)
+      567.   {
+      568.       int i;
+
+crypto/bn/bn_prime.c:164:18: Call
+    162.   
+    163.       if (checks == BN_prime_checks)
+    164.           checks = BN_prime_checks_for_size(BN_num_bits(a));
+                            ^
+    165.   
+    166.       /* first look for small factors */
+
+crypto/bn/bn_lib.c:161:1: Parameter `*a->d`
+      159.   }
+      160.   
+      161. > int BN_num_bits(const BIGNUM *a)
+      162.   {
+      163.       int i = a->top - 1;
+
+crypto/bn/bn_lib.c:168:30: Call
+      166.       if (BN_is_zero(a))
+      167.           return 0;
+      168.       return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
+                                          ^
+      169.   }
+      170.   
+
+crypto/bn/bn_lib.c:89:1: <Offset trace>
+87.   }
+88.   
+89. > int BN_num_bits_word(BN_ULONG l)
+90.   {
+91.       static const unsigned char bits[256] = {
+
+crypto/bn/bn_lib.c:89:1: Parameter `l`
+        87.   }
+        88.   
+        89. > int BN_num_bits_word(BN_ULONG l)
+        90.   {
+        91.       static const unsigned char bits[256] = {
+
+crypto/bn/bn_lib.c:91:5: <Length trace>
+89.   int BN_num_bits_word(BN_ULONG l)
+90.   {
+91.       static const unsigned char bits[256] = {
+          ^
+92.           0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
+93.           5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+
+crypto/bn/bn_lib.c:91:5: Array declaration
+        89.   int BN_num_bits_word(BN_ULONG l)
+        90.   {
+        91.       static const unsigned char bits[256] = {
+                  ^
+        92.           0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
+        93.           5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+
+crypto/bn/bn_lib.c:114:25: Array access: Offset: [0, +oo] Size: 256 by call to `BN_is_prime_ex` 
+        112.           if (l & 0xffff000000000000L) {
+        113.               if (l & 0xff00000000000000L) {
+        114.                   return (bits[(int)(l >> 56)] + 56);
+                                       ^
+        115.               } else
+        116.                   return (bits[(int)(l >> 48)] + 48);

@@ -1,0 +1,63 @@
+crypto/ec/ec2_smpl.c:843: error: BUFFER_OVERRUN_L5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_GF2m_add`.
+Showing all 8 steps of the trace
+
+
+crypto/ec/ec2_smpl.c:843:7: Call
+841.   	/* rh := rh + a*X^2 */
+842.   	if (!group->meth->field_mul(group, tmp1, tmp1, &group->a, ctx)) goto err;
+843.   	if (!BN_GF2m_add(rh, rh, tmp1)) goto err;
+             ^
+844.   
+845.   	/* rh := rh + b */
+
+crypto/bn/bn_gf2m.c:286:1: Parameter `r->top`
+  284.    * could be equal; r is the bitwise XOR of a and b.
+  285.    */
+  286. > int	BN_GF2m_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+  287.   	{
+  288.   	int i;
+
+crypto/bn/bn_gf2m.c:297:2: Call
+  295.   	else { at = a; bt = b; }
+  296.   
+  297.   	bn_wexpand(r, at->top);
+          ^
+  298.   
+  299.   	for (i = 0; i < bt->top; i++)
+
+crypto/bn/bn_lib.c:440:1: <Offset trace>
+438.    * NULL is returned. If not, 'b' is returned. */
+439.   
+440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+441.   	{
+442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: Parameter `words`
+    438.    * NULL is returned. If not, 'b' is returned. */
+    439.   
+    440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+    441.   	{
+    442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: <Length trace>
+438.    * NULL is returned. If not, 'b' is returned. */
+439.   
+440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+441.   	{
+442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:440:1: Parameter `*b->d`
+    438.    * NULL is returned. If not, 'b' is returned. */
+    439.   
+    440. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+    441.   	{
+    442.   	BN_ULONG *A;
+
+crypto/bn/bn_lib.c:459:3: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + [-oo, +oo]) Size: [0, +oo] by call to `BN_GF2m_add` 
+    457.   	if (b->top < b->dmax)
+    458.   		{
+    459.   		A = &(b->d[b->top]);
+             ^
+    460.   		for (i=(b->dmax - b->top)>>3; i>0; i--,A+=8)
+    461.   			{

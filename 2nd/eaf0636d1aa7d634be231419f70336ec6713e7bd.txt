@@ -1,0 +1,102 @@
+crypto/bn/bn_exp.c:1340: error: INTEGER_OVERFLOW_L5
+  ([0, +oo] + 1):unsigned32 by call to `BN_mod_mul`.
+Showing all 13 steps of the trace
+
+
+crypto/bn/bn_exp.c:1282:14: Call
+1280.       window = BN_window_bits_for_exponent_size(bits);
+1281.       if (window > 1) {
+1282.           if (!BN_mod_mul(d, val[0], val[0], m, ctx))
+                     ^
+1283.               goto err;           /* 2 */
+1284.           j = 1 << (window - 1);
+
+crypto/bn/bn_mod.c:98:5: Call
+  96.       ret = 1;
+  97.    err:
+  98.       BN_CTX_end(ctx);
+             ^
+  99.       return (ret);
+  100.   }
+
+crypto/bn/bn_ctx.c:195:1: Parameter `ctx->used`
+    193.   }
+    194.   
+    195. > void BN_CTX_end(BN_CTX *ctx)
+    196.   {
+    197.       CTXDBG_ENTRY("BN_CTX_end", ctx);
+
+crypto/bn/bn_exp.c:1340:14: Call
+1338.   
+1339.           /* wvalue will be an odd number < 2^window */
+1340.           if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
+                     ^
+1341.               goto err;
+1342.   
+
+crypto/bn/bn_mod.c:73:1: Parameter `ctx->used`
+  71.   
+  72.   /* slow but works */
+  73. > int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
+  74.                  BN_CTX *ctx)
+  75.   {
+
+crypto/bn/bn_mod.c:84:14: Call
+  82.   
+  83.       BN_CTX_start(ctx);
+  84.       if ((t = BN_CTX_get(ctx)) == NULL)
+                     ^
+  85.           goto err;
+  86.       if (a == b) {
+
+crypto/bn/bn_ctx.c:212:1: Parameter `ctx->used`
+    210.   }
+    211.   
+    212. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+    213.   {
+    214.       BIGNUM *ret;
+
+crypto/bn/bn_mod.c:90:14: Call
+  88.               goto err;
+  89.       } else {
+  90.           if (!BN_mul(t, a, b, ctx))
+                     ^
+  91.               goto err;
+  92.       }
+
+crypto/bn/bn_mul.c:495:1: Parameter `ctx->used`
+    493.   #endif                          /* BN_RECURSION */
+    494.   
+    495. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+    496.   {
+    497.       int ret = 0;
+
+crypto/bn/bn_mul.c:523:19: Call
+    521.       BN_CTX_start(ctx);
+    522.       if ((r == a) || (r == b)) {
+    523.           if ((rr = BN_CTX_get(ctx)) == NULL)
+                             ^
+    524.               goto err;
+    525.       } else
+
+crypto/bn/bn_ctx.c:212:1: <LHS trace>
+210.   }
+211.   
+212. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+213.   {
+214.       BIGNUM *ret;
+
+crypto/bn/bn_ctx.c:212:1: Parameter `ctx->used`
+      210.   }
+      211.   
+      212. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+      213.   {
+      214.       BIGNUM *ret;
+
+crypto/bn/bn_ctx.c:230:5: Binary operation: ([0, +oo] + 1):unsigned32 by call to `BN_mod_mul` 
+      228.       /* OK, make sure the returned bignum is "zero" */
+      229.       BN_zero(ret);
+      230.       ctx->used++;
+                 ^
+      231.       CTXDBG_RET(ctx, ret);
+      232.       return ret;

@@ -1,0 +1,80 @@
+crypto/bio/bio_cb.c:68: error: INTEGER_OVERFLOW_L2
+  ([0, 2147483647] - 1):unsigned64 by call to `BIO_snprintf`.
+Showing all 10 steps of the trace
+
+
+crypto/bio/bio_cb.c:34:9: Assignment
+32.       /* Ignore errors and continue printing the other information. */
+33.       if (len < 0)
+34.           len = 0;
+              ^
+35.       p = buf + len;
+36.       p_maxlen = sizeof(buf) - len;
+
+crypto/bio/bio_cb.c:36:5: Assignment
+34.           len = 0;
+35.       p = buf + len;
+36.       p_maxlen = sizeof(buf) - len;
+          ^
+37.   
+38.       switch (cmd) {
+
+crypto/bio/bio_cb.c:68:9: Call
+66.           break;
+67.       case BIO_CB_CTRL:
+68.           BIO_snprintf(p, p_maxlen, "ctrl(%lu) - %s\n", (unsigned long)argi,
+              ^
+69.                        bio->method->name);
+70.           break;
+
+crypto/bio/b_print.c:895:1: Parameter `n`
+  893.    * function should be renamed, but to what?)
+  894.    */
+  895. > int BIO_snprintf(char *buf, size_t n, const char *format, ...)
+  896.   {
+  897.       va_list args;
+
+crypto/bio/b_print.c:902:11: Call
+  900.       va_start(args, format);
+  901.   
+  902.       ret = BIO_vsnprintf(buf, n, format, args);
+                   ^
+  903.   
+  904.       va_end(args);
+
+crypto/bio/b_print.c:908:1: Parameter `n`
+    906.   }
+    907.   
+    908. > int BIO_vsnprintf(char *buf, size_t n, const char *format, va_list args)
+    909.   {
+    910.       size_t retlen;
+
+crypto/bio/b_print.c:913:9: Call
+    911.       int truncated;
+    912.   
+    913.       if(!_dopr(&buf, NULL, &n, &retlen, &truncated, format, args))
+                   ^
+    914.           return -1;
+    915.   
+
+crypto/bio/b_print.c:83:1: <LHS trace>
+81.   #define OSSL_MAX(p,q) ((p >= q) ? p : q)
+82.   
+83. > static int
+84.   _dopr(char **sbuffer,
+85.         char **buffer,
+
+crypto/bio/b_print.c:83:1: Parameter `*maxlen`
+      81.   #define OSSL_MAX(p,q) ((p >= q) ? p : q)
+      82.   
+      83. > static int
+      84.   _dopr(char **sbuffer,
+      85.         char **buffer,
+
+crypto/bio/b_print.c:353:23: Binary operation: ([0, 2147483647] - 1):unsigned64 by call to `BIO_snprintf` 
+      351.        */
+      352.       if (buffer == NULL) {
+      353.           *truncated = (currlen > *maxlen - 1);
+                                   ^
+      354.           if (*truncated)
+      355.               currlen = *maxlen - 1;

@@ -1,0 +1,79 @@
+test/bntest.c:471: error: INTEGER_OVERFLOW_L5
+  ([-oo, +oo] + [-oo, +oo]):signed32 by call to `BN_mul`.
+Showing all 10 steps of the trace
+
+
+test/bntest.c:433:5: Call
+431.       e = BN_new();
+432.   
+433.       BN_one(a);
+           ^
+434.       BN_zero(b);
+435.   
+
+crypto/bn/bn_lib.c:463:1: Parameter `a->top`
+  461.   }
+  462.   
+  463. > int BN_set_word(BIGNUM *a, BN_ULONG w)
+  464.   {
+  465.       bn_check_top(a);
+
+test/bntest.c:471:9: Call
+469.               BIO_puts(bp, "\n");
+470.           }
+471.           BN_mul(e, d, b, ctx);
+               ^
+472.           BN_add(d, e, c);
+473.           BN_sub(d, d, a);
+
+crypto/bn/bn_mul.c:828:1: <LHS trace>
+826.   #endif                          /* BN_RECURSION */
+827.   
+828. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+829.   {
+830.       int ret = 0;
+
+crypto/bn/bn_mul.c:828:1: Parameter `a->top`
+  826.   #endif                          /* BN_RECURSION */
+  827.   
+  828. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+  829.   {
+  830.       int ret = 0;
+
+crypto/bn/bn_mul.c:845:5: Assignment
+  843.       bn_check_top(r);
+  844.   
+  845.       al = a->top;
+             ^
+  846.       bl = b->top;
+  847.   
+
+crypto/bn/bn_mul.c:828:1: <RHS trace>
+826.   #endif                          /* BN_RECURSION */
+827.   
+828. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+829.   {
+830.       int ret = 0;
+
+crypto/bn/bn_mul.c:828:1: Parameter `b->top`
+  826.   #endif                          /* BN_RECURSION */
+  827.   
+  828. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+  829.   {
+  830.       int ret = 0;
+
+crypto/bn/bn_mul.c:846:5: Assignment
+  844.   
+  845.       al = a->top;
+  846.       bl = b->top;
+             ^
+  847.   
+  848.       if ((al == 0) || (bl == 0)) {
+
+crypto/bn/bn_mul.c:852:5: Binary operation: ([-oo, +oo] + [-oo, +oo]):signed32 by call to `BN_mul` 
+  850.           return (1);
+  851.       }
+  852.       top = al + bl;
+             ^
+  853.   
+  854.       BN_CTX_start(ctx);

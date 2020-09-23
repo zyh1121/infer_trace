@@ -1,0 +1,155 @@
+crypto/x509/t_x509.c:234: error: BUFFER_OVERRUN_U5
+  Offset: [-oo, +oo] (⇐ [-oo, +oo] + -1) Size: [0, +oo] by call to `i2d_X509_NAME`.
+Showing all 20 steps of the trace
+
+
+crypto/x509/t_x509.c:231:9: Call
+229.        * display the hash of the subject as it would appear in OCSP requests
+230.        */
+231.       if (BIO_printf(bp, "        Subject OCSP hash: ") <= 0)
+               ^
+232.           goto err;
+233.       subj = X509_get_subject_name(x);
+
+crypto/bio/b_print.c:861:5: Unknown value from: __builtin_va_end
+  859.       ret = BIO_vprintf(bio, format, args);
+  860.   
+  861.       va_end(args);
+             ^
+  862.       return (ret);
+  863.   }
+
+crypto/x509/t_x509.c:234:14: Call
+232.           goto err;
+233.       subj = X509_get_subject_name(x);
+234.       derlen = i2d_X509_NAME(subj, NULL);
+                    ^
+235.       if ((der = dertmp = OPENSSL_malloc(derlen)) == NULL)
+236.           goto err;
+
+crypto/x509/x_name.c:86:1: Parameter `**out`
+  84.   IMPLEMENT_EXTERN_ASN1(X509_NAME, V_ASN1_SEQUENCE, x509_name_ff)
+  85.   
+  86. > IMPLEMENT_ASN1_FUNCTIONS(X509_NAME)
+  87.   
+  88.   IMPLEMENT_ASN1_DUP_FUNCTION(X509_NAME)
+
+crypto/x509/x_name.c:86:1: Call
+  84.   IMPLEMENT_EXTERN_ASN1(X509_NAME, V_ASN1_SEQUENCE, x509_name_ff)
+  85.   
+  86. > IMPLEMENT_ASN1_FUNCTIONS(X509_NAME)
+  87.   
+  88.   IMPLEMENT_ASN1_DUP_FUNCTION(X509_NAME)
+
+crypto/asn1/tasn_enc.c:42:1: Parameter `**out`
+    40.   }
+    41.   
+    42. > int ASN1_item_i2d(ASN1_VALUE *val, unsigned char **out, const ASN1_ITEM *it)
+    43.   {
+    44.       return asn1_item_flags_i2d(val, out, it, 0);
+
+crypto/asn1/tasn_enc.c:44:12: Call
+    42.   int ASN1_item_i2d(ASN1_VALUE *val, unsigned char **out, const ASN1_ITEM *it)
+    43.   {
+    44.       return asn1_item_flags_i2d(val, out, it, 0);
+                     ^
+    45.   }
+    46.   
+
+crypto/asn1/tasn_enc.c:54:1: Parameter `**out`
+      52.    */
+      53.   
+      54. > static int asn1_item_flags_i2d(ASN1_VALUE *val, unsigned char **out,
+      55.                                  const ASN1_ITEM *it, int flags)
+      56.   {
+
+crypto/asn1/tasn_enc.c:72:12: Call
+      70.       }
+      71.   
+      72.       return ASN1_item_ex_i2d(&val, out, it, -1, flags);
+                       ^
+      73.   }
+      74.   
+
+crypto/asn1/tasn_enc.c:80:1: Parameter `**out`
+        78.    */
+        79.   
+        80. > int ASN1_item_ex_i2d(ASN1_VALUE **pval, unsigned char **out,
+        81.                        const ASN1_ITEM *it, int tag, int aclass)
+        82.   {
+
+crypto/asn1/tasn_enc.c:104:16: Call
+        102.   
+        103.       case ASN1_ITYPE_MSTRING:
+        104.           return asn1_i2d_ex_primitive(pval, out, it, -1, aclass);
+                              ^
+        105.   
+        106.       case ASN1_ITYPE_CHOICE:
+
+crypto/asn1/tasn_enc.c:429:1: Parameter `**out`
+          427.   }
+          428.   
+          429. > static int asn1_i2d_ex_primitive(ASN1_VALUE **pval, unsigned char **out,
+          430.                                    const ASN1_ITEM *it, int tag, int aclass)
+          431.   {
+
+crypto/asn1/tasn_enc.c:475:9: Call
+          473.           if (usetag)
+          474.               ASN1_put_object(out, ndef, len, tag, aclass);
+          475.           asn1_ex_i2c(pval, *out, &utype, it);
+                         ^
+          476.           if (ndef)
+          477.               ASN1_put_eoc(out);
+
+crypto/asn1/tasn_enc.c:489:1: Parameter `*cout`
+            487.   /* Produce content octets from a structure */
+            488.   
+            489. > static int asn1_ex_i2c(ASN1_VALUE **pval, unsigned char *cout, int *putype,
+            490.                          const ASN1_ITEM *it)
+            491.   {
+
+crypto/asn1/tasn_enc.c:557:16: Call
+            555.   
+            556.       case V_ASN1_BIT_STRING:
+            557.           return i2c_ASN1_BIT_STRING((ASN1_BIT_STRING *)*pval,
+                                  ^
+            558.                                      cout ? &cout : NULL);
+            559.   
+
+crypto/asn1/a_bitstr.c:21:1: <Length trace>
+19.   }
+20.   
+21. > int i2c_ASN1_BIT_STRING(ASN1_BIT_STRING *a, unsigned char **pp)
+22.   {
+23.       int ret, j, bits, len;
+
+crypto/asn1/a_bitstr.c:21:1: Parameter `a->length`
+              19.   }
+              20.   
+              21. > int i2c_ASN1_BIT_STRING(ASN1_BIT_STRING *a, unsigned char **pp)
+              22.   {
+              23.       int ret, j, bits, len;
+
+crypto/asn1/a_bitstr.c:29:5: Assignment
+              27.           return 0;
+              28.   
+              29.       len = a->length;
+                        ^
+              30.   
+              31.       if (len > 0) {
+
+crypto/asn1/a_bitstr.c:72:9: Assignment
+              70.       if (len > 0) {
+              71.           memcpy(p, d, len);
+              72.           p += len;
+                            ^
+              73.           p[-1] &= (0xff << bits);
+              74.       }
+
+crypto/asn1/a_bitstr.c:73:9: Array access: Offset: [-oo, +oo] (⇐ [-oo, +oo] + -1) Size: [0, +oo] by call to `i2d_X509_NAME` 
+              71.           memcpy(p, d, len);
+              72.           p += len;
+              73.           p[-1] &= (0xff << bits);
+                            ^
+              74.       }
+              75.       *pp = p;

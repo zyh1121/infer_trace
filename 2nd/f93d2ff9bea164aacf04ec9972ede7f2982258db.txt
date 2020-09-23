@@ -1,0 +1,43 @@
+#19666
+libavcodec/mjpegdec.c:812: error: Integer Overflow L5
+  ([0, +oo] + 8):signed32 by call to `init_get_bits`.
+
+libavcodec/mjpegdec.c:801:1: Parameter `s->mb_height`
+799. }
+800. 
+801. static int mjpeg_decode_scan(MJpegDecodeContext *s, int nb_components, int Ah,
+     ^
+802.                              int Al, const uint8_t *mb_bitmask,
+803.                              const AVFrame *reference)
+
+libavcodec/mjpegdec.c:812:9: Call
+810. 
+811.     if (mb_bitmask)
+812.         init_get_bits(&mb_bitmask_gb, mb_bitmask, s->mb_width * s->mb_height);
+             ^
+813. 
+814.     if (s->flipped && s->avctx->flags & CODEC_FLAG_EMU_EDGE) {
+
+libavcodec/get_bits.h:370:1: <LHS trace>
+368.  * @param bit_size the size of the buffer in bits
+369.  */
+370. static inline void init_get_bits(GetBitContext *s, const uint8_t *buffer,
+     ^
+371.                                  int bit_size)
+372. {
+
+libavcodec/get_bits.h:370:1: Parameter `bit_size`
+  368.  * @param bit_size the size of the buffer in bits
+  369.  */
+  370. static inline void init_get_bits(GetBitContext *s, const uint8_t *buffer,
+       ^
+  371.                                  int bit_size)
+  372. {
+
+libavcodec/get_bits.h:382:5: Binary operation: ([0, +oo] + 8):signed32 by call to `init_get_bits` 
+  380.     s->size_in_bits = bit_size;
+  381. #if !UNCHECKED_BITSTREAM_READER
+  382.     s->size_in_bits_plus8 = bit_size + 8;
+           ^
+  383. #endif
+  384.     s->buffer_end   = buffer + buffer_size;

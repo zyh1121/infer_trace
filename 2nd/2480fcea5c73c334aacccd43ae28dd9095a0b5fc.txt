@@ -1,0 +1,139 @@
+#10004
+libavcodec/dnxhddec.c:332: error: Integer Overflow L5
+  ([11, +oo] + 1):unsigned32 by call to `dnxhd_decode_macroblock`.
+
+libavcodec/dnxhddec.c:329:9: Call
+327.         ctx->last_dc[1] =
+328.         ctx->last_dc[2] = 1 << (ctx->bit_depth + 2); // for levels +2^(bitdepth-1)
+329.         init_get_bits(&ctx->gb, buf + ctx->mb_scan_index[y], (buf_size - ctx->mb_scan_index[y]) << 3);
+             ^
+330.         for (x = 0; x < ctx->mb_width; x++) {
+331.             //START_TIMER;
+
+libavcodec/get_bits.h:318:5: Assignment
+  316.     s->size_in_bits = bit_size;
+  317.     s->buffer_end   = buffer + buffer_size;
+  318.     s->index        = 0;
+           ^
+  319. }
+  320. 
+
+libavcodec/dnxhddec.c:332:13: Call
+330.         for (x = 0; x < ctx->mb_width; x++) {
+331.             //START_TIMER;
+332.             dnxhd_decode_macroblock(ctx, x, y);
+                 ^
+333.             //STOP_TIMER("decode macroblock");
+334.         }
+
+libavcodec/dnxhddec.c:271:1: Parameter `ctx->gb.index`
+  269. }
+  270. 
+  271. static int dnxhd_decode_macroblock(DNXHDContext *ctx, int x, int y)
+       ^
+  272. {
+  273.     int shift1 = ctx->bit_depth == 10;
+
+libavcodec/dnxhddec.c:280:14: Call
+  278.     int qscale, i;
+  279. 
+  280.     qscale = get_bits(&ctx->gb, 11);
+                    ^
+  281.     skip_bits1(&ctx->gb);
+  282.     //av_log(ctx->avctx, AV_LOG_DEBUG, "qscale %d\n", qscale);
+
+libavcodec/get_bits.h:201:1: Parameter `n`
+    199.  * Read 1-25 bits.
+    200.  */
+    201. static inline unsigned int get_bits(GetBitContext *s, int n){
+         ^
+    202.     register int tmp;
+    203.     OPEN_READER(re, s);
+
+libavcodec/get_bits.h:206:5: Assignment
+    204.     UPDATE_CACHE(re, s);
+    205.     tmp = SHOW_UBITS(re, s, n);
+    206.     LAST_SKIP_BITS(re, s, n);
+             ^
+    207.     CLOSE_READER(re, s);
+    208.     return tmp;
+
+libavcodec/get_bits.h:207:5: Assignment
+    205.     tmp = SHOW_UBITS(re, s, n);
+    206.     LAST_SKIP_BITS(re, s, n);
+    207.     CLOSE_READER(re, s);
+             ^
+    208.     return tmp;
+    209. }
+
+libavcodec/dnxhddec.c:281:5: Call
+  279. 
+  280.     qscale = get_bits(&ctx->gb, 11);
+  281.     skip_bits1(&ctx->gb);
+           ^
+  282.     //av_log(ctx->avctx, AV_LOG_DEBUG, "qscale %d\n", qscale);
+  283. 
+
+libavcodec/get_bits.h:250:1: Parameter `s->index`
+    248. }
+    249. 
+    250. static inline void skip_bits1(GetBitContext *s){
+         ^
+    251.     skip_bits(s, 1);
+    252. }
+
+libavcodec/get_bits.h:251:5: Call
+    249. 
+    250. static inline void skip_bits1(GetBitContext *s){
+    251.     skip_bits(s, 1);
+             ^
+    252. }
+    253. 
+
+libavcodec/get_bits.h:222:1: <LHS trace>
+220. }
+221. 
+222. static inline void skip_bits(GetBitContext *s, int n){
+     ^
+223.  //Note gcc seems to optimize this to s->index+=n for the ALT_READER :))
+224.     OPEN_READER(re, s);
+
+libavcodec/get_bits.h:222:1: Parameter `s->index`
+      220. }
+      221. 
+      222. static inline void skip_bits(GetBitContext *s, int n){
+           ^
+      223.  //Note gcc seems to optimize this to s->index+=n for the ALT_READER :))
+      224.     OPEN_READER(re, s);
+
+libavcodec/get_bits.h:224:5: Assignment
+      222. static inline void skip_bits(GetBitContext *s, int n){
+      223.  //Note gcc seems to optimize this to s->index+=n for the ALT_READER :))
+      224.     OPEN_READER(re, s);
+               ^
+      225.     UPDATE_CACHE(re, s);
+      226.     LAST_SKIP_BITS(re, s, n);
+
+libavcodec/get_bits.h:222:1: <RHS trace>
+220. }
+221. 
+222. static inline void skip_bits(GetBitContext *s, int n){
+     ^
+223.  //Note gcc seems to optimize this to s->index+=n for the ALT_READER :))
+224.     OPEN_READER(re, s);
+
+libavcodec/get_bits.h:222:1: Parameter `n`
+      220. }
+      221. 
+      222. static inline void skip_bits(GetBitContext *s, int n){
+           ^
+      223.  //Note gcc seems to optimize this to s->index+=n for the ALT_READER :))
+      224.     OPEN_READER(re, s);
+
+libavcodec/get_bits.h:226:5: Binary operation: ([11, +oo] + 1):unsigned32 by call to `dnxhd_decode_macroblock` 
+      224.     OPEN_READER(re, s);
+      225.     UPDATE_CACHE(re, s);
+      226.     LAST_SKIP_BITS(re, s, n);
+               ^
+      227.     CLOSE_READER(re, s);
+      228. }

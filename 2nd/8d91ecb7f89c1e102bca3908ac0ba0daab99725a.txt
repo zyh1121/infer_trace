@@ -1,0 +1,179 @@
+#20818
+libavcodec/cavsdec.c:990: error: Integer Overflow L5
+  ([-oo, `h->s.gb.index` + 50] + [0, +oo]):unsigned32 by call to `get_ue_golomb`.
+
+libavcodec/cavsdec.c:927:1: Parameter `h->s.gb.index`
+925.  ****************************************************************************/
+926. 
+927. static int decode_pic(AVSContext *h)
+     ^
+928. {
+929.     MpegEncContext *s = &h->s;
+
+libavcodec/cavsdec.c:940:5: Call
+938.         ff_init_scantable(s->dsp.idct_permutation, &h->scantable, ff_zigzag_direct);
+939.     }
+940.     skip_bits(&s->gb, 16);//bbv_dwlay
+         ^
+941.     if (h->stc == PIC_PB_START_CODE) {
+942.         h->pic_type = get_bits(&s->gb, 2) + AV_PICTURE_TYPE_I;
+
+libavcodec/get_bits.h:260:1: Parameter `n`
+  258. }
+  259. 
+  260. static inline void skip_bits(GetBitContext *s, int n)
+       ^
+  261. {
+  262.     OPEN_READER(re, s);
+
+libavcodec/get_bits.h:264:5: Assignment
+  262.     OPEN_READER(re, s);
+  263.     UPDATE_CACHE(re, s);
+  264.     LAST_SKIP_BITS(re, s, n);
+           ^
+  265.     CLOSE_READER(re, s);
+  266. }
+
+libavcodec/get_bits.h:264:5: Assignment
+  262.     OPEN_READER(re, s);
+  263.     UPDATE_CACHE(re, s);
+  264.     LAST_SKIP_BITS(re, s, n);
+           ^
+  265.     CLOSE_READER(re, s);
+  266. }
+
+libavcodec/get_bits.h:265:5: Assignment
+  263.     UPDATE_CACHE(re, s);
+  264.     LAST_SKIP_BITS(re, s, n);
+  265.     CLOSE_READER(re, s);
+           ^
+  266. }
+  267. 
+
+libavcodec/cavsdec.c:953:13: Call
+951.     } else {
+952.         h->pic_type = AV_PICTURE_TYPE_I;
+953.         if (get_bits1(&s->gb))
+                 ^
+954.             skip_bits(&s->gb, 24);//time_code
+955.         /* old sample clips were all progressive and no low_delay,
+
+libavcodec/get_bits.h:268:1: Parameter `s->index`
+  266. }
+  267. 
+  268. static inline unsigned int get_bits1(GetBitContext *s)
+       ^
+  269. {
+  270.     unsigned int index = s->index;
+
+libavcodec/get_bits.h:270:5: Assignment
+  268. static inline unsigned int get_bits1(GetBitContext *s)
+  269. {
+  270.     unsigned int index = s->index;
+           ^
+  271.     uint8_t result = s->buffer[index>>3];
+  272. #ifdef BITSTREAM_READER_LE
+
+libavcodec/get_bits.h:283:5: Assignment
+  281. #endif
+  282.         index++;
+  283.     s->index = index;
+           ^
+  284. 
+  285.     return result;
+
+libavcodec/cavsdec.c:971:22: Call
+969.     ff_get_buffer(s->avctx, &h->picture.f);
+970.     ff_cavs_init_pic(h);
+971.     h->picture.poc = get_bits(&s->gb, 8) * 2;
+                          ^
+972. 
+973.     /* get temporal distances and MV scaling factors */
+
+libavcodec/get_bits.h:237:1: Parameter `n`
+  235.  * Read 1-25 bits.
+  236.  */
+  237. static inline unsigned int get_bits(GetBitContext *s, int n)
+       ^
+  238. {
+  239.     register int tmp;
+
+libavcodec/get_bits.h:243:5: Assignment
+  241.     UPDATE_CACHE(re, s);
+  242.     tmp = SHOW_UBITS(re, s, n);
+  243.     LAST_SKIP_BITS(re, s, n);
+           ^
+  244.     CLOSE_READER(re, s);
+  245.     return tmp;
+
+libavcodec/get_bits.h:243:5: Assignment
+  241.     UPDATE_CACHE(re, s);
+  242.     tmp = SHOW_UBITS(re, s, n);
+  243.     LAST_SKIP_BITS(re, s, n);
+           ^
+  244.     CLOSE_READER(re, s);
+  245.     return tmp;
+
+libavcodec/get_bits.h:244:5: Assignment
+  242.     tmp = SHOW_UBITS(re, s, n);
+  243.     LAST_SKIP_BITS(re, s, n);
+  244.     CLOSE_READER(re, s);
+           ^
+  245.     return tmp;
+  246. }
+
+libavcodec/cavsdec.c:990:9: Call
+988. 
+989.     if (s->low_delay)
+990.         get_ue_golomb(&s->gb); //bbv_check_times
+             ^
+991.     h->progressive   = get_bits1(&s->gb);
+992.     h->pic_structure = 1;
+
+libavcodec/golomb.h:53:1: <LHS trace>
+51.  * read unsigned exp golomb code.
+52.  */
+53. static inline int get_ue_golomb(GetBitContext *gb){
+    ^
+54.     unsigned int buf;
+55.     int log;
+
+libavcodec/golomb.h:53:1: Parameter `gb->index`
+  51.  * read unsigned exp golomb code.
+  52.  */
+  53. static inline int get_ue_golomb(GetBitContext *gb){
+      ^
+  54.     unsigned int buf;
+  55.     int log;
+
+libavcodec/golomb.h:57:5: Assignment
+  55.     int log;
+  56. 
+  57.     OPEN_READER(re, gb);
+          ^
+  58.     UPDATE_CACHE(re, gb);
+  59.     buf=GET_CACHE(re, gb);
+
+libavcodec/golomb.h:53:1: <RHS trace>
+51.  * read unsigned exp golomb code.
+52.  */
+53. static inline int get_ue_golomb(GetBitContext *gb){
+    ^
+54.     unsigned int buf;
+55.     int log;
+
+libavcodec/golomb.h:53:1: Global `ff_golomb_vlc_len`
+  51.  * read unsigned exp golomb code.
+  52.  */
+  53. static inline int get_ue_golomb(GetBitContext *gb){
+      ^
+  54.     unsigned int buf;
+  55.     int log;
+
+libavcodec/golomb.h:63:9: Binary operation: ([-oo, h->s.gb.index + 50] + [0, +oo]):unsigned32 by call to `get_ue_golomb` 
+  61.     if(buf >= (1<<27)){
+  62.         buf >>= 32 - 9;
+  63.         LAST_SKIP_BITS(re, gb, ff_golomb_vlc_len[buf]);
+              ^
+  64.         CLOSE_READER(re, gb);
+  65. 
