@@ -1,0 +1,864 @@
+engines/ccgost/gost_ameth.c:658: error: NULL_DEREFERENCE
+  pointer `databuf` last assigned on line 657 could be null and is dereferenced by call to `BN_bn2bin()` at line 658, column 2.
+Showing all 116 steps of the trace
+
+
+engines/ccgost/gost_ameth.c:639:1: start of procedure pub_encode_gost94()
+637.   	}
+638.   
+639. > static int pub_encode_gost94(X509_PUBKEY *pub,const EVP_PKEY *pk)
+640.   	{
+641.   	ASN1_OBJECT *algobj = NULL;
+
+engines/ccgost/gost_ameth.c:641:2: 
+639.   static int pub_encode_gost94(X509_PUBKEY *pub,const EVP_PKEY *pk)
+640.   	{
+641. > 	ASN1_OBJECT *algobj = NULL;
+642.   	ASN1_OCTET_STRING *octet = NULL;
+643.   	void *pval = NULL;
+
+engines/ccgost/gost_ameth.c:642:2: 
+640.   	{
+641.   	ASN1_OBJECT *algobj = NULL;
+642. > 	ASN1_OCTET_STRING *octet = NULL;
+643.   	void *pval = NULL;
+644.   	unsigned char *buf=NULL,*databuf,*sptr;
+
+engines/ccgost/gost_ameth.c:643:2: 
+641.   	ASN1_OBJECT *algobj = NULL;
+642.   	ASN1_OCTET_STRING *octet = NULL;
+643. > 	void *pval = NULL;
+644.   	unsigned char *buf=NULL,*databuf,*sptr;
+645.   	int i,j,data_len,ret=0;
+
+engines/ccgost/gost_ameth.c:644:2: 
+642.   	ASN1_OCTET_STRING *octet = NULL;
+643.   	void *pval = NULL;
+644. > 	unsigned char *buf=NULL,*databuf,*sptr;
+645.   	int i,j,data_len,ret=0;
+646.   
+
+engines/ccgost/gost_ameth.c:645:2: 
+643.   	void *pval = NULL;
+644.   	unsigned char *buf=NULL,*databuf,*sptr;
+645. > 	int i,j,data_len,ret=0;
+646.   
+647.   	int ptype = V_ASN1_UNDEF;
+
+engines/ccgost/gost_ameth.c:647:2: 
+645.   	int i,j,data_len,ret=0;
+646.   
+647. > 	int ptype = V_ASN1_UNDEF;
+648.   	DSA *dsa = EVP_PKEY_get0((EVP_PKEY *)pk);
+649.   	algobj = OBJ_nid2obj(EVP_PKEY_base_id(pk));
+
+engines/ccgost/gost_ameth.c:648:2: 
+646.   
+647.   	int ptype = V_ASN1_UNDEF;
+648. > 	DSA *dsa = EVP_PKEY_get0((EVP_PKEY *)pk);
+649.   	algobj = OBJ_nid2obj(EVP_PKEY_base_id(pk));
+650.   	if (pk->save_parameters) 
+
+crypto/evp/p_lib.c:280:1: start of procedure EVP_PKEY_get0()
+  278.   	}
+  279.   
+  280. > void *EVP_PKEY_get0(EVP_PKEY *pkey)
+  281.   	{
+  282.   	return pkey->pkey.ptr;
+
+crypto/evp/p_lib.c:282:2: 
+  280.   void *EVP_PKEY_get0(EVP_PKEY *pkey)
+  281.   	{
+  282. > 	return pkey->pkey.ptr;
+  283.   	}
+  284.   
+
+crypto/evp/p_lib.c:283:2: return from a call to EVP_PKEY_get0
+  281.   	{
+  282.   	return pkey->pkey.ptr;
+  283.   	}
+          ^
+  284.   
+  285.   #ifndef OPENSSL_NO_RSA
+
+engines/ccgost/gost_ameth.c:649:2: 
+647.   	int ptype = V_ASN1_UNDEF;
+648.   	DSA *dsa = EVP_PKEY_get0((EVP_PKEY *)pk);
+649. > 	algobj = OBJ_nid2obj(EVP_PKEY_base_id(pk));
+650.   	if (pk->save_parameters) 
+651.   		{
+
+crypto/evp/p_lib.c:391:1: start of procedure EVP_PKEY_base_id()
+  389.   	}
+  390.   
+  391. > int EVP_PKEY_base_id(const EVP_PKEY *pkey)
+  392.   	{
+  393.   	return EVP_PKEY_type(pkey->type);
+
+crypto/evp/p_lib.c:393:2: 
+  391.   int EVP_PKEY_base_id(const EVP_PKEY *pkey)
+  392.   	{
+  393. > 	return EVP_PKEY_type(pkey->type);
+  394.   	}
+  395.   
+
+crypto/evp/p_lib.c:369:1: start of procedure EVP_PKEY_type()
+    367.   #endif
+    368.   
+    369. > int EVP_PKEY_type(int type)
+    370.   	{
+    371.   	int ret;
+
+crypto/evp/p_lib.c:374:2: 
+    372.   	const EVP_PKEY_ASN1_METHOD *ameth;
+    373.   	ENGINE *e;
+    374. > 	ameth = EVP_PKEY_asn1_find(&e, type);
+    375.   	if (ameth)
+    376.   		ret = ameth->pkey_id;
+
+crypto/asn1/ameth_lib.c:178:1: start of procedure EVP_PKEY_asn1_find()
+      176.    */
+      177.   
+      178. > const EVP_PKEY_ASN1_METHOD *EVP_PKEY_asn1_find(ENGINE **pe, int type)
+      179.   	{
+      180.   	const EVP_PKEY_ASN1_METHOD *t;
+
+crypto/asn1/ameth_lib.c:188:3: Loop condition is true. Entering loop body
+      186.   			break;
+      187.   		type = t->pkey_base_id;
+      188.   		}
+               ^
+      189.   	if (pe)
+      190.   		{
+
+crypto/asn1/ameth_lib.c:184:3: 
+      182.   	for (;;)
+      183.   		{
+      184. > 		t = pkey_asn1_find(type);
+      185.   		if (!t || !(t->pkey_flags & ASN1_PKEY_ALIAS))
+      186.   			break;
+
+crypto/asn1/ameth_lib.c:152:1: start of procedure pkey_asn1_find()
+        150.   	}
+        151.   
+        152. > static const EVP_PKEY_ASN1_METHOD *pkey_asn1_find(int type)
+        153.   	{
+        154.   	EVP_PKEY_ASN1_METHOD tmp;
+
+crypto/asn1/ameth_lib.c:155:2: 
+        153.   	{
+        154.   	EVP_PKEY_ASN1_METHOD tmp;
+        155. > 	const EVP_PKEY_ASN1_METHOD *t = &tmp, **ret;
+        156.   	tmp.pkey_id = type;
+        157.   	if (app_methods)
+
+crypto/asn1/ameth_lib.c:156:2: 
+        154.   	EVP_PKEY_ASN1_METHOD tmp;
+        155.   	const EVP_PKEY_ASN1_METHOD *t = &tmp, **ret;
+        156. > 	tmp.pkey_id = type;
+        157.   	if (app_methods)
+        158.   		{
+
+crypto/asn1/ameth_lib.c:157:6: Taking true branch
+        155.   	const EVP_PKEY_ASN1_METHOD *t = &tmp, **ret;
+        156.   	tmp.pkey_id = type;
+        157.   	if (app_methods)
+                    ^
+        158.   		{
+        159.   		int idx;
+
+crypto/asn1/ameth_lib.c:160:9: Condition is true
+        158.   		{
+        159.   		int idx;
+        160.   		idx = sk_EVP_PKEY_ASN1_METHOD_find(app_methods, &tmp);
+                       ^
+        161.   		if (idx >= 0)
+        162.   			return sk_EVP_PKEY_ASN1_METHOD_value(app_methods, idx);
+
+crypto/asn1/ameth_lib.c:160:9: Condition is true
+        158.   		{
+        159.   		int idx;
+        160.   		idx = sk_EVP_PKEY_ASN1_METHOD_find(app_methods, &tmp);
+                       ^
+        161.   		if (idx >= 0)
+        162.   			return sk_EVP_PKEY_ASN1_METHOD_value(app_methods, idx);
+
+crypto/asn1/ameth_lib.c:160:3: 
+        158.   		{
+        159.   		int idx;
+        160. > 		idx = sk_EVP_PKEY_ASN1_METHOD_find(app_methods, &tmp);
+        161.   		if (idx >= 0)
+        162.   			return sk_EVP_PKEY_ASN1_METHOD_value(app_methods, idx);
+
+crypto/stack/stack.c:272:1: start of procedure sk_find()
+          270.   	}
+          271.   
+          272. > int sk_find(_STACK *st, void *data)
+          273.   	{
+          274.   	return internal_find(st, data, OBJ_BSEARCH_FIRST_VALUE_ON_MATCH);
+
+crypto/stack/stack.c:274:2: 
+          272.   int sk_find(_STACK *st, void *data)
+          273.   	{
+          274. > 	return internal_find(st, data, OBJ_BSEARCH_FIRST_VALUE_ON_MATCH);
+          275.   	}
+          276.   int sk_find_ex(_STACK *st, void *data)
+
+crypto/stack/stack.c:250:1: start of procedure internal_find()
+            248.   	}
+            249.   
+            250. > static int internal_find(_STACK *st, void *data, int ret_val_options)
+            251.   	{
+            252.   	const void * const *r;
+
+crypto/stack/stack.c:255:5: Taking false branch
+            253.   	int i;
+            254.   
+            255.   	if(st == NULL) return -1;
+                       ^
+            256.   
+            257.   	if (st->comp == NULL)
+
+crypto/stack/stack.c:257:6: Taking true branch
+            255.   	if(st == NULL) return -1;
+            256.   
+            257.   	if (st->comp == NULL)
+                        ^
+            258.   		{
+            259.   		for (i=0; i<st->num; i++)
+
+crypto/stack/stack.c:259:8: 
+            257.   	if (st->comp == NULL)
+            258.   		{
+            259. > 		for (i=0; i<st->num; i++)
+            260.   			if (st->data[i] == data)
+            261.   				return(i);
+
+crypto/stack/stack.c:259:13: Loop condition is true. Entering loop body
+            257.   	if (st->comp == NULL)
+            258.   		{
+            259.   		for (i=0; i<st->num; i++)
+                               ^
+            260.   			if (st->data[i] == data)
+            261.   				return(i);
+
+crypto/stack/stack.c:260:8: Taking true branch
+            258.   		{
+            259.   		for (i=0; i<st->num; i++)
+            260.   			if (st->data[i] == data)
+                          ^
+            261.   				return(i);
+            262.   		return(-1);
+
+crypto/stack/stack.c:261:5: 
+            259.   		for (i=0; i<st->num; i++)
+            260.   			if (st->data[i] == data)
+            261. > 				return(i);
+            262.   		return(-1);
+            263.   		}
+
+crypto/stack/stack.c:270:2: return from a call to internal_find
+            268.   	if (r == NULL) return(-1);
+            269.   	return (int)((char **)r-st->data);
+            270.   	}
+                    ^
+            271.   
+            272.   int sk_find(_STACK *st, void *data)
+
+crypto/stack/stack.c:275:2: return from a call to sk_find
+          273.   	{
+          274.   	return internal_find(st, data, OBJ_BSEARCH_FIRST_VALUE_ON_MATCH);
+          275.   	}
+                  ^
+          276.   int sk_find_ex(_STACK *st, void *data)
+          277.   	{
+
+crypto/asn1/ameth_lib.c:161:7: Taking true branch
+        159.   		int idx;
+        160.   		idx = sk_EVP_PKEY_ASN1_METHOD_find(app_methods, &tmp);
+        161.   		if (idx >= 0)
+                     ^
+        162.   			return sk_EVP_PKEY_ASN1_METHOD_value(app_methods, idx);
+        163.   		}
+
+crypto/asn1/ameth_lib.c:162:11: Condition is true
+        160.   		idx = sk_EVP_PKEY_ASN1_METHOD_find(app_methods, &tmp);
+        161.   		if (idx >= 0)
+        162.   			return sk_EVP_PKEY_ASN1_METHOD_value(app_methods, idx);
+                         ^
+        163.   		}
+        164.   	ret = OBJ_bsearch_ameth(&t, standard_methods,
+
+crypto/asn1/ameth_lib.c:162:4: 
+        160.   		idx = sk_EVP_PKEY_ASN1_METHOD_find(app_methods, &tmp);
+        161.   		if (idx >= 0)
+        162. > 			return sk_EVP_PKEY_ASN1_METHOD_value(app_methods, idx);
+        163.   		}
+        164.   	ret = OBJ_bsearch_ameth(&t, standard_methods,
+
+crypto/stack/stack.c:337:1: start of procedure sk_value()
+          335.   }
+          336.   
+          337. > void *sk_value(const _STACK *st, int i)
+          338.   {
+          339.   	if(!st || (i < 0) || (i >= st->num)) return NULL;
+
+crypto/stack/stack.c:339:6: Taking false branch
+          337.   void *sk_value(const _STACK *st, int i)
+          338.   {
+          339.   	if(!st || (i < 0) || (i >= st->num)) return NULL;
+                      ^
+          340.   	return st->data[i];
+          341.   }
+
+crypto/stack/stack.c:339:13: Taking false branch
+          337.   void *sk_value(const _STACK *st, int i)
+          338.   {
+          339.   	if(!st || (i < 0) || (i >= st->num)) return NULL;
+                             ^
+          340.   	return st->data[i];
+          341.   }
+
+crypto/stack/stack.c:339:24: Taking false branch
+          337.   void *sk_value(const _STACK *st, int i)
+          338.   {
+          339.   	if(!st || (i < 0) || (i >= st->num)) return NULL;
+                                        ^
+          340.   	return st->data[i];
+          341.   }
+
+crypto/stack/stack.c:340:2: 
+          338.   {
+          339.   	if(!st || (i < 0) || (i >= st->num)) return NULL;
+          340. > 	return st->data[i];
+          341.   }
+          342.   
+
+crypto/stack/stack.c:341:1: return from a call to sk_value
+          339.   	if(!st || (i < 0) || (i >= st->num)) return NULL;
+          340.   	return st->data[i];
+          341. > }
+          342.   
+          343.   void *sk_set(_STACK *st, int i, void *value)
+
+crypto/asn1/ameth_lib.c:170:2: return from a call to pkey_asn1_find
+        168.   		return NULL;
+        169.   	return *ret;
+        170.   	}
+                ^
+        171.   
+        172.   /* Find an implementation of an ASN1 algorithm. If 'pe' is not NULL
+
+crypto/asn1/ameth_lib.c:185:8: Taking false branch
+      183.   		{
+      184.   		t = pkey_asn1_find(type);
+      185.   		if (!t || !(t->pkey_flags & ASN1_PKEY_ALIAS))
+                    ^
+      186.   			break;
+      187.   		type = t->pkey_base_id;
+
+crypto/asn1/ameth_lib.c:185:15: Taking true branch
+      183.   		{
+      184.   		t = pkey_asn1_find(type);
+      185.   		if (!t || !(t->pkey_flags & ASN1_PKEY_ALIAS))
+                           ^
+      186.   			break;
+      187.   		type = t->pkey_base_id;
+
+crypto/asn1/ameth_lib.c:189:6: Taking true branch
+      187.   		type = t->pkey_base_id;
+      188.   		}
+      189.   	if (pe)
+                  ^
+      190.   		{
+      191.   #ifndef OPENSSL_NO_ENGINE
+
+crypto/asn1/ameth_lib.c:194:3: 
+      192.   		ENGINE *e;
+      193.   		/* type will contain the final unaliased type */
+      194. > 		e = ENGINE_get_pkey_asn1_meth_engine(type);
+      195.   		if (e)
+      196.   			{
+
+crypto/engine/tb_asnmth.c:116:1: start of procedure ENGINE_get_pkey_asn1_meth_engine()
+        114.    * table (ie. try to get a functional reference from the tabled structural
+        115.    * references) for a given pkey_asn1_meth 'nid' */
+        116. > ENGINE *ENGINE_get_pkey_asn1_meth_engine(int nid)
+        117.   	{
+        118.   	return engine_table_select(&pkey_asn1_meth_table, nid);
+
+crypto/engine/tb_asnmth.c:118:2: 
+        116.   ENGINE *ENGINE_get_pkey_asn1_meth_engine(int nid)
+        117.   	{
+        118. > 	return engine_table_select(&pkey_asn1_meth_table, nid);
+        119.   	}
+        120.   
+
+crypto/engine/eng_table.c:240:1: start of procedure engine_table_select()
+          238.   /* return a functional reference for a given 'nid' */
+          239.   #ifndef ENGINE_TABLE_DEBUG
+          240. > ENGINE *engine_table_select(ENGINE_TABLE **table, int nid)
+          241.   #else
+          242.   ENGINE *engine_table_select_tmp(ENGINE_TABLE **table, int nid, const char *f, int l)
+
+crypto/engine/eng_table.c:245:2: 
+          243.   #endif
+          244.   	{
+          245. > 	ENGINE *ret = NULL;
+          246.   	ENGINE_PILE tmplate, *fnd=NULL;
+          247.   	int initres, loop = 0;
+
+crypto/engine/eng_table.c:246:2: 
+          244.   	{
+          245.   	ENGINE *ret = NULL;
+          246. > 	ENGINE_PILE tmplate, *fnd=NULL;
+          247.   	int initres, loop = 0;
+          248.   
+
+crypto/engine/eng_table.c:247:2: 
+          245.   	ENGINE *ret = NULL;
+          246.   	ENGINE_PILE tmplate, *fnd=NULL;
+          247. > 	int initres, loop = 0;
+          248.   
+          249.   	if(!(*table))
+
+crypto/engine/eng_table.c:249:7: 
+          247.   	int initres, loop = 0;
+          248.   
+          249. > 	if(!(*table))
+          250.   		{
+          251.   #ifdef ENGINE_TABLE_DEBUG
+
+crypto/engine/eng_table.c:249:6: Taking true branch
+          247.   	int initres, loop = 0;
+          248.   
+          249.   	if(!(*table))
+                      ^
+          250.   		{
+          251.   #ifdef ENGINE_TABLE_DEBUG
+
+crypto/engine/eng_table.c:255:3: 
+          253.   			"registered!\n", f, l, nid);
+          254.   #endif
+          255. > 		return NULL;
+          256.   		}
+          257.   	ERR_set_mark();
+
+crypto/engine/eng_table.c:333:2: return from a call to engine_table_select
+          331.   	ERR_pop_to_mark();
+          332.   	return ret;
+          333.   	}
+                  ^
+          334.   
+          335.   /* Table enumeration */
+
+crypto/engine/tb_asnmth.c:119:2: return from a call to ENGINE_get_pkey_asn1_meth_engine
+        117.   	{
+        118.   	return engine_table_select(&pkey_asn1_meth_table, nid);
+        119.   	}
+                ^
+        120.   
+        121.   /* Obtains a pkey_asn1_meth implementation from an ENGINE functional reference */
+
+crypto/asn1/ameth_lib.c:195:7: Taking false branch
+      193.   		/* type will contain the final unaliased type */
+      194.   		e = ENGINE_get_pkey_asn1_meth_engine(type);
+      195.   		if (e)
+                   ^
+      196.   			{
+      197.   			*pe = e;
+
+crypto/asn1/ameth_lib.c:201:3: 
+      199.   			}
+      200.   #endif
+      201. > 		*pe = NULL;
+      202.   		}
+      203.   	return t;
+
+crypto/asn1/ameth_lib.c:203:2: 
+      201.   		*pe = NULL;
+      202.   		}
+      203. > 	return t;
+      204.   	}
+      205.   
+
+crypto/asn1/ameth_lib.c:204:2: return from a call to EVP_PKEY_asn1_find
+      202.   		}
+      203.   	return t;
+      204.   	}
+              ^
+      205.   
+      206.   const EVP_PKEY_ASN1_METHOD *EVP_PKEY_asn1_find_str(ENGINE **pe,
+
+crypto/evp/p_lib.c:375:6: Taking true branch
+    373.   	ENGINE *e;
+    374.   	ameth = EVP_PKEY_asn1_find(&e, type);
+    375.   	if (ameth)
+                ^
+    376.   		ret = ameth->pkey_id;
+    377.   	else
+
+crypto/evp/p_lib.c:376:3: 
+    374.   	ameth = EVP_PKEY_asn1_find(&e, type);
+    375.   	if (ameth)
+    376. > 		ret = ameth->pkey_id;
+    377.   	else
+    378.   		ret = NID_undef;
+
+crypto/evp/p_lib.c:380:6: Taking false branch
+    378.   		ret = NID_undef;
+    379.   #ifndef OPENSSL_NO_ENGINE
+    380.   	if (e)
+                ^
+    381.   		ENGINE_finish(e);
+    382.   #endif
+
+crypto/evp/p_lib.c:383:2: 
+    381.   		ENGINE_finish(e);
+    382.   #endif
+    383. > 	return ret;
+    384.   	}
+    385.   
+
+crypto/evp/p_lib.c:384:2: return from a call to EVP_PKEY_type
+    382.   #endif
+    383.   	return ret;
+    384.   	}
+            ^
+    385.   
+    386.   int EVP_PKEY_id(const EVP_PKEY *pkey)
+
+crypto/evp/p_lib.c:394:2: return from a call to EVP_PKEY_base_id
+  392.   	{
+  393.   	return EVP_PKEY_type(pkey->type);
+  394.   	}
+          ^
+  395.   
+  396.   void EVP_PKEY_free(EVP_PKEY *x)
+
+crypto/objects/obj_dat.c:289:1: start of procedure OBJ_nid2obj()
+  287.   	}
+  288.   
+  289. > ASN1_OBJECT *OBJ_nid2obj(int n)
+  290.   	{
+  291.   	ADDED_OBJ ad,*adp;
+
+crypto/objects/obj_dat.c:294:7: Taking false branch
+  292.   	ASN1_OBJECT ob;
+  293.   
+  294.   	if ((n >= 0) && (n < NUM_NID))
+               ^
+  295.   		{
+  296.   		if ((n != NID_undef) && (nid_objs[n].nid == NID_undef))
+
+crypto/objects/obj_dat.c:303:11: Taking false branch
+  301.   		return((ASN1_OBJECT *)&(nid_objs[n]));
+  302.   		}
+  303.   	else if (added == NULL)
+                   ^
+  304.   		return(NULL);
+  305.   	else
+
+crypto/objects/obj_dat.c:307:3: 
+  305.   	else
+  306.   		{
+  307. > 		ad.type=ADDED_NID;
+  308.   		ad.obj= &ob;
+  309.   		ob.nid=n;
+
+crypto/objects/obj_dat.c:308:3: 
+  306.   		{
+  307.   		ad.type=ADDED_NID;
+  308. > 		ad.obj= &ob;
+  309.   		ob.nid=n;
+  310.   		adp=lh_ADDED_OBJ_retrieve(added,&ad);
+
+crypto/objects/obj_dat.c:309:3: 
+  307.   		ad.type=ADDED_NID;
+  308.   		ad.obj= &ob;
+  309. > 		ob.nid=n;
+  310.   		adp=lh_ADDED_OBJ_retrieve(added,&ad);
+  311.   		if (adp != NULL)
+
+crypto/objects/obj_dat.c:310:7: Condition is true
+  308.   		ad.obj= &ob;
+  309.   		ob.nid=n;
+  310.   		adp=lh_ADDED_OBJ_retrieve(added,&ad);
+               ^
+  311.   		if (adp != NULL)
+  312.   			return(adp->obj);
+
+crypto/objects/obj_dat.c:310:7: Condition is true
+  308.   		ad.obj= &ob;
+  309.   		ob.nid=n;
+  310.   		adp=lh_ADDED_OBJ_retrieve(added,&ad);
+               ^
+  311.   		if (adp != NULL)
+  312.   			return(adp->obj);
+
+crypto/objects/obj_dat.c:310:3: 
+  308.   		ad.obj= &ob;
+  309.   		ob.nid=n;
+  310. > 		adp=lh_ADDED_OBJ_retrieve(added,&ad);
+  311.   		if (adp != NULL)
+  312.   			return(adp->obj);
+
+crypto/lhash/lhash.c:248:1: start of procedure lh_retrieve()
+    246.   	}
+    247.   
+    248. > void *lh_retrieve(_LHASH *lh, const void *data)
+    249.   	{
+    250.   	unsigned long hash;
+
+crypto/lhash/lhash.c:254:2: 
+    252.   	void *ret;
+    253.   
+    254. > 	lh->error=0;
+    255.   	rn=getrn(lh,data,&hash);
+    256.   
+
+crypto/lhash/lhash.c:255:2: Skipping getrn(): empty list of specs
+    253.   
+    254.   	lh->error=0;
+    255.   	rn=getrn(lh,data,&hash);
+            ^
+    256.   
+    257.   	if (*rn == NULL)
+
+crypto/lhash/lhash.c:257:6: Taking false branch
+    255.   	rn=getrn(lh,data,&hash);
+    256.   
+    257.   	if (*rn == NULL)
+                ^
+    258.   		{
+    259.   		lh->num_retrieve_miss++;
+
+crypto/lhash/lhash.c:264:3: 
+    262.   	else
+    263.   		{
+    264. > 		ret= (*rn)->data;
+    265.   		lh->num_retrieve++;
+    266.   		}
+
+crypto/lhash/lhash.c:265:3: 
+    263.   		{
+    264.   		ret= (*rn)->data;
+    265. > 		lh->num_retrieve++;
+    266.   		}
+    267.   	return(ret);
+
+crypto/lhash/lhash.c:267:2: 
+    265.   		lh->num_retrieve++;
+    266.   		}
+    267. > 	return(ret);
+    268.   	}
+    269.   
+
+crypto/lhash/lhash.c:268:2: return from a call to lh_retrieve
+    266.   		}
+    267.   	return(ret);
+    268.   	}
+            ^
+    269.   
+    270.   static void doall_util_fn(_LHASH *lh, int use_arg, LHASH_DOALL_FN_TYPE func,
+
+crypto/objects/obj_dat.c:311:7: Taking true branch
+  309.   		ob.nid=n;
+  310.   		adp=lh_ADDED_OBJ_retrieve(added,&ad);
+  311.   		if (adp != NULL)
+               ^
+  312.   			return(adp->obj);
+  313.   		else
+
+crypto/objects/obj_dat.c:312:4: 
+  310.   		adp=lh_ADDED_OBJ_retrieve(added,&ad);
+  311.   		if (adp != NULL)
+  312. > 			return(adp->obj);
+  313.   		else
+  314.   			{
+
+crypto/objects/obj_dat.c:319:2: return from a call to OBJ_nid2obj
+  317.   			}
+  318.   		}
+  319.   	}
+          ^
+  320.   
+  321.   const char *OBJ_nid2sn(int n)
+
+engines/ccgost/gost_ameth.c:650:6: Taking false branch
+648.   	DSA *dsa = EVP_PKEY_get0((EVP_PKEY *)pk);
+649.   	algobj = OBJ_nid2obj(EVP_PKEY_base_id(pk));
+650.   	if (pk->save_parameters) 
+            ^
+651.   		{
+652.   		ASN1_STRING *params = encode_gost_algor_params(pk);
+
+engines/ccgost/gost_ameth.c:656:2: 
+654.   		ptype = V_ASN1_SEQUENCE;
+655.   		}	
+656. > 	data_len = BN_num_bytes(dsa->pub_key);
+657.   	databuf = OPENSSL_malloc(data_len);
+658.   	BN_bn2bin(dsa->pub_key,databuf);
+
+crypto/bn/bn_lib.c:233:1: start of procedure BN_num_bits()
+  231.   	}
+  232.   
+  233. > int BN_num_bits(const BIGNUM *a)
+  234.   	{
+  235.   	int i = a->top - 1;
+
+crypto/bn/bn_lib.c:235:2: 
+  233.   int BN_num_bits(const BIGNUM *a)
+  234.   	{
+  235. > 	int i = a->top - 1;
+  236.   	bn_check_top(a);
+  237.   
+
+crypto/bn/bn_lib.c:238:6: Taking false branch
+  236.   	bn_check_top(a);
+  237.   
+  238.   	if (BN_is_zero(a)) return 0;
+              ^
+  239.   	return ((i*BN_BITS2) + BN_num_bits_word(a->d[i]));
+  240.   	}
+
+crypto/bn/bn_lib.c:239:2: Skipping BN_num_bits_word(): empty list of specs
+  237.   
+  238.   	if (BN_is_zero(a)) return 0;
+  239.   	return ((i*BN_BITS2) + BN_num_bits_word(a->d[i]));
+          ^
+  240.   	}
+  241.   
+
+crypto/bn/bn_lib.c:240:2: return from a call to BN_num_bits
+  238.   	if (BN_is_zero(a)) return 0;
+  239.   	return ((i*BN_BITS2) + BN_num_bits_word(a->d[i]));
+  240.   	}
+          ^
+  241.   
+  242.   void BN_clear_free(BIGNUM *a)
+
+engines/ccgost/gost_ameth.c:657:2: 
+655.   		}	
+656.   	data_len = BN_num_bytes(dsa->pub_key);
+657. > 	databuf = OPENSSL_malloc(data_len);
+658.   	BN_bn2bin(dsa->pub_key,databuf);
+659.   	octet = ASN1_OCTET_STRING_new();
+
+crypto/mem.c:295:1: start of procedure CRYPTO_malloc()
+  293.   	}
+  294.   
+  295. > void *CRYPTO_malloc(int num, const char *file, int line)
+  296.   	{
+  297.   	void *ret = NULL;
+
+crypto/mem.c:297:2: 
+  295.   void *CRYPTO_malloc(int num, const char *file, int line)
+  296.   	{
+  297. > 	void *ret = NULL;
+  298.   
+  299.   	if (num <= 0) return NULL;
+
+crypto/mem.c:299:6: Taking true branch
+  297.   	void *ret = NULL;
+  298.   
+  299.   	if (num <= 0) return NULL;
+              ^
+  300.   
+  301.   	allow_customize = 0;
+
+crypto/mem.c:299:16: 
+  297.   	void *ret = NULL;
+  298.   
+  299. > 	if (num <= 0) return NULL;
+  300.   
+  301.   	allow_customize = 0;
+
+crypto/mem.c:325:2: return from a call to CRYPTO_malloc
+  323.   
+  324.   	return ret;
+  325.   	}
+          ^
+  326.   char *CRYPTO_strdup(const char *str, const char *file, int line)
+  327.   	{
+
+engines/ccgost/gost_ameth.c:658:2: 
+656.   	data_len = BN_num_bytes(dsa->pub_key);
+657.   	databuf = OPENSSL_malloc(data_len);
+658. > 	BN_bn2bin(dsa->pub_key,databuf);
+659.   	octet = ASN1_OCTET_STRING_new();
+660.   	ASN1_STRING_set(octet,NULL,data_len);
+
+crypto/bn/bn_lib.c:635:1: start of procedure BN_bn2bin()
+  633.   
+  634.   /* ignore negative */
+  635. > int BN_bn2bin(const BIGNUM *a, unsigned char *to)
+  636.   	{
+  637.   	int n,i;
+
+crypto/bn/bn_lib.c:641:2: 
+  639.   
+  640.   	bn_check_top(a);
+  641. > 	n=i=BN_num_bytes(a);
+  642.   	while (i--)
+  643.   		{
+
+crypto/bn/bn_lib.c:233:1: start of procedure BN_num_bits()
+    231.   	}
+    232.   
+    233. > int BN_num_bits(const BIGNUM *a)
+    234.   	{
+    235.   	int i = a->top - 1;
+
+crypto/bn/bn_lib.c:235:2: 
+    233.   int BN_num_bits(const BIGNUM *a)
+    234.   	{
+    235. > 	int i = a->top - 1;
+    236.   	bn_check_top(a);
+    237.   
+
+crypto/bn/bn_lib.c:238:6: Taking false branch
+    236.   	bn_check_top(a);
+    237.   
+    238.   	if (BN_is_zero(a)) return 0;
+                ^
+    239.   	return ((i*BN_BITS2) + BN_num_bits_word(a->d[i]));
+    240.   	}
+
+crypto/bn/bn_lib.c:239:2: Skipping BN_num_bits_word(): empty list of specs
+    237.   
+    238.   	if (BN_is_zero(a)) return 0;
+    239.   	return ((i*BN_BITS2) + BN_num_bits_word(a->d[i]));
+            ^
+    240.   	}
+    241.   
+
+crypto/bn/bn_lib.c:240:2: return from a call to BN_num_bits
+    238.   	if (BN_is_zero(a)) return 0;
+    239.   	return ((i*BN_BITS2) + BN_num_bits_word(a->d[i]));
+    240.   	}
+            ^
+    241.   
+    242.   void BN_clear_free(BIGNUM *a)
+
+crypto/bn/bn_lib.c:642:9: Loop condition is true. Entering loop body
+  640.   	bn_check_top(a);
+  641.   	n=i=BN_num_bytes(a);
+  642.   	while (i--)
+                 ^
+  643.   		{
+  644.   		l=a->d[i/BN_BYTES];
+
+crypto/bn/bn_lib.c:644:3: 
+  642.   	while (i--)
+  643.   		{
+  644. > 		l=a->d[i/BN_BYTES];
+  645.   		*(to++)=(unsigned char)(l>>(8*(i%BN_BYTES)))&0xff;
+  646.   		}
+
+crypto/bn/bn_lib.c:645:3: 
+  643.   		{
+  644.   		l=a->d[i/BN_BYTES];
+  645. > 		*(to++)=(unsigned char)(l>>(8*(i%BN_BYTES)))&0xff;
+  646.   		}
+  647.   	return(n);

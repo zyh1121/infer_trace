@@ -1,0 +1,11 @@
+ssl/statem/statem_srvr.c:1485: error: UNINITIALIZED_VALUE
+  The value read from clienthello.dtls_cookie_len was never initialized.
+Showing all 1 steps of the trace
+
+
+ssl/statem/statem_srvr.c:1485:24: 
+1483.                   }
+1484.                   /* default verification */
+1485. >             } else if (s->d1->cookie_len != clienthello.dtls_cookie_len
+1486.                       || memcmp(clienthello.dtls_cookie, s->d1->cookie,
+1487.                                 s->d1->cookie_len) != 0) {

@@ -1,0 +1,27 @@
+#24899
+libavcodec/mpegaudiodec.c:1626: error: Integer Overflow L2
+  ([-1052488119, 36] × 32):signed32.
+
+libavcodec/mpegaudiodec.c:1615:14: <LHS trace>
+1613.     for (ch = 0; ch < s->nb_channels; ch++) {
+1614.         samples_ptr = samples + ch;
+1615.         for (i = 0; i < nb_frames; i++) {
+                   ^
+1616.             RENAME(ff_mpa_synth_filter)(
+1617.                          &s->mpadsp,
+
+libavcodec/mpegaudiodec.c:1615:14: Assignment
+1613.     for (ch = 0; ch < s->nb_channels; ch++) {
+1614.         samples_ptr = samples + ch;
+1615.         for (i = 0; i < nb_frames; i++) {
+                   ^
+1616.             RENAME(ff_mpa_synth_filter)(
+1617.                          &s->mpadsp,
+
+libavcodec/mpegaudiodec.c:1626:5: Binary operation: ([-1052488119, 36] × 32):signed32
+1624.     }
+1625. 
+1626.     return nb_frames * 32 * sizeof(OUT_INT) * s->nb_channels;
+          ^
+1627. }
+1628. 

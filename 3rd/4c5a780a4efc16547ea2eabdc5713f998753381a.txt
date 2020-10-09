@@ -1,0 +1,11 @@
+#9017
+libavformat/gifdec.c:519: error: UNINITIALIZED_VALUE
+  The value read from ret was never initialized.
+
+libavformat/gifdec.c:519:5: 
+517.     }
+518.   the_end:
+519.     return ret;
+         ^
+520. }
+521. 

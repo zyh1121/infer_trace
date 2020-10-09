@@ -1,0 +1,2179 @@
+#9206
+libavformat/nsvdec.c:354: error: Null Dereference
+  pointer `nsv->nsvs_file_offset` last assigned on line 351 could be null and is dereferenced at line 354, column 13.
+
+libavformat/nsvdec.c:272:1: start of procedure nsv_parse_NSVf_header()
+270. }
+271. 
+272. static int nsv_parse_NSVf_header(AVFormatContext *s)
+     ^
+273. {
+274.     NSVContext *nsv = s->priv_data;
+
+libavformat/nsvdec.c:274:5: 
+272. static int nsv_parse_NSVf_header(AVFormatContext *s)
+273. {
+274.     NSVContext *nsv = s->priv_data;
+         ^
+275.     AVIOContext *pb = s->pb;
+276.     unsigned int av_unused file_size;
+
+libavformat/nsvdec.c:275:5: 
+273. {
+274.     NSVContext *nsv = s->priv_data;
+275.     AVIOContext *pb = s->pb;
+         ^
+276.     unsigned int av_unused file_size;
+277.     unsigned int size;
+
+libavformat/nsvdec.c:285:5: 
+283.     av_dlog(s, "%s()\n", __FUNCTION__);
+284. 
+285.     nsv->state = NSV_UNSYNC; /* in case we fail */
+         ^
+286. 
+287.     size = avio_rl32(pb);
+
+libavformat/nsvdec.c:287:5: 
+285.     nsv->state = NSV_UNSYNC; /* in case we fail */
+286. 
+287.     size = avio_rl32(pb);
+         ^
+288.     if (size < 28)
+289.         return -1;
+
+libavformat/aviobuf.c:521:1: start of procedure avio_rl32()
+  519. }
+  520. 
+  521. unsigned int avio_rl32(AVIOContext *s)
+       ^
+  522. {
+  523.     unsigned int val;
+
+libavformat/aviobuf.c:524:5: 
+  522. {
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+           ^
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:525:5: 
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+           ^
+  526.     return val;
+  527. }
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:526:5: 
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+           ^
+  527. }
+  528. 
+
+libavformat/aviobuf.c:527:1: return from a call to avio_rl32
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+  527. }
+       ^
+  528. 
+  529. uint64_t avio_rl64(AVIOContext *s)
+
+libavformat/nsvdec.c:288:9: Taking false branch
+286. 
+287.     size = avio_rl32(pb);
+288.     if (size < 28)
+             ^
+289.         return -1;
+290.     nsv->NSVf_end = size;
+
+libavformat/nsvdec.c:290:5: 
+288.     if (size < 28)
+289.         return -1;
+290.     nsv->NSVf_end = size;
+         ^
+291. 
+292.     //s->file_size = (uint32_t)avio_rl32(pb);
+
+libavformat/nsvdec.c:293:5: 
+291. 
+292.     //s->file_size = (uint32_t)avio_rl32(pb);
+293.     file_size = (uint32_t)avio_rl32(pb);
+         ^
+294.     av_dlog(s, "NSV NSVf chunk_size %u\n", size);
+295.     av_dlog(s, "NSV NSVf file_size %u\n", file_size);
+
+libavformat/aviobuf.c:521:1: start of procedure avio_rl32()
+  519. }
+  520. 
+  521. unsigned int avio_rl32(AVIOContext *s)
+       ^
+  522. {
+  523.     unsigned int val;
+
+libavformat/aviobuf.c:524:5: 
+  522. {
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+           ^
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:525:5: 
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+           ^
+  526.     return val;
+  527. }
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:526:5: 
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+           ^
+  527. }
+  528. 
+
+libavformat/aviobuf.c:527:1: return from a call to avio_rl32
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+  527. }
+       ^
+  528. 
+  529. uint64_t avio_rl64(AVIOContext *s)
+
+libavformat/nsvdec.c:297:5: 
+295.     av_dlog(s, "NSV NSVf file_size %u\n", file_size);
+296. 
+297.     nsv->duration = duration = avio_rl32(pb); /* in ms */
+         ^
+298.     av_dlog(s, "NSV NSVf duration %"PRId64" ms\n", duration);
+299.     // XXX: store it in AVStreams
+
+libavformat/aviobuf.c:521:1: start of procedure avio_rl32()
+  519. }
+  520. 
+  521. unsigned int avio_rl32(AVIOContext *s)
+       ^
+  522. {
+  523.     unsigned int val;
+
+libavformat/aviobuf.c:524:5: 
+  522. {
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+           ^
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:525:5: 
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+           ^
+  526.     return val;
+  527. }
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:526:5: 
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+           ^
+  527. }
+  528. 
+
+libavformat/aviobuf.c:527:1: return from a call to avio_rl32
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+  527. }
+       ^
+  528. 
+  529. uint64_t avio_rl64(AVIOContext *s)
+
+libavformat/nsvdec.c:301:5: 
+299.     // XXX: store it in AVStreams
+300. 
+301.     strings_size = avio_rl32(pb);
+         ^
+302.     table_entries = avio_rl32(pb);
+303.     table_entries_used = avio_rl32(pb);
+
+libavformat/aviobuf.c:521:1: start of procedure avio_rl32()
+  519. }
+  520. 
+  521. unsigned int avio_rl32(AVIOContext *s)
+       ^
+  522. {
+  523.     unsigned int val;
+
+libavformat/aviobuf.c:524:5: 
+  522. {
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+           ^
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:525:5: 
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+           ^
+  526.     return val;
+  527. }
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:526:5: 
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+           ^
+  527. }
+  528. 
+
+libavformat/aviobuf.c:527:1: return from a call to avio_rl32
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+  527. }
+       ^
+  528. 
+  529. uint64_t avio_rl64(AVIOContext *s)
+
+libavformat/nsvdec.c:302:5: 
+300. 
+301.     strings_size = avio_rl32(pb);
+302.     table_entries = avio_rl32(pb);
+         ^
+303.     table_entries_used = avio_rl32(pb);
+304.     av_dlog(s, "NSV NSVf info-strings size: %d, table entries: %d, bis %d\n",
+
+libavformat/aviobuf.c:521:1: start of procedure avio_rl32()
+  519. }
+  520. 
+  521. unsigned int avio_rl32(AVIOContext *s)
+       ^
+  522. {
+  523.     unsigned int val;
+
+libavformat/aviobuf.c:524:5: 
+  522. {
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+           ^
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:525:5: 
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+           ^
+  526.     return val;
+  527. }
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:526:5: 
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+           ^
+  527. }
+  528. 
+
+libavformat/aviobuf.c:527:1: return from a call to avio_rl32
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+  527. }
+       ^
+  528. 
+  529. uint64_t avio_rl64(AVIOContext *s)
+
+libavformat/nsvdec.c:303:5: 
+301.     strings_size = avio_rl32(pb);
+302.     table_entries = avio_rl32(pb);
+303.     table_entries_used = avio_rl32(pb);
+         ^
+304.     av_dlog(s, "NSV NSVf info-strings size: %d, table entries: %d, bis %d\n",
+305.             strings_size, table_entries, table_entries_used);
+
+libavformat/aviobuf.c:521:1: start of procedure avio_rl32()
+  519. }
+  520. 
+  521. unsigned int avio_rl32(AVIOContext *s)
+       ^
+  522. {
+  523.     unsigned int val;
+
+libavformat/aviobuf.c:524:5: 
+  522. {
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+           ^
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:525:5: 
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+           ^
+  526.     return val;
+  527. }
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:526:5: 
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+           ^
+  527. }
+  528. 
+
+libavformat/aviobuf.c:527:1: return from a call to avio_rl32
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+  527. }
+       ^
+  528. 
+  529. uint64_t avio_rl64(AVIOContext *s)
+
+libavformat/nsvdec.c:306:9: Taking false branch
+304.     av_dlog(s, "NSV NSVf info-strings size: %d, table entries: %d, bis %d\n",
+305.             strings_size, table_entries, table_entries_used);
+306.     if (pb->eof_reached)
+             ^
+307.         return -1;
+308. 
+
+libavformat/nsvdec.c:311:9: Taking false branch
+309.     av_dlog(s, "NSV got header; filepos %"PRId64"\n", avio_tell(pb));
+310. 
+311.     if (strings_size > 0) {
+             ^
+312.         char *strings; /* last byte will be '\0' to play safe with str*() */
+313.         char *p, *endp;
+
+libavformat/nsvdec.c:341:9: Taking false branch
+339.         av_free(strings);
+340.     }
+341.     if (pb->eof_reached)
+             ^
+342.         return -1;
+343. 
+
+libavformat/nsvdec.c:346:9: Taking true branch
+344.     av_dlog(s, "NSV got infos; filepos %"PRId64"\n", avio_tell(pb));
+345. 
+346.     if (table_entries_used > 0) {
+             ^
+347.         int i;
+348.         nsv->index_entries = table_entries_used;
+
+libavformat/nsvdec.c:348:9: 
+346.     if (table_entries_used > 0) {
+347.         int i;
+348.         nsv->index_entries = table_entries_used;
+             ^
+349.         if((unsigned)table_entries_used >= UINT_MAX / sizeof(uint32_t))
+350.             return -1;
+
+libavformat/nsvdec.c:349:12: Taking false branch
+347.         int i;
+348.         nsv->index_entries = table_entries_used;
+349.         if((unsigned)table_entries_used >= UINT_MAX / sizeof(uint32_t))
+                ^
+350.             return -1;
+351.         nsv->nsvs_file_offset = av_malloc((unsigned)table_entries_used * sizeof(uint32_t));
+
+libavformat/nsvdec.c:351:9: 
+349.         if((unsigned)table_entries_used >= UINT_MAX / sizeof(uint32_t))
+350.             return -1;
+351.         nsv->nsvs_file_offset = av_malloc((unsigned)table_entries_used * sizeof(uint32_t));
+             ^
+352. 
+353.         for(i=0;i<table_entries_used;i++)
+
+libavutil/mem.c:64:1: start of procedure av_malloc()
+  62.    linker will do it automatically. */
+  63. 
+  64. void *av_malloc(size_t size)
+      ^
+  65. {
+  66.     void *ptr = NULL;
+
+libavutil/mem.c:66:5: 
+  64. void *av_malloc(size_t size)
+  65. {
+  66.     void *ptr = NULL;
+          ^
+  67. #if CONFIG_MEMALIGN_HACK
+  68.     long diff;
+
+libavutil/mem.c:72:8: Taking true branch
+  70. 
+  71.     /* let's disallow possible ambiguous cases */
+  72.     if(size > (INT_MAX-32) )
+             ^
+  73.         return NULL;
+  74. 
+
+libavutil/mem.c:73:9: 
+  71.     /* let's disallow possible ambiguous cases */
+  72.     if(size > (INT_MAX-32) )
+  73.         return NULL;
+              ^
+  74. 
+  75. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:115:1: return from a call to av_malloc
+  113. #endif
+  114.     return ptr;
+  115. }
+       ^
+  116. 
+  117. void *av_realloc(void *ptr, size_t size)
+
+libavformat/nsvdec.c:353:13: 
+351.         nsv->nsvs_file_offset = av_malloc((unsigned)table_entries_used * sizeof(uint32_t));
+352. 
+353.         for(i=0;i<table_entries_used;i++)
+                 ^
+354.             nsv->nsvs_file_offset[i] = avio_rl32(pb) + size;
+355. 
+
+libavformat/nsvdec.c:353:17: Loop condition is true. Entering loop body
+351.         nsv->nsvs_file_offset = av_malloc((unsigned)table_entries_used * sizeof(uint32_t));
+352. 
+353.         for(i=0;i<table_entries_used;i++)
+                     ^
+354.             nsv->nsvs_file_offset[i] = avio_rl32(pb) + size;
+355. 
+
+libavformat/nsvdec.c:354:13: 
+352. 
+353.         for(i=0;i<table_entries_used;i++)
+354.             nsv->nsvs_file_offset[i] = avio_rl32(pb) + size;
+                 ^
+355. 
+356.         if(table_entries > table_entries_used &&
+
+libavformat/aviobuf.c:521:1: start of procedure avio_rl32()
+  519. }
+  520. 
+  521. unsigned int avio_rl32(AVIOContext *s)
+       ^
+  522. {
+  523.     unsigned int val;
+
+libavformat/aviobuf.c:524:5: 
+  522. {
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+           ^
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:525:5: 
+  523.     unsigned int val;
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+           ^
+  526.     return val;
+  527. }
+
+libavformat/aviobuf.c:505:1: start of procedure avio_rl16()
+    503. }
+    504. 
+    505. unsigned int avio_rl16(AVIOContext *s)
+         ^
+    506. {
+    507.     unsigned int val;
+
+libavformat/aviobuf.c:508:5: 
+    506. {
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+             ^
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:509:5: 
+    507.     unsigned int val;
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+             ^
+    510.     return val;
+    511. }
+
+libavformat/aviobuf.c:426:1: start of procedure avio_r8()
+      424. 
+      425. /* XXX: put an inline version */
+      426. int avio_r8(AVIOContext *s)
+           ^
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+
+libavformat/aviobuf.c:428:9: Taking false branch
+      426. int avio_r8(AVIOContext *s)
+      427. {
+      428.     if (s->buf_ptr >= s->buf_end)
+                   ^
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+
+libavformat/aviobuf.c:430:9: Taking true branch
+      428.     if (s->buf_ptr >= s->buf_end)
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+                   ^
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+
+libavformat/aviobuf.c:431:9: 
+      429.         fill_buffer(s);
+      430.     if (s->buf_ptr < s->buf_end)
+      431.         return *s->buf_ptr++;
+                   ^
+      432.     return 0;
+      433. }
+
+libavformat/aviobuf.c:433:1: return from a call to avio_r8
+      431.         return *s->buf_ptr++;
+      432.     return 0;
+      433. }
+           ^
+      434. 
+      435. int avio_read(AVIOContext *s, unsigned char *buf, int size)
+
+libavformat/aviobuf.c:510:5: 
+    508.     val = avio_r8(s);
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+             ^
+    511. }
+    512. 
+
+libavformat/aviobuf.c:511:1: return from a call to avio_rl16
+    509.     val |= avio_r8(s) << 8;
+    510.     return val;
+    511. }
+         ^
+    512. 
+    513. unsigned int avio_rl24(AVIOContext *s)
+
+libavformat/aviobuf.c:526:5: 
+  524.     val = avio_rl16(s);
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+           ^
+  527. }
+  528. 
+
+libavformat/aviobuf.c:527:1: return from a call to avio_rl32
+  525.     val |= avio_rl16(s) << 16;
+  526.     return val;
+  527. }
+       ^
+  528. 
+  529. uint64_t avio_rl64(AVIOContext *s)

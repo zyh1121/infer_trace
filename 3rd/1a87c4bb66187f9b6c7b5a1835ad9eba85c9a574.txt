@@ -1,0 +1,51 @@
+#4211
+libavformat/rtpdec_asf.c:112: error: INTEGER_OVERFLOW_L2
+  ([0, +oo] - 1):unsigned32 by call to `avformat_close_input`.
+
+libavformat/rtpdec_asf.c:112:13: Call
+110.         init_packetizer(&pb, buf, len);
+111.         if (rt->asf_ctx) {
+112.             avformat_close_input(&rt->asf_ctx);
+                 ^
+113.         }
+114.         if (!(rt->asf_ctx = avformat_alloc_context()))
+
+libavformat/utils.c:2487:1: Parameter `(*ps)->nb_programs`
+  2485. }
+  2486. 
+  2487. void avformat_close_input(AVFormatContext **ps)
+        ^
+  2488. {
+  2489.     AVFormatContext *s = *ps;
+
+libavformat/utils.c:2502:5: Call
+  2500.             s->iformat->read_close(s);
+  2501. 
+  2502.     avformat_free_context(s);
+            ^
+  2503. 
+  2504.     *ps = NULL;
+
+libavformat/utils.c:2433:1: <LHS trace>
+2431. }
+2432. 
+2433. void avformat_free_context(AVFormatContext *s)
+      ^
+2434. {
+2435.     int i, j;
+
+libavformat/utils.c:2433:1: Parameter `s->nb_programs`
+    2431. }
+    2432. 
+    2433. void avformat_free_context(AVFormatContext *s)
+          ^
+    2434. {
+    2435.     int i, j;
+
+libavformat/utils.c:2469:10: Binary operation: ([0, +oo] - 1):unsigned32 by call to `avformat_close_input` 
+    2467.         av_free(st);
+    2468.     }
+    2469.     for (i = s->nb_programs - 1; i >= 0; i--) {
+                   ^
+    2470.         av_dict_free(&s->programs[i]->metadata);
+    2471.         av_freep(&s->programs[i]->stream_index);

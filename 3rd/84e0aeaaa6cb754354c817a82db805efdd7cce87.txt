@@ -1,0 +1,59 @@
+#12354
+libavcodec/sipr.c:289: error: BUFFER_OVERRUN_L2
+  Offset: [5, 10] Size: 10 by call to `ff_celp_lp_synthesis_filterf`.
+
+libavcodec/sipr.c:273:1: Array declaration
+271.  * Apply postfilter, very similar to AMR one.
+272.  */
+273. static void postfilter_5k0(SiprContext *ctx, const float *lpc, float *samples)
+     ^
+274. {
+275.     float buf[SUBFR_SIZE + LP_FILTER_ORDER];
+
+libavcodec/sipr.c:289:5: Call
+287.            LP_FILTER_ORDER*sizeof(float));
+288. 
+289.     ff_celp_lp_synthesis_filterf(pole_out, lpc_d, samples, SUBFR_SIZE,
+         ^
+290.                                  LP_FILTER_ORDER);
+291. 
+
+libavcodec/celp_filters.c:83:1: <Offset trace>
+81. }
+82. 
+83. void ff_celp_lp_synthesis_filterf(float *out, const float *filter_coeffs,
+    ^
+84.                                   const float* in, int buffer_length,
+85.                                   int filter_length)
+
+libavcodec/celp_filters.c:83:1: Parameter `filter_length`
+  81. }
+  82. 
+  83. void ff_celp_lp_synthesis_filterf(float *out, const float *filter_coeffs,
+      ^
+  84.                                   const float* in, int buffer_length,
+  85.                                   int filter_length)
+
+libavcodec/celp_filters.c:83:1: <Length trace>
+81. }
+82. 
+83. void ff_celp_lp_synthesis_filterf(float *out, const float *filter_coeffs,
+    ^
+84.                                   const float* in, int buffer_length,
+85.                                   int filter_length)
+
+libavcodec/celp_filters.c:83:1: Parameter `*filter_coeffs`
+  81. }
+  82. 
+  83. void ff_celp_lp_synthesis_filterf(float *out, const float *filter_coeffs,
+      ^
+  84.                                   const float* in, int buffer_length,
+  85.                                   int filter_length)
+
+libavcodec/celp_filters.c:147:19: Array access: Offset: [5, 10] Size: 10 by call to `ff_celp_lp_synthesis_filterf` 
+  145.             old_out2 = out[-i-1];
+  146. 
+  147.             val = filter_coeffs[i];
+                         ^
+  148. 
+  149.             out0 -= val * old_out2;

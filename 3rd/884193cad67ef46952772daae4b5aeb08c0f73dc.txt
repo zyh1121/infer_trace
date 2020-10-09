@@ -1,0 +1,81 @@
+crypto/x509v3/v3_scts.c:141: error: BUFFER_OVERRUN_L3
+  Offset: [15, +oo] (⇐ 14 + [1, +oo]) Size: [8, +oo] by call to `ASN1_GENERALIZEDTIME_print`.
+Showing all 10 steps of the trace
+
+
+crypto/x509v3/v3_scts.c:131:5: Call
+129.       char genstr[20];
+130.       gen = ASN1_GENERALIZEDTIME_new();
+131.       ASN1_GENERALIZEDTIME_adj(gen, (time_t)0,
+           ^
+132.                                (int)(timestamp / 86400000),
+133.                                (timestamp % 86400000) / 1000);
+
+crypto/asn1/a_gentm.c:216:1: Parameter `*s->data`
+  214.   }
+  215.   
+  216. > ASN1_GENERALIZEDTIME *ASN1_GENERALIZEDTIME_adj(ASN1_GENERALIZEDTIME *s,
+  217.                                                  time_t t, int offset_day,
+  218.                                                  long offset_sec)
+
+crypto/x509v3/v3_scts.c:141:5: Call
+139.                    ASN1_STRING_data(gen), (unsigned int)(timestamp % 1000));
+140.       ASN1_GENERALIZEDTIME_set_string(gen, genstr);
+141.       ASN1_GENERALIZEDTIME_print(out, gen);
+           ^
+142.       ASN1_GENERALIZEDTIME_free(gen);
+143.   }
+
+crypto/asn1/a_gentm.c:301:13: <Offset trace>
+299.               int l = tm->length;
+300.               f = &v[14];         /* The decimal point. */
+301.               f_len = 1;
+                   ^
+302.               while (14 + f_len < l && f[f_len] >= '0' && f[f_len] <= '9')
+303.                   ++f_len;
+
+crypto/asn1/a_gentm.c:301:13: Assignment
+  299.               int l = tm->length;
+  300.               f = &v[14];         /* The decimal point. */
+  301.               f_len = 1;
+                     ^
+  302.               while (14 + f_len < l && f[f_len] >= '0' && f[f_len] <= '9')
+  303.                   ++f_len;
+
+crypto/asn1/a_gentm.c:266:1: <Length trace>
+264.   };
+265.   
+266. > int ASN1_GENERALIZEDTIME_print(BIO *bp, const ASN1_GENERALIZEDTIME *tm)
+267.   {
+268.       char *v;
+
+crypto/asn1/a_gentm.c:266:1: Parameter `*tm->data`
+  264.   };
+  265.   
+  266. > int ASN1_GENERALIZEDTIME_print(BIO *bp, const ASN1_GENERALIZEDTIME *tm)
+  267.   {
+  268.       char *v;
+
+crypto/asn1/a_gentm.c:276:5: Assignment
+  274.   
+  275.       i = tm->length;
+  276.       v = (char *)tm->data;
+             ^
+  277.   
+  278.       if (i < 12)
+
+crypto/asn1/a_gentm.c:300:13: Assignment
+  298.           if (tm->length >= 15 && v[14] == '.') {
+  299.               int l = tm->length;
+  300.               f = &v[14];         /* The decimal point. */
+                     ^
+  301.               f_len = 1;
+  302.               while (14 + f_len < l && f[f_len] >= '0' && f[f_len] <= '9')
+
+crypto/asn1/a_gentm.c:302:38: Array access: Offset: [15, +oo] (⇐ 14 + [1, +oo]) Size: [8, +oo] by call to `ASN1_GENERALIZEDTIME_print` 
+  300.               f = &v[14];         /* The decimal point. */
+  301.               f_len = 1;
+  302.               while (14 + f_len < l && f[f_len] >= '0' && f[f_len] <= '9')
+                                              ^
+  303.                   ++f_len;
+  304.           }

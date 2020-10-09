@@ -1,0 +1,336 @@
+#22850
+ffmpeg.c:3689: error: Null Dereference
+  pointer `oc` last assigned on line 3667 could be null and is dereferenced at line 3689, column 5.
+
+ffmpeg.c:3656:1: start of procedure opt_output_file()
+3654. }
+3655. 
+3656. static void opt_output_file(const char *filename)
+      ^
+3657. {
+3658.     AVFormatContext *oc;
+
+ffmpeg.c:3661:5: 
+3659.     int err, use_video, use_audio, use_subtitle;
+3660.     int input_has_video, input_has_audio, input_has_subtitle;
+3661.     AVFormatParameters params, *ap = &params;
+          ^
+3662.     AVOutputFormat *file_oformat;
+3663. 
+
+ffmpeg.c:3664:10: Taking false branch
+3662.     AVOutputFormat *file_oformat;
+3663. 
+3664.     if (!strcmp(filename, "-"))
+               ^
+3665.         filename = "pipe:";
+3666. 
+
+ffmpeg.c:3667:5: 
+3665.         filename = "pipe:";
+3666. 
+3667.     oc = avformat_alloc_context();
+          ^
+3668.     if (!oc) {
+3669.         print_error(filename, AVERROR(ENOMEM));
+
+libavformat/options.c:81:1: start of procedure avformat_alloc_context()
+  79. }
+  80. 
+  81. AVFormatContext *avformat_alloc_context(void)
+      ^
+  82. {
+  83.     AVFormatContext *ic;
+
+libavformat/options.c:84:5: 
+  82. {
+  83.     AVFormatContext *ic;
+  84.     ic = av_malloc(sizeof(AVFormatContext));
+          ^
+  85.     if (!ic) return ic;
+  86.     avformat_get_context_defaults(ic);
+
+libavutil/mem.c:64:1: start of procedure av_malloc()
+    62.    linker will do it automatically. */
+    63. 
+    64. void *av_malloc(unsigned int size)
+        ^
+    65. {
+    66.     void *ptr = NULL;
+
+libavutil/mem.c:66:5: 
+    64. void *av_malloc(unsigned int size)
+    65. {
+    66.     void *ptr = NULL;
+            ^
+    67. #if CONFIG_MEMALIGN_HACK
+    68.     long diff;
+
+libavutil/mem.c:72:8: Taking false branch
+    70. 
+    71.     /* let's disallow possible ambiguous cases */
+    72.     if(size > (INT_MAX-16) )
+               ^
+    73.         return NULL;
+    74. 
+
+libavutil/mem.c:83:9: Taking false branch
+    81.     ((char*)ptr)[-1]= diff;
+    82. #elif HAVE_POSIX_MEMALIGN
+    83.     if (posix_memalign(&ptr,16,size))
+                ^
+    84.         ptr = NULL;
+    85. #elif HAVE_MEMALIGN
+
+libavutil/mem.c:116:5: 
+    114.     ptr = malloc(size);
+    115. #endif
+    116.     return ptr;
+             ^
+    117. }
+    118. 
+
+libavutil/mem.c:117:1: return from a call to av_malloc
+    115. #endif
+    116.     return ptr;
+    117. }
+         ^
+    118. 
+    119. void *av_realloc(void *ptr, unsigned int size)
+
+libavformat/options.c:85:10: Taking true branch
+  83.     AVFormatContext *ic;
+  84.     ic = av_malloc(sizeof(AVFormatContext));
+  85.     if (!ic) return ic;
+               ^
+  86.     avformat_get_context_defaults(ic);
+  87.     ic->av_class = &av_format_context_class;
+
+libavformat/options.c:85:14: 
+  83.     AVFormatContext *ic;
+  84.     ic = av_malloc(sizeof(AVFormatContext));
+  85.     if (!ic) return ic;
+                   ^
+  86.     avformat_get_context_defaults(ic);
+  87.     ic->av_class = &av_format_context_class;
+
+libavformat/options.c:89:1: return from a call to avformat_alloc_context
+  87.     ic->av_class = &av_format_context_class;
+  88.     return ic;
+  89. }
+      ^
+  90. 
+  91. #if LIBAVFORMAT_VERSION_MAJOR < 53
+
+ffmpeg.c:3668:10: Taking true branch
+3666. 
+3667.     oc = avformat_alloc_context();
+3668.     if (!oc) {
+               ^
+3669.         print_error(filename, AVERROR(ENOMEM));
+3670.         av_exit(1);
+
+ffmpeg.c:3669:9: 
+3667.     oc = avformat_alloc_context();
+3668.     if (!oc) {
+3669.         print_error(filename, AVERROR(ENOMEM));
+              ^
+3670.         av_exit(1);
+3671.     }
+
+cmdutils.c:293:1: start of procedure print_error()
+  291. }
+  292. 
+  293. void print_error(const char *filename, int err)
+       ^
+  294. {
+  295.     char errbuf[128];
+
+cmdutils.c:296:5: 
+  294. {
+  295.     char errbuf[128];
+  296.     const char *errbuf_ptr = errbuf;
+           ^
+  297. 
+  298.     if (av_strerror(err, errbuf, sizeof(errbuf)) < 0)
+
+cmdutils.c:298:9: 
+  296.     const char *errbuf_ptr = errbuf;
+  297. 
+  298.     if (av_strerror(err, errbuf, sizeof(errbuf)) < 0)
+               ^
+  299.         errbuf_ptr = strerror(AVUNERROR(err));
+  300.     fprintf(stderr, "%s: %s\n", filename, errbuf_ptr);
+
+libavutil/error.c:22:1: start of procedure av_strerror()
+    20. #include "avstring.h"
+    21. 
+    22. int av_strerror(int errnum, char *errbuf, size_t errbuf_size)
+        ^
+    23. {
+    24.     int ret = 0;
+
+libavutil/error.c:24:5: 
+    22. int av_strerror(int errnum, char *errbuf, size_t errbuf_size)
+    23. {
+    24.     int ret = 0;
+            ^
+    25.     const char *errstr = NULL;
+    26. 
+
+libavutil/error.c:25:5: 
+    23. {
+    24.     int ret = 0;
+    25.     const char *errstr = NULL;
+            ^
+    26. 
+    27.     switch (errnum) {
+
+libavutil/error.c:27:5: 
+    25.     const char *errstr = NULL;
+    26. 
+    27.     switch (errnum) {
+            ^
+    28.     case AVERROR_EOF:               errstr = "End of file"; break;
+    29.     case AVERROR_INVALIDDATA:       errstr = "Invalid data found when processing input"; break;
+
+libavutil/error.c:28:5: Switch condition is false. Skipping switch case
+    26. 
+    27.     switch (errnum) {
+    28.     case AVERROR_EOF:               errstr = "End of file"; break;
+            ^
+    29.     case AVERROR_INVALIDDATA:       errstr = "Invalid data found when processing input"; break;
+    30.     case AVERROR_NUMEXPECTED:       errstr = "Number syntax expected in filename"; break;
+
+libavutil/error.c:29:5: Switch condition is false. Skipping switch case
+    27.     switch (errnum) {
+    28.     case AVERROR_EOF:               errstr = "End of file"; break;
+    29.     case AVERROR_INVALIDDATA:       errstr = "Invalid data found when processing input"; break;
+            ^
+    30.     case AVERROR_NUMEXPECTED:       errstr = "Number syntax expected in filename"; break;
+    31.     case AVERROR_PATCHWELCOME:      errstr = "Not yet implemented in FFmpeg, patches welcome"; break;
+
+libavutil/error.c:30:5: Switch condition is false. Skipping switch case
+    28.     case AVERROR_EOF:               errstr = "End of file"; break;
+    29.     case AVERROR_INVALIDDATA:       errstr = "Invalid data found when processing input"; break;
+    30.     case AVERROR_NUMEXPECTED:       errstr = "Number syntax expected in filename"; break;
+            ^
+    31.     case AVERROR_PATCHWELCOME:      errstr = "Not yet implemented in FFmpeg, patches welcome"; break;
+    32.     }
+
+libavutil/error.c:31:5: Switch condition is false. Skipping switch case
+    29.     case AVERROR_INVALIDDATA:       errstr = "Invalid data found when processing input"; break;
+    30.     case AVERROR_NUMEXPECTED:       errstr = "Number syntax expected in filename"; break;
+    31.     case AVERROR_PATCHWELCOME:      errstr = "Not yet implemented in FFmpeg, patches welcome"; break;
+            ^
+    32.     }
+    33. 
+
+libavutil/error.c:34:9: Taking false branch
+    32.     }
+    33. 
+    34.     if (errstr) {
+                ^
+    35.         av_strlcpy(errbuf, errstr, errbuf_size);
+    36.     } else {
+
+libavutil/error.c:38:9: 
+    36.     } else {
+    37. #if HAVE_STRERROR_R
+    38.         ret = strerror_r(AVUNERROR(errnum), errbuf, errbuf_size);
+                ^
+    39. #else
+    40.         ret = -1;
+
+libavutil/error.c:42:13: Taking false branch
+    40.         ret = -1;
+    41. #endif
+    42.         if (ret < 0)
+                    ^
+    43.             snprintf(errbuf, errbuf_size, "Error number %d occurred", errnum);
+    44.     }
+
+libavutil/error.c:46:5: 
+    44.     }
+    45. 
+    46.     return ret;
+            ^
+    47. }
+
+libavutil/error.c:47:1: return from a call to av_strerror
+    45. 
+    46.     return ret;
+    47. }
+        ^
+
+cmdutils.c:298:9: Taking false branch
+  296.     const char *errbuf_ptr = errbuf;
+  297. 
+  298.     if (av_strerror(err, errbuf, sizeof(errbuf)) < 0)
+               ^
+  299.         errbuf_ptr = strerror(AVUNERROR(err));
+  300.     fprintf(stderr, "%s: %s\n", filename, errbuf_ptr);
+
+cmdutils.c:300:5: 
+  298.     if (av_strerror(err, errbuf, sizeof(errbuf)) < 0)
+  299.         errbuf_ptr = strerror(AVUNERROR(err));
+  300.     fprintf(stderr, "%s: %s\n", filename, errbuf_ptr);
+           ^
+  301. }
+  302. 
+
+cmdutils.c:301:1: return from a call to print_error
+  299.         errbuf_ptr = strerror(AVUNERROR(err));
+  300.     fprintf(stderr, "%s: %s\n", filename, errbuf_ptr);
+  301. }
+       ^
+  302. 
+  303. #define PRINT_LIB_VERSION(outstream,libname,LIBNAME,indent)             \
+
+ffmpeg.c:3670:9: Skipping av_exit(): empty list of specs
+3668.     if (!oc) {
+3669.         print_error(filename, AVERROR(ENOMEM));
+3670.         av_exit(1);
+              ^
+3671.     }
+3672. 
+
+ffmpeg.c:3673:9: Taking true branch
+3671.     }
+3672. 
+3673.     if (last_asked_format) {
+              ^
+3674.         file_oformat = av_guess_format(last_asked_format, NULL, NULL);
+3675.         if (!file_oformat) {
+
+ffmpeg.c:3674:9: Skipping av_guess_format(): empty list of specs
+3672. 
+3673.     if (last_asked_format) {
+3674.         file_oformat = av_guess_format(last_asked_format, NULL, NULL);
+              ^
+3675.         if (!file_oformat) {
+3676.             fprintf(stderr, "Requested output format '%s' is not a suitable output format\n", last_asked_format);
+
+ffmpeg.c:3675:14: Taking false branch
+3673.     if (last_asked_format) {
+3674.         file_oformat = av_guess_format(last_asked_format, NULL, NULL);
+3675.         if (!file_oformat) {
+                   ^
+3676.             fprintf(stderr, "Requested output format '%s' is not a suitable output format\n", last_asked_format);
+3677.             av_exit(1);
+
+ffmpeg.c:3679:9: 
+3677.             av_exit(1);
+3678.         }
+3679.         last_asked_format = NULL;
+              ^
+3680.     } else {
+3681.         file_oformat = av_guess_format(NULL, filename, NULL);
+
+ffmpeg.c:3689:5: 
+3687.     }
+3688. 
+3689.     oc->oformat = file_oformat;
+          ^
+3690.     av_strlcpy(oc->filename, filename, sizeof(oc->filename));
+3691. 

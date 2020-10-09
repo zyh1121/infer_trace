@@ -1,0 +1,116 @@
+test/rsa_mp_test.c:205: error: BUFFER_OVERRUN_L3
+  Offset added: [8, +oo] Size: [0, 67108856] by call to `RSA_check_key_ex`.
+Showing all 15 steps of the trace
+
+
+test/rsa_mp_test.c:201:12: Call
+199.       if (!TEST_ptr(key))
+200.           goto err;
+201.       clen = key2048p3(key);
+                  ^
+202.       if (!TEST_int_eq(clen, 256))
+203.           goto err;
+
+test/rsa_mp_test.c:136:10: Call
+  134.       int rv = 256; /* public key length */
+  135.   
+  136.       if (!TEST_int_eq(RSA_set0_key(key,
+                  ^
+  137.                                     BN_bin2bn(n, sizeof(n) - 1, NULL),
+  138.                                     BN_bin2bn(e, sizeof(e) - 1, NULL),
+
+crypto/bn/bn_lib.c:372:1: Parameter `ret->top`
+    370.   }
+    371.   
+    372. > BIGNUM *BN_bin2bn(const unsigned char *s, int len, BIGNUM *ret)
+    373.   {
+    374.       unsigned int i, m;
+
+test/rsa_mp_test.c:205:10: Call
+203.           goto err;
+204.   
+205.       if (!TEST_true(RSA_check_key_ex(key, NULL)))
+                ^
+206.           goto err;
+207.   
+
+crypto/rsa/rsa_chk.c:19:1: Parameter `key->d->top`
+  17.   }
+  18.   
+  19. > int RSA_check_key_ex(const RSA *key, BN_GENCB *cb)
+  20.   {
+  21.       BIGNUM *i, *j, *k, *l, *m;
+
+crypto/rsa/rsa_chk.c:160:14: Call
+  158.               goto err;
+  159.           }
+  160.           if (!BN_mod(j, key->d, i, ctx)) {
+                      ^
+  161.               ret = -1;
+  162.               goto err;
+
+crypto/bn/bn_div.c:188:1: Parameter `num->top`
+    186.    * If 'dv' or 'rm' is NULL, the respective value is not returned.
+    187.    */
+    188. > int BN_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
+    189.              BN_CTX *ctx)
+    190.   {
+
+crypto/bn/bn_div.c:233:17: Call
+    231.       if (!no_branch && BN_ucmp(num, divisor) < 0) {
+    232.           if (rm != NULL) {
+    233.               if (BN_copy(rm, num) == NULL)
+                           ^
+    234.                   return 0;
+    235.           }
+
+crypto/bn/bn_lib.c:281:1: <Offset trace>
+279.   }
+280.   
+281. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+282.   {
+283.       bn_check_top(b);
+
+crypto/bn/bn_lib.c:281:1: Parameter `b->top`
+      279.   }
+      280.   
+      281. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+      282.   {
+      283.       bn_check_top(b);
+
+crypto/bn/bn_lib.c:281:1: <Length trace>
+279.   }
+280.   
+281. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+282.   {
+283.       bn_check_top(b);
+
+crypto/bn/bn_lib.c:281:1: Parameter `*a->d`
+      279.   }
+      280.   
+      281. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+      282.   {
+      283.       bn_check_top(b);
+
+crypto/bn/bn_lib.c:287:9: Call
+      285.       if (a == b)
+      286.           return a;
+      287.       if (bn_wexpand(a, b->top) == NULL)
+                     ^
+      288.           return NULL;
+      289.   
+
+crypto/bn/bn_lib.c:939:1: Parameter `*a->d`
+        937.   }
+        938.   
+        939. > BIGNUM *bn_wexpand(BIGNUM *a, int words)
+        940.   {
+        941.       return (words <= a->dmax) ? a : bn_expand2(a, words);
+
+crypto/bn/bn_lib.c:291:9: Array access: Offset added: [8, +oo] Size: [0, 67108856] by call to `RSA_check_key_ex` 
+      289.   
+      290.       if (b->top > 0)
+      291.           memcpy(a->d, b->d, sizeof(b->d[0]) * b->top);
+                     ^
+      292.   
+      293.       a->neg = b->neg;

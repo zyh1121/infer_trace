@@ -1,0 +1,35 @@
+#5382
+fftools/ffmpeg_hw.c:121: error: INTEGER_OVERFLOW_L2
+  ([0, +oo] - 32):unsigned64 by call to `av_malloc`.
+
+fftools/ffmpeg_hw.c:121:16: Call
+119.         int index, index_limit = 1000;
+120.         index_pos = strlen(type_name);
+121.         name = av_malloc(index_pos + 4);
+                    ^
+122.         if (!name) {
+123.             err = AVERROR(ENOMEM);
+
+libavutil/mem.c:77:1: <LHS trace>
+75. }
+76. 
+77. void *av_malloc(size_t size)
+    ^
+78. {
+79.     void *ptr = NULL;
+
+libavutil/mem.c:77:1: Global `max_alloc_size`
+  75. }
+  76. 
+  77. void *av_malloc(size_t size)
+      ^
+  78. {
+  79.     void *ptr = NULL;
+
+libavutil/mem.c:82:9: Binary operation: ([0, +oo] - 32):unsigned64 by call to `av_malloc` 
+  80. 
+  81.     /* let's disallow possibly ambiguous cases */
+  82.     if (size > (max_alloc_size - 32))
+              ^
+  83.         return NULL;
+  84. 

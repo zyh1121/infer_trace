@@ -1,0 +1,107 @@
+#19053
+libavfilter/af_amix.c:538: error: Use After Free
+  accessing memory that was invalidated by call to `free()` on line 537 indirectly during the call to `ff_add_format()`.
+
+libavfilter/af_amix.c:535:5: invalidation part of the trace starts here
+533. static int query_formats(AVFilterContext *ctx)
+534. {
+535.     AVFilterFormats *formats = NULL;
+         ^
+536.     ff_add_format(&formats, AV_SAMPLE_FMT_FLT);
+537.     ff_add_format(&formats, AV_SAMPLE_FMT_FLTP);
+
+libavfilter/af_amix.c:535:5: variable `formats` declared here
+  533. static int query_formats(AVFilterContext *ctx)
+  534. {
+  535.     AVFilterFormats *formats = NULL;
+           ^
+  536.     ff_add_format(&formats, AV_SAMPLE_FMT_FLT);
+  537.     ff_add_format(&formats, AV_SAMPLE_FMT_FLTP);
+
+libavfilter/af_amix.c:537:5: when calling `ff_add_format` here
+  535.     AVFilterFormats *formats = NULL;
+  536.     ff_add_format(&formats, AV_SAMPLE_FMT_FLT);
+  537.     ff_add_format(&formats, AV_SAMPLE_FMT_FLTP);
+           ^
+  538.     ff_set_common_formats(ctx, formats);
+  539.     ff_set_common_channel_layouts(ctx, ff_all_channel_layouts());
+
+libavfilter/formats.c:201:1: parameter `avff` of ff_add_format
+    199. } while (0)
+    200. 
+    201. int ff_add_format(AVFilterFormats **avff, int fmt)
+         ^
+    202. {
+    203.     ADD_FORMAT(avff, fmt, int, formats, nb_formats);
+
+libavfilter/formats.c:203:5: when calling `av_freep` here
+    201. int ff_add_format(AVFilterFormats **avff, int fmt)
+    202. {
+    203.     ADD_FORMAT(avff, fmt, int, formats, nb_formats);
+             ^
+    204. }
+    205. 
+
+libavutil/mem.c:198:1: parameter `arg` of av_freep
+      196. }
+      197. 
+      198. void av_freep(void *arg)
+           ^
+      199. {
+      200.     void **ptr = (void **)arg;
+
+libavutil/mem.c:200:5: assigned
+      198. void av_freep(void *arg)
+      199. {
+      200.     void **ptr = (void **)arg;
+               ^
+      201.     av_free(*ptr);
+      202.     *ptr = NULL;
+
+libavutil/mem.c:201:5: when calling `av_free` here
+      199. {
+      200.     void **ptr = (void **)arg;
+      201.     av_free(*ptr);
+               ^
+      202.     *ptr = NULL;
+      203. }
+
+libavutil/mem.c:186:1: parameter `ptr` of av_free
+        184. }
+        185. 
+        186. void av_free(void *ptr)
+             ^
+        187. {
+        188. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:194:5: was invalidated by call to `free()`
+        192.     _aligned_free(ptr);
+        193. #else
+        194.     free(ptr);
+                 ^
+        195. #endif
+        196. }
+
+libavfilter/af_amix.c:535:5: use-after-lifetime part of the trace starts here
+533. static int query_formats(AVFilterContext *ctx)
+534. {
+535.     AVFilterFormats *formats = NULL;
+         ^
+536.     ff_add_format(&formats, AV_SAMPLE_FMT_FLT);
+537.     ff_add_format(&formats, AV_SAMPLE_FMT_FLTP);
+
+libavfilter/af_amix.c:535:5: variable `formats` declared here
+  533. static int query_formats(AVFilterContext *ctx)
+  534. {
+  535.     AVFilterFormats *formats = NULL;
+           ^
+  536.     ff_add_format(&formats, AV_SAMPLE_FMT_FLT);
+  537.     ff_add_format(&formats, AV_SAMPLE_FMT_FLTP);
+
+libavfilter/af_amix.c:538:32: invalid access occurs here
+  536.     ff_add_format(&formats, AV_SAMPLE_FMT_FLT);
+  537.     ff_add_format(&formats, AV_SAMPLE_FMT_FLTP);
+  538.     ff_set_common_formats(ctx, formats);
+                                      ^
+  539.     ff_set_common_channel_layouts(ctx, ff_all_channel_layouts());
+  540.     ff_set_common_samplerates(ctx, ff_all_samplerates());

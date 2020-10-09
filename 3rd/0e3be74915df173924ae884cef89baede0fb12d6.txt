@@ -1,0 +1,75 @@
+#2651
+tools/tiff2ps.c:2662: error: Buffer Overrun L3
+  Offset: [7, +oo] (⇐ [0, +oo] + 7) Size: [0, +oo] by call to `TIFFReadEncodedStrip`.
+
+tools/tiff2ps.c:2612:1: Parameter `tif->tif_rawdata`
+2610. }
+2611. 
+2612. void
+      ^
+2613. PSDataBW(FILE* fd, TIFF* tif, uint32 w, uint32 h)
+2614. {
+
+tools/tiff2ps.c:2662:17: Call
+2660. 
+2661. 	for (s = 0; s < TIFFNumberOfStrips(tif); s++) {
+2662. 		tmsize_t cc = TIFFReadEncodedStrip(tif, s, tf_buf, stripsize);
+                      ^
+2663. 		if (cc < 0) {
+2664. 			TIFFError(filename, "Can't read strip");
+
+libtiff/tif_read.c:516:1: Parameter `*tif->tif_rawdata`
+  514.  * amount into the user-supplied buffer.
+  515.  */
+  516. tmsize_t
+       ^
+  517. TIFFReadEncodedStrip(TIFF* tif, uint32 strip, void* buf, tmsize_t size)
+  518. {
+
+libtiff/tif_read.c:547:7: Call
+  545. 	if ((size!=(tmsize_t)(-1))&&(size<stripsize))
+  546. 		stripsize=size;
+  547. 	if (!TIFFFillStrip(tif,strip))
+             ^
+  548. 		return((tmsize_t)(-1));
+  549. 	if ((*tif->tif_decodestrip)(tif,buf,stripsize,plane)<=0)
+
+libtiff/tif_read.c:770:1: Parameter `*tif->tif_rawdata`
+    768.  * expanded, as necessary, to hold the strip's data.
+    769.  */
+    770. int
+         ^
+    771. TIFFFillStrip(TIFF* tif, uint32 strip)
+    772. {
+
+libtiff/tif_read.c:957:5: Call
+    955. 			if (!isFillOrder(tif, td->td_fillorder) &&
+    956. 			    (tif->tif_flags & TIFF_NOBITREV) == 0)
+    957. 				TIFFReverseBits(tif->tif_rawdata, bytecountm);
+             ^
+    958.                 }
+    959. 	}
+
+libtiff/tif_swab.c:283:1: <Length trace>
+281. }
+282. 
+283. void
+     ^
+284. TIFFReverseBits(uint8* cp, tmsize_t n)  
+285. {
+
+libtiff/tif_swab.c:283:1: Parameter `*cp`
+      281. }
+      282. 
+      283. void
+           ^
+      284. TIFFReverseBits(uint8* cp, tmsize_t n)  
+      285. {
+
+libtiff/tif_swab.c:294:3: Array access: Offset: [7, +oo] (⇐ [0, +oo] + 7) Size: [0, +oo] by call to `TIFFReadEncodedStrip` 
+      292. 		cp[5] = TIFFBitRevTable[cp[5]];
+      293. 		cp[6] = TIFFBitRevTable[cp[6]];
+      294. 		cp[7] = TIFFBitRevTable[cp[7]];
+             ^
+      295. 		cp += 8;
+      296. 	}

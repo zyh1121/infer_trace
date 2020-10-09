@@ -1,0 +1,108 @@
+ssl/statem/statem_srvr.c:3470: error: INTEGER_OVERFLOW_L2
+  ([0, +oo] - [`pkt->written`, `pkt->written` + 4]):unsigned64 by call to `WPACKET_sub_memcpy__`.
+Showing all 14 steps of the trace
+
+
+ssl/statem/statem_srvr.c:3469:10: Call
+3467.   int tls_construct_cert_status(SSL *s, WPACKET *pkt)
+3468.   {
+3469.       if (!WPACKET_put_bytes_u8(pkt, s->tlsext_status_type)
+                 ^
+3470.               || !WPACKET_sub_memcpy_u24(pkt, s->tlsext_ocsp_resp,
+3471.                                          s->tlsext_ocsp_resplen)) {
+
+ssl/packet.c:289:1: Parameter `pkt->buf->length`
+  287.   }
+  288.   
+  289. > int WPACKET_put_bytes__(WPACKET *pkt, unsigned int val, size_t size)
+  290.   {
+  291.       unsigned char *data;
+
+ssl/statem/statem_srvr.c:3470:17: Call
+3468.   {
+3469.       if (!WPACKET_put_bytes_u8(pkt, s->tlsext_status_type)
+3470.               || !WPACKET_sub_memcpy_u24(pkt, s->tlsext_ocsp_resp,
+                        ^
+3471.                                          s->tlsext_ocsp_resplen)) {
+3472.           SSLerr(SSL_F_TLS_CONSTRUCT_CERT_STATUS, ERR_R_INTERNAL_ERROR);
+
+ssl/packet.c:345:1: Parameter `pkt->written`
+  343.   }
+  344.   
+  345. > int WPACKET_sub_memcpy__(WPACKET *pkt, const void *src, size_t len,
+  346.                            size_t lenbytes)
+  347.   {
+
+ssl/packet.c:348:10: Call
+  346.                            size_t lenbytes)
+  347.   {
+  348.       if (!WPACKET_start_sub_packet_len__(pkt, lenbytes)
+                  ^
+  349.               || !WPACKET_memcpy(pkt, src, len)
+  350.               || !WPACKET_close(pkt))
+
+ssl/packet.c:252:1: Parameter `pkt->written`
+    250.   }
+    251.   
+    252. > int WPACKET_start_sub_packet_len__(WPACKET *pkt, size_t lenbytes)
+    253.   {
+    254.       WPACKET_SUB *sub;
+
+ssl/packet.c:276:10: Call
+    274.       }
+    275.   
+    276.       if (!WPACKET_allocate_bytes(pkt, lenbytes, &lenchars))
+                    ^
+    277.           return 0;
+    278.       /* Convert to an offset in case the underlying BUF_MEM gets realloc'd */
+
+ssl/packet.c:15:1: Parameter `pkt->written`
+      13.   #define DEFAULT_BUF_SIZE    256
+      14.   
+      15. > int WPACKET_allocate_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+      16.   {
+      17.       if (!WPACKET_reserve_bytes(pkt, len, allocbytes))
+
+ssl/packet.c:17:10: Call
+      15.   int WPACKET_allocate_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+      16.   {
+      17.       if (!WPACKET_reserve_bytes(pkt, len, allocbytes))
+                     ^
+      18.           return 0;
+      19.   
+
+ssl/packet.c:39:1: <LHS trace>
+37.                        ? (p)->staticbuf : (unsigned char *)(p)->buf->data)
+38.   
+39. > int WPACKET_reserve_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+40.   {
+41.       /* Internal API, so should not fail */
+
+ssl/packet.c:39:1: Parameter `pkt->buf->length`
+        37.                        ? (p)->staticbuf : (unsigned char *)(p)->buf->data)
+        38.   
+        39. > int WPACKET_reserve_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+        40.   {
+        41.       /* Internal API, so should not fail */
+
+ssl/packet.c:39:1: <RHS trace>
+37.                        ? (p)->staticbuf : (unsigned char *)(p)->buf->data)
+38.   
+39. > int WPACKET_reserve_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+40.   {
+41.       /* Internal API, so should not fail */
+
+ssl/packet.c:39:1: Parameter `len`
+        37.                        ? (p)->staticbuf : (unsigned char *)(p)->buf->data)
+        38.   
+        39. > int WPACKET_reserve_bytes(WPACKET *pkt, size_t len, unsigned char **allocbytes)
+        40.   {
+        41.       /* Internal API, so should not fail */
+
+ssl/packet.c:49:36: Binary operation: ([0, +oo] - [pkt->written, pkt->written + 4]):unsigned64 by call to `WPACKET_sub_memcpy__` 
+        47.           return 0;
+        48.   
+        49.       if (pkt->staticbuf == NULL && (pkt->buf->length - pkt->written < len)) {
+                                                 ^
+        50.           size_t newlen;
+        51.           size_t reflen;

@@ -1,0 +1,205 @@
+apps/s_client.c:291: error: NULL_DEREFERENCE
+  pointer `bn_ctx` last assigned on line 275 could be null and is dereferenced by call to `BN_CTX_free()` at line 291, column 5.
+Showing all 27 steps of the trace
+
+
+apps/s_client.c:273:1: start of procedure srp_Verify_N_and_g()
+271.   # define SRP_NUMBER_ITERATIONS_FOR_PRIME 64
+272.   
+273. > static int srp_Verify_N_and_g(const BIGNUM *N, const BIGNUM *g)
+274.   {
+275.       BN_CTX *bn_ctx = BN_CTX_new();
+
+apps/s_client.c:275:5: Skipping BN_CTX_new(): empty list of specs
+273.   static int srp_Verify_N_and_g(const BIGNUM *N, const BIGNUM *g)
+274.   {
+275.       BN_CTX *bn_ctx = BN_CTX_new();
+           ^
+276.       BIGNUM *p = BN_new();
+277.       BIGNUM *r = BN_new();
+
+apps/s_client.c:276:5: Skipping BN_new(): empty list of specs
+274.   {
+275.       BN_CTX *bn_ctx = BN_CTX_new();
+276.       BIGNUM *p = BN_new();
+           ^
+277.       BIGNUM *r = BN_new();
+278.       int ret =
+
+apps/s_client.c:277:5: Skipping BN_new(): empty list of specs
+275.       BN_CTX *bn_ctx = BN_CTX_new();
+276.       BIGNUM *p = BN_new();
+277.       BIGNUM *r = BN_new();
+           ^
+278.       int ret =
+279.           g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
+
+apps/s_client.c:279:9: Condition is true
+277.       BIGNUM *r = BN_new();
+278.       int ret =
+279.           g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
+               ^
+280.           BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
+281.           p != NULL && BN_rshift1(p, N) &&
+
+apps/s_client.c:279:22: Condition is true
+277.       BIGNUM *r = BN_new();
+278.       int ret =
+279.           g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
+                            ^
+280.           BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
+281.           p != NULL && BN_rshift1(p, N) &&
+
+apps/s_client.c:279:35: Condition is false
+277.       BIGNUM *r = BN_new();
+278.       int ret =
+279.           g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
+                                         ^
+280.           BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
+281.           p != NULL && BN_rshift1(p, N) &&
+
+apps/s_client.c:279:9: 
+277.       BIGNUM *r = BN_new();
+278.       int ret =
+279. >         g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
+280.           BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
+281.           p != NULL && BN_rshift1(p, N) &&
+
+apps/s_client.c:278:5: 
+276.       BIGNUM *p = BN_new();
+277.       BIGNUM *r = BN_new();
+278. >     int ret =
+279.           g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
+280.           BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
+
+apps/s_client.c:289:5: Skipping BN_free(): empty list of specs
+287.           BN_add_word(r, 1) && BN_cmp(r, N) == 0;
+288.   
+289.       BN_free(r);
+           ^
+290.       BN_free(p);
+291.       BN_CTX_free(bn_ctx);
+
+apps/s_client.c:290:5: Skipping BN_free(): empty list of specs
+288.   
+289.       BN_free(r);
+290.       BN_free(p);
+           ^
+291.       BN_CTX_free(bn_ctx);
+292.       return ret;
+
+apps/s_client.c:291:5: 
+289.       BN_free(r);
+290.       BN_free(p);
+291. >     BN_CTX_free(bn_ctx);
+292.       return ret;
+293.   }
+
+crypto/bn/bn_ctx.c:157:1: start of procedure BN_CTX_free()
+  155.   }
+  156.   
+  157. > void BN_CTX_free(BN_CTX *ctx)
+  158.   {
+  159.   #ifdef BN_CTX_DEBUG
+
+crypto/bn/bn_ctx.c:174:5: 
+  172.       }
+  173.   #endif
+  174. >     BN_STACK_finish(&ctx->stack);
+  175.       BN_POOL_finish(&ctx->pool);
+  176.       OPENSSL_free(ctx);
+
+crypto/bn/bn_ctx.c:243:1: start of procedure BN_STACK_finish()
+    241.   }
+    242.   
+    243. > static void BN_STACK_finish(BN_STACK *st)
+    244.   {
+    245.       OPENSSL_free(st->indexes);
+
+crypto/bn/bn_ctx.c:245:5: 
+    243.   static void BN_STACK_finish(BN_STACK *st)
+    244.   {
+    245. >     OPENSSL_free(st->indexes);
+    246.       st->indexes = NULL;
+    247.   }
+
+crypto/mem.c:295:1: start of procedure CRYPTO_free()
+      293.   }
+      294.   
+      295. > void CRYPTO_free(void *str, const char *file, int line)
+      296.   {
+      297.       INCREMENT(free_count);
+
+crypto/mem.c:298:9: Taking true branch
+      296.   {
+      297.       INCREMENT(free_count);
+      298.       if (free_impl != NULL && free_impl != &CRYPTO_free) {
+                     ^
+      299.           free_impl(str, file, line);
+      300.           return;
+
+crypto/mem.c:298:30: Taking true branch
+      296.   {
+      297.       INCREMENT(free_count);
+      298.       if (free_impl != NULL && free_impl != &CRYPTO_free) {
+                                          ^
+      299.           free_impl(str, file, line);
+      300.           return;
+
+crypto/mem.c:299:9: Skipping __function_pointer__(): unresolved function pointer
+      297.       INCREMENT(free_count);
+      298.       if (free_impl != NULL && free_impl != &CRYPTO_free) {
+      299.           free_impl(str, file, line);
+                     ^
+      300.           return;
+      301.       }
+
+crypto/mem.c:300:9: 
+      298.       if (free_impl != NULL && free_impl != &CRYPTO_free) {
+      299.           free_impl(str, file, line);
+      300. >         return;
+      301.       }
+      302.   
+
+crypto/mem.c:314:1: return from a call to CRYPTO_free
+      312.       free(str);
+      313.   #endif
+      314. > }
+      315.   
+      316.   void CRYPTO_clear_free(void *str, size_t num, const char *file, int line)
+
+crypto/bn/bn_ctx.c:246:5: 
+    244.   {
+    245.       OPENSSL_free(st->indexes);
+    246. >     st->indexes = NULL;
+    247.   }
+    248.   
+
+crypto/bn/bn_ctx.c:247:1: return from a call to BN_STACK_finish
+    245.       OPENSSL_free(st->indexes);
+    246.       st->indexes = NULL;
+    247. > }
+    248.   
+    249.   
+
+crypto/bn/bn_ctx.c:175:5: 
+  173.   #endif
+  174.       BN_STACK_finish(&ctx->stack);
+  175. >     BN_POOL_finish(&ctx->pool);
+  176.       OPENSSL_free(ctx);
+  177.   }
+
+crypto/bn/bn_ctx.c:284:1: start of procedure BN_POOL_finish()
+    282.   }
+    283.   
+    284. > static void BN_POOL_finish(BN_POOL *p)
+    285.   {
+    286.       unsigned int loop;
+
+crypto/bn/bn_ctx.c:289:12: Loop condition is false. Leaving loop
+    287.       BIGNUM *bn;
+    288.   
+    289.       while (p->head) {
+                      ^
+    290.           for (loop = 0, bn = p->head->vals; loop++ < BN_CTX_POOL_SIZE; bn++)
+    291.               if (bn->d)

@@ -1,0 +1,130 @@
+ssl/record/ssl3_record.c:1602: error: INTEGER_OVERFLOW_L2
+  ([0, max(0, `s->initial_ctx->sessions->num_items`)] - 1):unsigned64 by call to `dtls1_process_record`.
+Showing all 17 steps of the trace
+
+
+ssl/record/ssl3_record.c:1447:1: Parameter `s->initial_ctx->sessions->num_items`
+1445.    */
+1446.   /* used only by dtls1_read_bytes */
+1447. > int dtls1_get_record(SSL *s)
+1448.   {
+1449.       int ssl_major, ssl_minor;
+
+ssl/record/ssl3_record.c:1463:9: Call
+1461.        * This is a non-blocking operation.
+1462.        */
+1463.       if (dtls1_process_buffered_records(s) < 0)
+                ^
+1464.           return -1;
+1465.   
+
+ssl/record/rec_layer_d1.c:237:1: Parameter `s->initial_ctx->sessions->num_items`
+  235.   
+  236.   
+  237. > int dtls1_process_buffered_records(SSL *s)
+  238.   {
+  239.       pitem *item;
+
+ssl/record/ssl3_record.c:1602:10: Call
+1600.       }
+1601.   
+1602.       if (!dtls1_process_record(s)) {
+                 ^
+1603.           rr->length = 0;
+1604.           RECORD_LAYER_reset_packet_length(&s->rlayer);   /* dump this record */
+
+ssl/record/ssl3_record.c:1264:1: Parameter `s->initial_ctx->sessions->num_items`
+  1262.   }
+  1263.   
+  1264. > int dtls1_process_record(SSL *s)
+  1265.   {
+  1266.       int i, al;
+
+ssl/record/ssl3_record.c:1423:5: Call
+  1421.   
+  1422.    f_err:
+  1423.       ssl3_send_alert(s, SSL3_AL_FATAL, al);
+              ^
+  1424.    err:
+  1425.       return (0);
+
+ssl/s3_msg.c:64:1: Parameter `s->initial_ctx->sessions->num_items`
+    62.   }
+    63.   
+    64. > int ssl3_send_alert(SSL *s, int level, int desc)
+    65.   {
+    66.       /* Map tls/ssl alert value to correct one */
+
+ssl/s3_msg.c:75:9: Call
+    73.       /* If a fatal one, remove from cache */
+    74.       if ((level == SSL3_AL_FATAL) && (s->session != NULL))
+    75.           SSL_CTX_remove_session(s->session_ctx, s->session);
+                  ^
+    76.   
+    77.       s->s3->alert_dispatch = 1;
+
+ssl/ssl_sess.c:691:1: Parameter `ctx->sessions->num_items`
+      689.   }
+      690.   
+      691. > int SSL_CTX_remove_session(SSL_CTX *ctx, SSL_SESSION *c)
+      692.   {
+      693.       return remove_session_lock(ctx, c, 1);
+
+ssl/ssl_sess.c:693:12: Call
+      691.   int SSL_CTX_remove_session(SSL_CTX *ctx, SSL_SESSION *c)
+      692.   {
+      693.       return remove_session_lock(ctx, c, 1);
+                        ^
+      694.   }
+      695.   
+
+ssl/ssl_sess.c:696:1: Parameter `ctx->sessions->num_items`
+        694.   }
+        695.   
+        696. > static int remove_session_lock(SSL_CTX *ctx, SSL_SESSION *c, int lck)
+        697.   {
+        698.       SSL_SESSION *r;
+
+ssl/ssl_sess.c:706:17: Call
+        704.           if ((r = lh_SSL_SESSION_retrieve(ctx->sessions, c)) == c) {
+        705.               ret = 1;
+        706.               r = lh_SSL_SESSION_delete(ctx->sessions, c);
+                               ^
+        707.               SSL_SESSION_list_remove(ctx, c);
+        708.           }
+
+ssl/ssl_locl.h:581:1: Parameter `lh->num_items`
+          579.   };
+          580.   
+          581. > DEFINE_LHASH_OF(SSL_SESSION);
+          582.   /* Needed in ssl_cert.c */
+          583.   DEFINE_LHASH_OF(X509_NAME);
+
+ssl/ssl_locl.h:581:1: Call
+          579.   };
+          580.   
+          581. > DEFINE_LHASH_OF(SSL_SESSION);
+          582.   /* Needed in ssl_cert.c */
+          583.   DEFINE_LHASH_OF(X509_NAME);
+
+crypto/lhash/lhash.c:103:1: <LHS trace>
+101.   }
+102.   
+103. > void *OPENSSL_LH_delete(OPENSSL_LHASH *lh, const void *data)
+104.   {
+105.       unsigned long hash;
+
+crypto/lhash/lhash.c:103:1: Parameter `lh->num_items`
+            101.   }
+            102.   
+            103. > void *OPENSSL_LH_delete(OPENSSL_LHASH *lh, const void *data)
+            104.   {
+            105.       unsigned long hash;
+
+crypto/lhash/lhash.c:123:5: Binary operation: ([0, max(0, s->initial_ctx->sessions->num_items)] - 1):unsigned64 by call to `dtls1_process_record` 
+            121.       }
+            122.   
+            123.       lh->num_items--;
+                       ^
+            124.       if ((lh->num_nodes > MIN_NODES) &&
+            125.           (lh->down_load >= (lh->num_items * LH_LOAD_MULT / lh->num_nodes)))

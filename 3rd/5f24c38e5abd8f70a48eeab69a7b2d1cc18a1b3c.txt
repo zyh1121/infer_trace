@@ -1,0 +1,228 @@
+crypto/bn/bn_prime.c:225: error: BUFFER_OVERRUN_L3
+  Offset added: [8, +oo] Size: [0, 67108856] by call to `witness`.
+Showing all 30 steps of the trace
+
+
+crypto/bn/bn_prime.c:151:1: Parameter `a->top`
+149.   }
+150.   
+151. > int BN_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
+152.                               int do_trial_division, BN_GENCB *cb)
+153.   {
+
+crypto/bn/bn_prime.c:160:9: Call
+158.       BN_MONT_CTX *mont = NULL;
+159.   
+160.       if (BN_cmp(a, BN_value_one()) <= 0)
+               ^
+161.           return 0;
+162.   
+
+crypto/bn/bn_lib.c:542:1: Parameter `a->top`
+  540.   }
+  541.   
+  542. > int BN_cmp(const BIGNUM *a, const BIGNUM *b)
+  543.   {
+  544.       int i;
+
+crypto/bn/bn_prime.c:167:10: Call
+165.   
+166.       /* first look for small factors */
+167.       if (!BN_is_odd(a))
+                ^
+168.           /* a is even => a is prime if and only if a == 2 */
+169.           return BN_is_word(a, 2);
+
+crypto/bn/bn_lib.c:860:1: Parameter `a->top`
+  858.   }
+  859.   
+  860. > int BN_is_odd(const BIGNUM *a)
+  861.   {
+  862.       return (a->top > 0) && (a->d[0] & 1);
+
+crypto/bn/bn_prime.c:195:10: Call
+193.   
+194.       /* compute A1 := a - 1 */
+195.       if (!BN_copy(A1, a))
+                ^
+196.           goto err;
+197.       if (!BN_sub_word(A1, 1))
+
+crypto/bn/bn_lib.c:285:1: Parameter `b->top`
+  283.   }
+  284.   
+  285. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+  286.   {
+  287.       bn_check_top(b);
+
+crypto/bn/bn_prime.c:215:10: Call
+213.       if (mont == NULL)
+214.           goto err;
+215.       if (!BN_MONT_CTX_set(mont, a, ctx))
+                ^
+216.           goto err;
+217.   
+
+crypto/bn/bn_mont.c:238:9: Call
+  236.       BIGNUM *Ri, *R;
+  237.   
+  238.       if (BN_is_zero(mod))
+                 ^
+  239.           return 0;
+  240.   
+
+crypto/bn/bn_lib.c:845:1: Parameter `a->top`
+    843.   }
+    844.   
+    845. > int BN_is_zero(const BIGNUM *a)
+    846.   {
+    847.       return a->top == 0;
+
+crypto/bn/bn_prime.c:225:13: Call
+223.           /* now 1 <= check < a */
+224.   
+225.           j = witness(check, a, A1, A1_odd, k, ctx, mont);
+                   ^
+226.           if (j == -1)
+227.               goto err;
+
+crypto/bn/bn_prime.c:247:1: Parameter `a->top`
+  245.   }
+  246.   
+  247. > static int witness(BIGNUM *w, const BIGNUM *a, const BIGNUM *a1,
+  248.                      const BIGNUM *a1_odd, int k, BN_CTX *ctx,
+  249.                      BN_MONT_CTX *mont)
+
+crypto/bn/bn_prime.c:251:10: Call
+  249.                      BN_MONT_CTX *mont)
+  250.   {
+  251.       if (!BN_mod_exp_mont(w, w, a1_odd, a, ctx, mont)) /* w := w^a1_odd mod a */
+                  ^
+  252.           return -1;
+  253.       if (BN_is_one(w))
+
+crypto/bn/bn_exp.c:296:1: Parameter `m->top`
+    294.   }
+    295.   
+    296. > int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+    297.                       const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+    298.   {
+
+crypto/bn/bn_exp.c:310:16: Call
+    308.               || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+    309.               || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+    310.           return BN_mod_exp_mont_consttime(rr, a, p, m, ctx, in_mont);
+                          ^
+    311.       }
+    312.   
+
+crypto/bn/bn_exp.c:596:1: Parameter `m->top`
+      594.    * http://www.daemonology.net/hyperthreading-considered-harmful/)
+      595.    */
+      596. > int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+      597.                                 const BIGNUM *m, BN_CTX *ctx,
+      598.                                 BN_MONT_CTX *in_mont)
+
+crypto/bn/bn_exp.c:617:10: Call
+      615.       bn_check_top(m);
+      616.   
+      617.       if (!BN_is_odd(m)) {
+                      ^
+      618.           BNerr(BN_F_BN_MOD_EXP_MONT_CONSTTIME, BN_R_CALLED_WITH_EVEN_MODULUS);
+      619.           return 0;
+
+crypto/bn/bn_lib.c:860:1: Parameter `a->top`
+        858.   }
+        859.   
+        860. > int BN_is_odd(const BIGNUM *a)
+        861.   {
+        862.       return (a->top > 0) && (a->d[0] & 1);
+
+crypto/bn/bn_exp.c:651:14: Call
+      649.           if ((mont = BN_MONT_CTX_new()) == NULL)
+      650.               goto err;
+      651.           if (!BN_MONT_CTX_set(mont, m, ctx))
+                          ^
+      652.               goto err;
+      653.       }
+
+crypto/bn/bn_mont.c:233:1: Parameter `mod->top`
+        231.   }
+        232.   
+        233. > int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
+        234.   {
+        235.       int ret = 0;
+
+crypto/bn/bn_mont.c:238:9: Call
+        236.       BIGNUM *Ri, *R;
+        237.   
+        238.       if (BN_is_zero(mod))
+                       ^
+        239.           return 0;
+        240.   
+
+crypto/bn/bn_lib.c:845:1: Parameter `a->top`
+          843.   }
+          844.   
+          845. > int BN_is_zero(const BIGNUM *a)
+          846.   {
+          847.       return a->top == 0;
+
+crypto/bn/bn_mont.c:245:10: Call
+        243.           goto err;
+        244.       R = &(mont->RR);            /* grab RR as a temp */
+        245.       if (!BN_copy(&(mont->N), mod))
+                        ^
+        246.           goto err;               /* Set N */
+        247.       if (BN_get_flags(mod, BN_FLG_CONSTTIME) != 0)
+
+crypto/bn/bn_lib.c:285:1: <Offset trace>
+283.   }
+284.   
+285. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+286.   {
+287.       bn_check_top(b);
+
+crypto/bn/bn_lib.c:285:1: Parameter `b->top`
+          283.   }
+          284.   
+          285. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+          286.   {
+          287.       bn_check_top(b);
+
+crypto/bn/bn_lib.c:285:1: <Length trace>
+283.   }
+284.   
+285. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+286.   {
+287.       bn_check_top(b);
+
+crypto/bn/bn_lib.c:285:1: Parameter `*a->d`
+          283.   }
+          284.   
+          285. > BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+          286.   {
+          287.       bn_check_top(b);
+
+crypto/bn/bn_lib.c:291:9: Call
+          289.       if (a == b)
+          290.           return a;
+          291.       if (bn_wexpand(a, b->top) == NULL)
+                         ^
+          292.           return NULL;
+          293.   
+
+crypto/bn/bn_lib.c:941:1: Parameter `*a->d`
+            939.   }
+            940.   
+            941. > BIGNUM *bn_wexpand(BIGNUM *a, int words)
+            942.   {
+            943.       return (words <= a->dmax) ? a : bn_expand2(a, words);
+
+crypto/bn/bn_lib.c:295:9: Array access: Offset added: [8, +oo] Size: [0, 67108856] by call to `witness` 
+          293.   
+          294.       if (b->top > 0)
+          295.           memcpy(a->d, b->d, sizeof(b->d[0]) * b->top);
+                         ^
+          296.   
+          297.       a->top = b->top;

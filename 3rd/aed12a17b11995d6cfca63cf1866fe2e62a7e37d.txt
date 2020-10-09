@@ -1,0 +1,59 @@
+#26179
+libswscale/swscale_unscaled.c:1239: error: Integer Overflow L2
+  ([0, 18735360] + [0, 132623892480]):unsigned32.
+
+libswscale/swscale_unscaled.c:1189:14: <LHS trace>
+1187. 
+1188.     if (usePal(c->srcFormat)) {
+1189.         for (i = 0; i < 256; i++) {
+                   ^
+1190.             int r, g, b, y, u, v;
+1191.             if (c->srcFormat == AV_PIX_FMT_PAL8) {
+
+libswscale/swscale_unscaled.c:1189:14: Assignment
+1187. 
+1188.     if (usePal(c->srcFormat)) {
+1189.         for (i = 0; i < 256; i++) {
+                   ^
+1190.             int r, g, b, y, u, v;
+1191.             if (c->srcFormat == AV_PIX_FMT_PAL8) {
+
+libswscale/swscale_unscaled.c:1198:17: Assignment
+1196.             } else if (c->srcFormat == AV_PIX_FMT_RGB8) {
+1197.                 r = ( i >> 5     ) * 36;
+1198.                 g = ((i >> 2) & 7) * 36;
+                      ^
+1199.                 b = ( i       & 3) * 85;
+1200.             } else if (c->srcFormat == AV_PIX_FMT_BGR8) {
+
+libswscale/swscale_unscaled.c:1189:14: <RHS trace>
+1187. 
+1188.     if (usePal(c->srcFormat)) {
+1189.         for (i = 0; i < 256; i++) {
+                   ^
+1190.             int r, g, b, y, u, v;
+1191.             if (c->srcFormat == AV_PIX_FMT_PAL8) {
+
+libswscale/swscale_unscaled.c:1189:14: Assignment
+1187. 
+1188.     if (usePal(c->srcFormat)) {
+1189.         for (i = 0; i < 256; i++) {
+                   ^
+1190.             int r, g, b, y, u, v;
+1191.             if (c->srcFormat == AV_PIX_FMT_PAL8) {
+
+libswscale/swscale_unscaled.c:1197:17: Assignment
+1195.                 b =  p        & 0xFF;
+1196.             } else if (c->srcFormat == AV_PIX_FMT_RGB8) {
+1197.                 r = ( i >> 5     ) * 36;
+                      ^
+1198.                 g = ((i >> 2) & 7) * 36;
+1199.                 b = ( i       & 3) * 85;
+
+libswscale/swscale_unscaled.c:1239:17: Binary operation: ([0, 18735360] + [0, 132623892480]):unsigned32
+1237.             case AV_PIX_FMT_RGB24:
+1238. #endif
+1239.                 c->pal_rgb[i] = (b << 8) + (g << 16) + ((unsigned)r << 24);
+                      ^
+1240.                 break;
+1241.             case AV_PIX_FMT_RGB32:

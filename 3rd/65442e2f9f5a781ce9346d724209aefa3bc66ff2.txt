@@ -1,0 +1,35 @@
+#47600
+libavcodec/cbs_h2645.c:687: error: INTEGER_OVERFLOW_L2
+  ([0, +oo] - 32):unsigned64 by call to `av_malloc`.
+
+libavcodec/cbs_h2645.c:687:1: Call
+685. cbs_h2645_replace_ps(4, SPS, sps, seq_parameter_set_id)
+686. cbs_h2645_replace_ps(4, PPS, pps, pic_parameter_set_id)
+687. cbs_h2645_replace_ps(5, VPS, vps, vps_video_parameter_set_id)
+     ^
+688. cbs_h2645_replace_ps(5, SPS, sps, sps_seq_parameter_set_id)
+689. cbs_h2645_replace_ps(5, PPS, pps, pps_pic_parameter_set_id)
+
+libavutil/mem.c:77:1: <LHS trace>
+75. }
+76. 
+77. void *av_malloc(size_t size)
+    ^
+78. {
+79.     void *ptr = NULL;
+
+libavutil/mem.c:77:1: Global `max_alloc_size`
+  75. }
+  76. 
+  77. void *av_malloc(size_t size)
+      ^
+  78. {
+  79.     void *ptr = NULL;
+
+libavutil/mem.c:82:9: Binary operation: ([0, +oo] - 32):unsigned64 by call to `av_malloc` 
+  80. 
+  81.     /* let's disallow possibly ambiguous cases */
+  82.     if (size > (max_alloc_size - 32))
+              ^
+  83.         return NULL;
+  84. 

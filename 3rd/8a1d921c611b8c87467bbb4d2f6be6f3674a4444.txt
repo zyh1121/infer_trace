@@ -1,0 +1,107 @@
+#328
+contrib/addtiffo/tif_ovrcache.c:204: error: Integer Overflow L2
+  ([0, +oo] - 1):unsigned32 by call to `TIFFWriteEncodedStrip`.
+
+contrib/addtiffo/tif_ovrcache.c:168:12: Call
+166. /* -------------------------------------------------------------------- */
+167.     nBaseDirOffset = TIFFCurrentDirOffset( psCache->hTIFF );
+168.     nRet = TIFFSetSubDirectory( psCache->hTIFF, psCache->nDirOffset );
+                ^
+169.     assert( nRet == 1 );
+170. 
+
+libtiff/tif_dir.c:1658:10: Call
+  1656. 	 */
+  1657. 	tif->tif_dirnumber = 0;
+  1658. 	return (TIFFReadDirectory(tif));
+                 ^
+  1659. }
+  1660. 
+
+libtiff/tif_dirread.c:3574:1: Parameter `tif->tif_dir.td_rowsperstrip`
+    3572.  * format. We read directories sequentially.
+    3573.  */
+    3574. int
+          ^
+    3575. TIFFReadDirectory(TIFF* tif)
+    3576. {
+
+contrib/addtiffo/tif_ovrcache.c:204:6: Call
+202. 					if ((iTileY+1)*psCache->nBlockYSize>psCache->nYSize)
+203. 						RowsInStrip=psCache->nYSize-iTileY*psCache->nBlockYSize;
+204. 					TIFFWriteEncodedStrip( psCache->hTIFF, nTileID,
+          ^
+205. 					    pabyData,
+206. 					    TIFFVStripSize(psCache->hTIFF,RowsInStrip) );
+
+libtiff/tif_write.c:211:1: Parameter `tif->tif_dir.td_rowsperstrip`
+  209.  * NB: Image length must be setup before writing.
+  210.  */
+  211. tmsize_t
+       ^
+  212. TIFFWriteEncodedStrip(TIFF* tif, uint32 strip, void* data, tmsize_t cc)
+  213. {
+
+libtiff/tif_write.c:218:7: Call
+  216. 	uint16 sample;
+  217. 
+  218. 	if (!WRITECHECKSTRIPS(tif, module))
+             ^
+  219. 		return ((tmsize_t) -1);
+  220. 	/*
+
+libtiff/tif_write.c:564:1: Parameter `tif->tif_dir.td_rowsperstrip`
+    562.  * that important information is not changed.
+    563.  */
+    564. int
+         ^
+    565. TIFFWriteCheck(TIFF* tif, int tiles, const char* module)
+    566. {
+
+libtiff/tif_write.c:611:48: Call
+    609. 		}
+    610. 	}
+    611. 	if (tif->tif_dir.td_stripoffset_p == NULL && !TIFFSetupStrips(tif)) {
+                                                        ^
+    612. 		tif->tif_dir.td_nstrips = 0;
+    613. 		TIFFErrorExt(tif->tif_clientdata, module, "No space for %s arrays",
+
+libtiff/tif_write.c:522:1: Parameter `tif->tif_dir.td_rowsperstrip`
+      520.     (TIFFFieldSet(tif,f) && (tif)->tif_dir.td_imagelength == 0)
+      521. 
+      522. int
+           ^
+      523. TIFFSetupStrips(TIFF* tif)
+      524. {
+
+libtiff/tif_write.c:534:29: Call
+      532. 		td->td_stripsperimage =
+      533. 		    isUnspecified(tif, FIELD_ROWSPERSTRIP) ?
+      534. 			td->td_samplesperpixel : TIFFNumberOfStrips(tif);
+                                       ^
+      535. 	td->td_nstrips = td->td_stripsperimage;
+      536. 	if (td->td_planarconfig == PLANARCONFIG_SEPARATE)
+
+libtiff/tif_strip.c:58:1: <LHS trace>
+56.  * Compute how many strips are in an image.
+57.  */
+58. uint32
+    ^
+59. TIFFNumberOfStrips(TIFF* tif)
+60. {
+
+libtiff/tif_strip.c:58:1: Parameter `tif->tif_dir.td_imagelength`
+        56.  * Compute how many strips are in an image.
+        57.  */
+        58. uint32
+            ^
+        59. TIFFNumberOfStrips(TIFF* tif)
+        60. {
+
+libtiff/tif_strip.c:65:7: Binary operation: ([0, +oo] - 1):unsigned32 by call to `TIFFWriteEncodedStrip` 
+        63. 
+        64. 	nstrips = (td->td_rowsperstrip == (uint32) -1 ? 1 :
+        65. 	     TIFFhowmany_32(td->td_imagelength, td->td_rowsperstrip));
+                  ^
+        66. 	if (td->td_planarconfig == PLANARCONFIG_SEPARATE)
+        67. 		nstrips = _TIFFMultiply32(tif, nstrips, (uint32)td->td_samplesperpixel,

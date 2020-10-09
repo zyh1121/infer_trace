@@ -1,0 +1,63 @@
+crypto/x509v3/v3_alt.c:145: error: BUFFER_OVERRUN_L1
+  Offset added: 256 Size: 32 by call to `i2t_ASN1_OBJECT`.
+Showing all 8 steps of the trace
+
+
+crypto/x509v3/v3_alt.c:145:3: Call
+143.   
+144.   		case GEN_RID:
+145.   		i2t_ASN1_OBJECT(oline, 256, gen->d.rid);
+         ^
+146.   		X509V3_add_value("Registered ID",oline, &ret);
+147.   		break;
+
+crypto/asn1/a_object.c:174:1: Parameter `buf_len`
+  172.   	}
+  173.   
+  174. > int i2t_ASN1_OBJECT(char *buf, int buf_len, ASN1_OBJECT *a)
+  175.   {
+  176.   	return OBJ_obj2txt(buf, buf_len, a, 0);
+
+crypto/asn1/a_object.c:176:9: Call
+  174.   int i2t_ASN1_OBJECT(char *buf, int buf_len, ASN1_OBJECT *a)
+  175.   {
+  176.   	return OBJ_obj2txt(buf, buf_len, a, 0);
+                 ^
+  177.   }
+  178.   
+
+crypto/objects/obj_dat.c:433:1: <Offset trace>
+431.   	}
+432.   
+433. > int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
+434.   {
+435.   	int i,idx=0,n=0,len,nid;
+
+crypto/objects/obj_dat.c:433:1: Parameter `buf_len`
+    431.   	}
+    432.   
+    433. > int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
+    434.   {
+    435.   	int i,idx=0,n=0,len,nid;
+
+crypto/objects/obj_dat.c:433:1: <Length trace>
+431.   	}
+432.   
+433. > int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
+434.   {
+435.   	int i,idx=0,n=0,len,nid;
+
+crypto/objects/obj_dat.c:433:1: Array declaration
+    431.   	}
+    432.   
+    433. > int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
+    434.   {
+    435.   	int i,idx=0,n=0,len,nid;
+
+crypto/objects/obj_dat.c:467:3: Array access: Offset added: 256 Size: 32 by call to `i2t_ASN1_OBJECT` 
+    465.   		sprintf(tbuf,"%d.%lu",i,l);
+    466.   		i=strlen(tbuf);
+    467.   		strncpy(buf,tbuf,buf_len);
+             ^
+    468.   		buf_len-=i;
+    469.   		buf+=i;

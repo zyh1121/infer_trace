@@ -1,0 +1,139 @@
+#8917
+libavformat/rtmpproto.c:385: error: Null Dereference
+  pointer `sha` last assigned on line 380 could be null and is dereferenced by call to `av_sha_init()` at line 385, column 9.
+
+libavformat/rtmpproto.c:373:1: start of procedure rtmp_calc_digest()
+371.  * @param dst    buffer where calculated digest will be stored (32 bytes)
+372.  */
+373. static void rtmp_calc_digest(const uint8_t *src, int len, int gap,
+     ^
+374.                              const uint8_t *key, int keylen, uint8_t *dst)
+375. {
+
+libavformat/rtmpproto.c:377:5: 
+375. {
+376.     struct AVSHA *sha;
+377.     uint8_t hmac_buf[64+32] = {0};
+         ^
+378.     int i;
+379. 
+
+libavformat/rtmpproto.c:380:5: 
+378.     int i;
+379. 
+380.     sha = av_mallocz(av_sha_size);
+         ^
+381. 
+382.     if (keylen < 64) {
+
+libavutil/mem.c:157:1: start of procedure av_mallocz()
+  155. }
+  156. 
+  157. void *av_mallocz(unsigned int size)
+       ^
+  158. {
+  159.     void *ptr = av_malloc(size);
+
+libavutil/mem.c:159:5: 
+  157. void *av_mallocz(unsigned int size)
+  158. {
+  159.     void *ptr = av_malloc(size);
+           ^
+  160.     if (ptr)
+  161.         memset(ptr, 0, size);
+
+libavutil/mem.c:64:1: start of procedure av_malloc()
+    62.    linker will do it automatically. */
+    63. 
+    64. void *av_malloc(unsigned int size)
+        ^
+    65. {
+    66.     void *ptr = NULL;
+
+libavutil/mem.c:66:5: 
+    64. void *av_malloc(unsigned int size)
+    65. {
+    66.     void *ptr = NULL;
+            ^
+    67. #if CONFIG_MEMALIGN_HACK
+    68.     long diff;
+
+libavutil/mem.c:72:8: Taking true branch
+    70. 
+    71.     /* let's disallow possible ambiguous cases */
+    72.     if(size > (INT_MAX-16) )
+               ^
+    73.         return NULL;
+    74. 
+
+libavutil/mem.c:73:9: 
+    71.     /* let's disallow possible ambiguous cases */
+    72.     if(size > (INT_MAX-16) )
+    73.         return NULL;
+                ^
+    74. 
+    75. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:117:1: return from a call to av_malloc
+    115. #endif
+    116.     return ptr;
+    117. }
+         ^
+    118. 
+    119. void *av_realloc(void *ptr, unsigned int size)
+
+libavutil/mem.c:160:9: Taking false branch
+  158. {
+  159.     void *ptr = av_malloc(size);
+  160.     if (ptr)
+               ^
+  161.         memset(ptr, 0, size);
+  162.     return ptr;
+
+libavutil/mem.c:162:5: 
+  160.     if (ptr)
+  161.         memset(ptr, 0, size);
+  162.     return ptr;
+           ^
+  163. }
+  164. 
+
+libavutil/mem.c:163:1: return from a call to av_mallocz
+  161.         memset(ptr, 0, size);
+  162.     return ptr;
+  163. }
+       ^
+  164. 
+  165. char *av_strdup(const char *s)
+
+libavformat/rtmpproto.c:382:9: Taking false branch
+380.     sha = av_mallocz(av_sha_size);
+381. 
+382.     if (keylen < 64) {
+             ^
+383.         memcpy(hmac_buf, key, keylen);
+384.     } else {
+
+libavformat/rtmpproto.c:385:9: 
+383.         memcpy(hmac_buf, key, keylen);
+384.     } else {
+385.         av_sha_init(sha, 256);
+             ^
+386.         av_sha_update(sha,key, keylen);
+387.         av_sha_final(sha, hmac_buf);
+
+libavutil/sha.c:245:1: start of procedure av_sha_init()
+  243. 
+  244. 
+  245. int av_sha_init(AVSHA* ctx, int bits)
+       ^
+  246. {
+  247.     ctx->digest_len = bits >> 5;
+
+libavutil/sha.c:247:5: 
+  245. int av_sha_init(AVSHA* ctx, int bits)
+  246. {
+  247.     ctx->digest_len = bits >> 5;
+           ^
+  248.     switch (bits) {
+  249.     case 160: // SHA-1

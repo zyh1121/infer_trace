@@ -1,0 +1,685 @@
+test/bntest.c:444: error: MEMORY_LEAK
+  memory dynamically allocated by call to `BN_new()` at line 410, column 9 is not reachable after line 444, column 5.
+Showing all 95 steps of the trace
+
+
+test/bntest.c:404:1: start of procedure test_sub()
+402.   }
+403.   
+404. > int test_sub(BIO *bp)
+405.   {
+406.       BIGNUM *a, *b, *c;
+
+test/bntest.c:409:5: 
+407.       int i;
+408.   
+409. >     a = BN_new();
+410.       b = BN_new();
+411.       c = BN_new();
+
+crypto/bn/bn_lib.c:277:1: start of procedure BN_new()
+  275.   }
+  276.   
+  277. > BIGNUM *BN_new(void)
+  278.   {
+  279.       BIGNUM *ret;
+
+crypto/bn/bn_lib.c:281:9: 
+  279.       BIGNUM *ret;
+  280.   
+  281. >     if ((ret = OPENSSL_zalloc(sizeof(*ret))) == NULL) {
+  282.           BNerr(BN_F_BN_NEW, ERR_R_MALLOC_FAILURE);
+  283.           return (NULL);
+
+crypto/mem.c:157:1: start of procedure CRYPTO_zalloc()
+    155.   }
+    156.   
+    157. > void *CRYPTO_zalloc(size_t num, const char *file, int line)
+    158.   {
+    159.       void *ret = CRYPTO_malloc(num, file, line);
+
+crypto/mem.c:159:5: 
+    157.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+    158.   {
+    159. >     void *ret = CRYPTO_malloc(num, file, line);
+    160.   
+    161.       if (ret != NULL)
+
+crypto/mem.c:120:1: start of procedure CRYPTO_malloc()
+      118.   }
+      119.   
+      120. > void *CRYPTO_malloc(size_t num, const char *file, int line)
+      121.   {
+      122.       void *ret = NULL;
+
+crypto/mem.c:122:5: 
+      120.   void *CRYPTO_malloc(size_t num, const char *file, int line)
+      121.   {
+      122. >     void *ret = NULL;
+      123.   
+      124.       if (num <= 0)
+
+crypto/mem.c:124:9: Taking false branch
+      122.       void *ret = NULL;
+      123.   
+      124.       if (num <= 0)
+                     ^
+      125.           return NULL;
+      126.   
+
+crypto/mem.c:127:5: 
+      125.           return NULL;
+      126.   
+      127. >     allow_customize = 0;
+      128.   #ifdef CRYPTO_MDEBUG
+      129.       if (call_malloc_debug) {
+
+crypto/mem.c:137:5: 
+      135.       }
+      136.   #else
+      137. >     (void)file;
+      138.       (void)line;
+      139.       ret = malloc(num);
+
+crypto/mem.c:138:5: 
+      136.   #else
+      137.       (void)file;
+      138. >     (void)line;
+      139.       ret = malloc(num);
+      140.   #endif
+
+crypto/mem.c:139:5: 
+      137.       (void)file;
+      138.       (void)line;
+      139. >     ret = malloc(num);
+      140.   #endif
+      141.   
+
+crypto/mem.c:154:5: 
+      152.   #endif
+      153.   
+      154. >     return ret;
+      155.   }
+      156.   
+
+crypto/mem.c:155:1: return from a call to CRYPTO_malloc
+      153.   
+      154.       return ret;
+      155. > }
+      156.   
+      157.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+
+crypto/mem.c:161:9: Taking true branch
+    159.       void *ret = CRYPTO_malloc(num, file, line);
+    160.   
+    161.       if (ret != NULL)
+                   ^
+    162.           memset(ret, 0, num);
+    163.       return ret;
+
+crypto/mem.c:162:9: 
+    160.   
+    161.       if (ret != NULL)
+    162. >         memset(ret, 0, num);
+    163.       return ret;
+    164.   }
+
+crypto/mem.c:163:5: 
+    161.       if (ret != NULL)
+    162.           memset(ret, 0, num);
+    163. >     return ret;
+    164.   }
+    165.   
+
+crypto/mem.c:164:1: return from a call to CRYPTO_zalloc
+    162.           memset(ret, 0, num);
+    163.       return ret;
+    164. > }
+    165.   
+    166.   void *CRYPTO_realloc(void *str, size_t num, const char *file, int line)
+
+crypto/bn/bn_lib.c:281:9: Taking false branch
+  279.       BIGNUM *ret;
+  280.   
+  281.       if ((ret = OPENSSL_zalloc(sizeof(*ret))) == NULL) {
+                 ^
+  282.           BNerr(BN_F_BN_NEW, ERR_R_MALLOC_FAILURE);
+  283.           return (NULL);
+
+crypto/bn/bn_lib.c:285:5: 
+  283.           return (NULL);
+  284.       }
+  285. >     ret->flags = BN_FLG_MALLOCED;
+  286.       bn_check_top(ret);
+  287.       return (ret);
+
+crypto/bn/bn_lib.c:287:5: 
+  285.       ret->flags = BN_FLG_MALLOCED;
+  286.       bn_check_top(ret);
+  287. >     return (ret);
+  288.   }
+  289.   
+
+crypto/bn/bn_lib.c:288:1: return from a call to BN_new
+  286.       bn_check_top(ret);
+  287.       return (ret);
+  288. > }
+  289.   
+  290.    BIGNUM *BN_secure_new(void)
+
+test/bntest.c:410:5: 
+408.   
+409.       a = BN_new();
+410. >     b = BN_new();
+411.       c = BN_new();
+412.   
+
+crypto/bn/bn_lib.c:277:1: start of procedure BN_new()
+  275.   }
+  276.   
+  277. > BIGNUM *BN_new(void)
+  278.   {
+  279.       BIGNUM *ret;
+
+crypto/bn/bn_lib.c:281:9: 
+  279.       BIGNUM *ret;
+  280.   
+  281. >     if ((ret = OPENSSL_zalloc(sizeof(*ret))) == NULL) {
+  282.           BNerr(BN_F_BN_NEW, ERR_R_MALLOC_FAILURE);
+  283.           return (NULL);
+
+crypto/mem.c:157:1: start of procedure CRYPTO_zalloc()
+    155.   }
+    156.   
+    157. > void *CRYPTO_zalloc(size_t num, const char *file, int line)
+    158.   {
+    159.       void *ret = CRYPTO_malloc(num, file, line);
+
+crypto/mem.c:159:5: 
+    157.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+    158.   {
+    159. >     void *ret = CRYPTO_malloc(num, file, line);
+    160.   
+    161.       if (ret != NULL)
+
+crypto/mem.c:120:1: start of procedure CRYPTO_malloc()
+      118.   }
+      119.   
+      120. > void *CRYPTO_malloc(size_t num, const char *file, int line)
+      121.   {
+      122.       void *ret = NULL;
+
+crypto/mem.c:122:5: 
+      120.   void *CRYPTO_malloc(size_t num, const char *file, int line)
+      121.   {
+      122. >     void *ret = NULL;
+      123.   
+      124.       if (num <= 0)
+
+crypto/mem.c:124:9: Taking false branch
+      122.       void *ret = NULL;
+      123.   
+      124.       if (num <= 0)
+                     ^
+      125.           return NULL;
+      126.   
+
+crypto/mem.c:127:5: 
+      125.           return NULL;
+      126.   
+      127. >     allow_customize = 0;
+      128.   #ifdef CRYPTO_MDEBUG
+      129.       if (call_malloc_debug) {
+
+crypto/mem.c:137:5: 
+      135.       }
+      136.   #else
+      137. >     (void)file;
+      138.       (void)line;
+      139.       ret = malloc(num);
+
+crypto/mem.c:138:5: 
+      136.   #else
+      137.       (void)file;
+      138. >     (void)line;
+      139.       ret = malloc(num);
+      140.   #endif
+
+crypto/mem.c:139:5: 
+      137.       (void)file;
+      138.       (void)line;
+      139. >     ret = malloc(num);
+      140.   #endif
+      141.   
+
+crypto/mem.c:154:5: 
+      152.   #endif
+      153.   
+      154. >     return ret;
+      155.   }
+      156.   
+
+crypto/mem.c:155:1: return from a call to CRYPTO_malloc
+      153.   
+      154.       return ret;
+      155. > }
+      156.   
+      157.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+
+crypto/mem.c:161:9: Taking true branch
+    159.       void *ret = CRYPTO_malloc(num, file, line);
+    160.   
+    161.       if (ret != NULL)
+                   ^
+    162.           memset(ret, 0, num);
+    163.       return ret;
+
+crypto/mem.c:162:9: 
+    160.   
+    161.       if (ret != NULL)
+    162. >         memset(ret, 0, num);
+    163.       return ret;
+    164.   }
+
+crypto/mem.c:163:5: 
+    161.       if (ret != NULL)
+    162.           memset(ret, 0, num);
+    163. >     return ret;
+    164.   }
+    165.   
+
+crypto/mem.c:164:1: return from a call to CRYPTO_zalloc
+    162.           memset(ret, 0, num);
+    163.       return ret;
+    164. > }
+    165.   
+    166.   void *CRYPTO_realloc(void *str, size_t num, const char *file, int line)
+
+crypto/bn/bn_lib.c:281:9: Taking false branch
+  279.       BIGNUM *ret;
+  280.   
+  281.       if ((ret = OPENSSL_zalloc(sizeof(*ret))) == NULL) {
+                 ^
+  282.           BNerr(BN_F_BN_NEW, ERR_R_MALLOC_FAILURE);
+  283.           return (NULL);
+
+crypto/bn/bn_lib.c:285:5: 
+  283.           return (NULL);
+  284.       }
+  285. >     ret->flags = BN_FLG_MALLOCED;
+  286.       bn_check_top(ret);
+  287.       return (ret);
+
+crypto/bn/bn_lib.c:287:5: 
+  285.       ret->flags = BN_FLG_MALLOCED;
+  286.       bn_check_top(ret);
+  287. >     return (ret);
+  288.   }
+  289.   
+
+crypto/bn/bn_lib.c:288:1: return from a call to BN_new
+  286.       bn_check_top(ret);
+  287.       return (ret);
+  288. > }
+  289.   
+  290.    BIGNUM *BN_secure_new(void)
+
+test/bntest.c:411:5: 
+409.       a = BN_new();
+410.       b = BN_new();
+411. >     c = BN_new();
+412.   
+413.       for (i = 0; i < num0 + num1; i++) {
+
+crypto/bn/bn_lib.c:277:1: start of procedure BN_new()
+  275.   }
+  276.   
+  277. > BIGNUM *BN_new(void)
+  278.   {
+  279.       BIGNUM *ret;
+
+crypto/bn/bn_lib.c:281:9: 
+  279.       BIGNUM *ret;
+  280.   
+  281. >     if ((ret = OPENSSL_zalloc(sizeof(*ret))) == NULL) {
+  282.           BNerr(BN_F_BN_NEW, ERR_R_MALLOC_FAILURE);
+  283.           return (NULL);
+
+crypto/mem.c:157:1: start of procedure CRYPTO_zalloc()
+    155.   }
+    156.   
+    157. > void *CRYPTO_zalloc(size_t num, const char *file, int line)
+    158.   {
+    159.       void *ret = CRYPTO_malloc(num, file, line);
+
+crypto/mem.c:159:5: 
+    157.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+    158.   {
+    159. >     void *ret = CRYPTO_malloc(num, file, line);
+    160.   
+    161.       if (ret != NULL)
+
+crypto/mem.c:120:1: start of procedure CRYPTO_malloc()
+      118.   }
+      119.   
+      120. > void *CRYPTO_malloc(size_t num, const char *file, int line)
+      121.   {
+      122.       void *ret = NULL;
+
+crypto/mem.c:122:5: 
+      120.   void *CRYPTO_malloc(size_t num, const char *file, int line)
+      121.   {
+      122. >     void *ret = NULL;
+      123.   
+      124.       if (num <= 0)
+
+crypto/mem.c:124:9: Taking false branch
+      122.       void *ret = NULL;
+      123.   
+      124.       if (num <= 0)
+                     ^
+      125.           return NULL;
+      126.   
+
+crypto/mem.c:127:5: 
+      125.           return NULL;
+      126.   
+      127. >     allow_customize = 0;
+      128.   #ifdef CRYPTO_MDEBUG
+      129.       if (call_malloc_debug) {
+
+crypto/mem.c:137:5: 
+      135.       }
+      136.   #else
+      137. >     (void)file;
+      138.       (void)line;
+      139.       ret = malloc(num);
+
+crypto/mem.c:138:5: 
+      136.   #else
+      137.       (void)file;
+      138. >     (void)line;
+      139.       ret = malloc(num);
+      140.   #endif
+
+crypto/mem.c:139:5: 
+      137.       (void)file;
+      138.       (void)line;
+      139. >     ret = malloc(num);
+      140.   #endif
+      141.   
+
+crypto/mem.c:154:5: 
+      152.   #endif
+      153.   
+      154. >     return ret;
+      155.   }
+      156.   
+
+crypto/mem.c:155:1: return from a call to CRYPTO_malloc
+      153.   
+      154.       return ret;
+      155. > }
+      156.   
+      157.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+
+crypto/mem.c:161:9: Taking true branch
+    159.       void *ret = CRYPTO_malloc(num, file, line);
+    160.   
+    161.       if (ret != NULL)
+                   ^
+    162.           memset(ret, 0, num);
+    163.       return ret;
+
+crypto/mem.c:162:9: 
+    160.   
+    161.       if (ret != NULL)
+    162. >         memset(ret, 0, num);
+    163.       return ret;
+    164.   }
+
+crypto/mem.c:163:5: 
+    161.       if (ret != NULL)
+    162.           memset(ret, 0, num);
+    163. >     return ret;
+    164.   }
+    165.   
+
+crypto/mem.c:164:1: return from a call to CRYPTO_zalloc
+    162.           memset(ret, 0, num);
+    163.       return ret;
+    164. > }
+    165.   
+    166.   void *CRYPTO_realloc(void *str, size_t num, const char *file, int line)
+
+crypto/bn/bn_lib.c:281:9: Taking false branch
+  279.       BIGNUM *ret;
+  280.   
+  281.       if ((ret = OPENSSL_zalloc(sizeof(*ret))) == NULL) {
+                 ^
+  282.           BNerr(BN_F_BN_NEW, ERR_R_MALLOC_FAILURE);
+  283.           return (NULL);
+
+crypto/bn/bn_lib.c:285:5: 
+  283.           return (NULL);
+  284.       }
+  285. >     ret->flags = BN_FLG_MALLOCED;
+  286.       bn_check_top(ret);
+  287.       return (ret);
+
+crypto/bn/bn_lib.c:287:5: 
+  285.       ret->flags = BN_FLG_MALLOCED;
+  286.       bn_check_top(ret);
+  287. >     return (ret);
+  288.   }
+  289.   
+
+crypto/bn/bn_lib.c:288:1: return from a call to BN_new
+  286.       bn_check_top(ret);
+  287.       return (ret);
+  288. > }
+  289.   
+  290.    BIGNUM *BN_secure_new(void)
+
+test/bntest.c:413:10: 
+411.       c = BN_new();
+412.   
+413. >     for (i = 0; i < num0 + num1; i++) {
+414.           if (i < num1) {
+415.               BN_bntest_rand(a, 512, 0, 0);
+
+test/bntest.c:413:17: Loop condition is false. Leaving loop
+411.       c = BN_new();
+412.   
+413.       for (i = 0; i < num0 + num1; i++) {
+                       ^
+414.           if (i < num1) {
+415.               BN_bntest_rand(a, 512, 0, 0);
+
+test/bntest.c:443:5: 
+441.           }
+442.       }
+443. >     BN_free(a);
+444.       BN_free(b);
+445.       BN_free(c);
+
+crypto/bn/bn_lib.c:252:1: start of procedure BN_free()
+  250.   }
+  251.   
+  252. > void BN_free(BIGNUM *a)
+  253.   {
+  254.       if (a == NULL)
+
+crypto/bn/bn_lib.c:254:9: Taking false branch
+  252.   void BN_free(BIGNUM *a)
+  253.   {
+  254.       if (a == NULL)
+                 ^
+  255.           return;
+  256.       bn_check_top(a);
+
+crypto/bn/bn_lib.c:257:10: 
+  255.           return;
+  256.       bn_check_top(a);
+  257. >     if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+  258.           bn_free_d(a);
+  259.       if (a->flags & BN_FLG_MALLOCED)
+
+crypto/bn/bn_lib.c:965:1: start of procedure BN_get_flags()
+    963.   }
+    964.   
+    965. > int BN_get_flags(const BIGNUM *b, int n)
+    966.   {
+    967.       return b->flags & n;
+
+crypto/bn/bn_lib.c:967:5: 
+    965.   int BN_get_flags(const BIGNUM *b, int n)
+    966.   {
+    967. >     return b->flags & n;
+    968.   }
+    969.   
+
+crypto/bn/bn_lib.c:968:1: return from a call to BN_get_flags
+    966.   {
+    967.       return b->flags & n;
+    968. > }
+    969.   
+    970.   /* Populate a BN_GENCB structure with an "old"-style callback */
+
+crypto/bn/bn_lib.c:257:10: Taking false branch
+  255.           return;
+  256.       bn_check_top(a);
+  257.       if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+                  ^
+  258.           bn_free_d(a);
+  259.       if (a->flags & BN_FLG_MALLOCED)
+
+crypto/bn/bn_lib.c:259:9: Taking false branch
+  257.       if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+  258.           bn_free_d(a);
+  259.       if (a->flags & BN_FLG_MALLOCED)
+                 ^
+  260.           OPENSSL_free(a);
+  261.       else {
+
+crypto/bn/bn_lib.c:263:9: 
+  261.       else {
+  262.   #if OPENSSL_API_COMPAT < 0x00908000L
+  263. >         a->flags |= BN_FLG_FREE;
+  264.   #endif
+  265.           a->d = NULL;
+
+crypto/bn/bn_lib.c:265:9: 
+  263.           a->flags |= BN_FLG_FREE;
+  264.   #endif
+  265. >         a->d = NULL;
+  266.       }
+  267.   }
+
+crypto/bn/bn_lib.c:259:5: 
+  257.       if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+  258.           bn_free_d(a);
+  259. >     if (a->flags & BN_FLG_MALLOCED)
+  260.           OPENSSL_free(a);
+  261.       else {
+
+crypto/bn/bn_lib.c:267:1: return from a call to BN_free
+  265.           a->d = NULL;
+  266.       }
+  267. > }
+  268.   
+  269.   void bn_init(BIGNUM *a)
+
+test/bntest.c:444:5: 
+442.       }
+443.       BN_free(a);
+444. >     BN_free(b);
+445.       BN_free(c);
+446.       return (1);
+
+crypto/bn/bn_lib.c:252:1: start of procedure BN_free()
+  250.   }
+  251.   
+  252. > void BN_free(BIGNUM *a)
+  253.   {
+  254.       if (a == NULL)
+
+crypto/bn/bn_lib.c:254:9: Taking false branch
+  252.   void BN_free(BIGNUM *a)
+  253.   {
+  254.       if (a == NULL)
+                 ^
+  255.           return;
+  256.       bn_check_top(a);
+
+crypto/bn/bn_lib.c:257:10: 
+  255.           return;
+  256.       bn_check_top(a);
+  257. >     if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+  258.           bn_free_d(a);
+  259.       if (a->flags & BN_FLG_MALLOCED)
+
+crypto/bn/bn_lib.c:965:1: start of procedure BN_get_flags()
+    963.   }
+    964.   
+    965. > int BN_get_flags(const BIGNUM *b, int n)
+    966.   {
+    967.       return b->flags & n;
+
+crypto/bn/bn_lib.c:967:5: 
+    965.   int BN_get_flags(const BIGNUM *b, int n)
+    966.   {
+    967. >     return b->flags & n;
+    968.   }
+    969.   
+
+crypto/bn/bn_lib.c:968:1: return from a call to BN_get_flags
+    966.   {
+    967.       return b->flags & n;
+    968. > }
+    969.   
+    970.   /* Populate a BN_GENCB structure with an "old"-style callback */
+
+crypto/bn/bn_lib.c:257:10: Taking false branch
+  255.           return;
+  256.       bn_check_top(a);
+  257.       if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+                  ^
+  258.           bn_free_d(a);
+  259.       if (a->flags & BN_FLG_MALLOCED)
+
+crypto/bn/bn_lib.c:259:9: Taking false branch
+  257.       if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+  258.           bn_free_d(a);
+  259.       if (a->flags & BN_FLG_MALLOCED)
+                 ^
+  260.           OPENSSL_free(a);
+  261.       else {
+
+crypto/bn/bn_lib.c:263:9: 
+  261.       else {
+  262.   #if OPENSSL_API_COMPAT < 0x00908000L
+  263. >         a->flags |= BN_FLG_FREE;
+  264.   #endif
+  265.           a->d = NULL;
+
+crypto/bn/bn_lib.c:265:9: 
+  263.           a->flags |= BN_FLG_FREE;
+  264.   #endif
+  265. >         a->d = NULL;
+  266.       }
+  267.   }
+
+crypto/bn/bn_lib.c:259:5: 
+  257.       if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+  258.           bn_free_d(a);
+  259. >     if (a->flags & BN_FLG_MALLOCED)
+  260.           OPENSSL_free(a);
+  261.       else {
+
+crypto/bn/bn_lib.c:267:1: return from a call to BN_free
+  265.           a->d = NULL;
+  266.       }
+  267. > }
+  268.   
+  269.   void bn_init(BIGNUM *a)

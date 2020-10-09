@@ -1,0 +1,387 @@
+ssl/statem/statem_lib.c:292: error: NULL_DEREFERENCE
+  pointer `pkey` last assigned on line 291 could be null and is dereferenced by call to `EVP_PKEY_id()` at line 292, column 14.
+Showing all 53 steps of the trace
+
+
+ssl/statem/statem_lib.c:267:1: start of procedure tls_process_cert_verify()
+265.   }
+266.   
+267. > MSG_PROCESS_RETURN tls_process_cert_verify(SSL *s, PACKET *pkt)
+268.   {
+269.       EVP_PKEY *pkey = NULL;
+
+ssl/statem/statem_lib.c:269:5: 
+267.   MSG_PROCESS_RETURN tls_process_cert_verify(SSL *s, PACKET *pkt)
+268.   {
+269. >     EVP_PKEY *pkey = NULL;
+270.       const unsigned char *data;
+271.   #ifndef OPENSSL_NO_GOST
+
+ssl/statem/statem_lib.c:272:5: 
+270.       const unsigned char *data;
+271.   #ifndef OPENSSL_NO_GOST
+272. >     unsigned char *gost_data = NULL;
+273.   #endif
+274.       int al = SSL_AD_INTERNAL_ERROR, ret = MSG_PROCESS_ERROR;
+
+ssl/statem/statem_lib.c:274:5: 
+272.       unsigned char *gost_data = NULL;
+273.   #endif
+274. >     int al = SSL_AD_INTERNAL_ERROR, ret = MSG_PROCESS_ERROR;
+275.       int type = 0, j, pktype;
+276.       unsigned int len;
+
+ssl/statem/statem_lib.c:275:5: 
+273.   #endif
+274.       int al = SSL_AD_INTERNAL_ERROR, ret = MSG_PROCESS_ERROR;
+275. >     int type = 0, j, pktype;
+276.       unsigned int len;
+277.       X509 *peer;
+
+ssl/statem/statem_lib.c:278:5: 
+276.       unsigned int len;
+277.       X509 *peer;
+278. >     const EVP_MD *md = NULL;
+279.       size_t hdatalen = 0;
+280.       void *hdata;
+
+ssl/statem/statem_lib.c:279:5: 
+277.       X509 *peer;
+278.       const EVP_MD *md = NULL;
+279. >     size_t hdatalen = 0;
+280.       void *hdata;
+281.       unsigned char tls13tbs[TLS13_TBS_PREAMBLE_SIZE + EVP_MAX_MD_SIZE];
+
+ssl/statem/statem_lib.c:282:5: 
+280.       void *hdata;
+281.       unsigned char tls13tbs[TLS13_TBS_PREAMBLE_SIZE + EVP_MAX_MD_SIZE];
+282. >     EVP_MD_CTX *mctx = EVP_MD_CTX_new();
+283.       EVP_PKEY_CTX *pctx = NULL;
+284.   
+
+crypto/evp/digest.c:44:1: start of procedure EVP_MD_CTX_new()
+  42.   }
+  43.   
+  44. > EVP_MD_CTX *EVP_MD_CTX_new(void)
+  45.   {
+  46.       return OPENSSL_zalloc(sizeof(EVP_MD_CTX));
+
+crypto/evp/digest.c:46:5: 
+  44.   EVP_MD_CTX *EVP_MD_CTX_new(void)
+  45.   {
+  46. >     return OPENSSL_zalloc(sizeof(EVP_MD_CTX));
+  47.   }
+  48.   
+
+crypto/mem.c:186:1: start of procedure CRYPTO_zalloc()
+    184.   }
+    185.   
+    186. > void *CRYPTO_zalloc(size_t num, const char *file, int line)
+    187.   {
+    188.       void *ret = CRYPTO_malloc(num, file, line);
+
+crypto/mem.c:188:5: 
+    186.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+    187.   {
+    188. >     void *ret = CRYPTO_malloc(num, file, line);
+    189.   
+    190.       FAILTEST();
+
+crypto/mem.c:158:1: start of procedure CRYPTO_malloc()
+      156.   #endif
+      157.   
+      158. > void *CRYPTO_malloc(size_t num, const char *file, int line)
+      159.   {
+      160.       void *ret = NULL;
+
+crypto/mem.c:160:5: 
+      158.   void *CRYPTO_malloc(size_t num, const char *file, int line)
+      159.   {
+      160. >     void *ret = NULL;
+      161.   
+      162.       if (malloc_impl != NULL && malloc_impl != CRYPTO_malloc)
+
+crypto/mem.c:162:9: Taking false branch
+      160.       void *ret = NULL;
+      161.   
+      162.       if (malloc_impl != NULL && malloc_impl != CRYPTO_malloc)
+                     ^
+      163.           return malloc_impl(num, file, line);
+      164.   
+
+crypto/mem.c:165:9: Taking false branch
+      163.           return malloc_impl(num, file, line);
+      164.   
+      165.       if (num <= 0)
+                     ^
+      166.           return NULL;
+      167.   
+
+crypto/mem.c:169:5: 
+      167.   
+      168.       FAILTEST();
+      169. >     allow_customize = 0;
+      170.   #ifndef OPENSSL_NO_CRYPTO_MDEBUG
+      171.       if (call_malloc_debug) {
+
+crypto/mem.c:179:5: 
+      177.       }
+      178.   #else
+      179. >     osslargused(file); osslargused(line);
+      180.       ret = malloc(num);
+      181.   #endif
+
+crypto/mem.c:179:24: 
+      177.       }
+      178.   #else
+      179. >     osslargused(file); osslargused(line);
+      180.       ret = malloc(num);
+      181.   #endif
+
+crypto/mem.c:180:5: 
+      178.   #else
+      179.       osslargused(file); osslargused(line);
+      180. >     ret = malloc(num);
+      181.   #endif
+      182.   
+
+crypto/mem.c:183:5: 
+      181.   #endif
+      182.   
+      183. >     return ret;
+      184.   }
+      185.   
+
+crypto/mem.c:184:1: return from a call to CRYPTO_malloc
+      182.   
+      183.       return ret;
+      184. > }
+      185.   
+      186.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+
+crypto/mem.c:191:9: Taking true branch
+    189.   
+    190.       FAILTEST();
+    191.       if (ret != NULL)
+                   ^
+    192.           memset(ret, 0, num);
+    193.       return ret;
+
+crypto/mem.c:192:9: 
+    190.       FAILTEST();
+    191.       if (ret != NULL)
+    192. >         memset(ret, 0, num);
+    193.       return ret;
+    194.   }
+
+crypto/mem.c:193:5: 
+    191.       if (ret != NULL)
+    192.           memset(ret, 0, num);
+    193. >     return ret;
+    194.   }
+    195.   
+
+crypto/mem.c:194:1: return from a call to CRYPTO_zalloc
+    192.           memset(ret, 0, num);
+    193.       return ret;
+    194. > }
+    195.   
+    196.   void *CRYPTO_realloc(void *str, size_t num, const char *file, int line)
+
+crypto/evp/digest.c:47:1: return from a call to EVP_MD_CTX_new
+  45.   {
+  46.       return OPENSSL_zalloc(sizeof(EVP_MD_CTX));
+  47. > }
+  48.   
+  49.   void EVP_MD_CTX_free(EVP_MD_CTX *ctx)
+
+ssl/statem/statem_lib.c:283:5: 
+281.       unsigned char tls13tbs[TLS13_TBS_PREAMBLE_SIZE + EVP_MAX_MD_SIZE];
+282.       EVP_MD_CTX *mctx = EVP_MD_CTX_new();
+283. >     EVP_PKEY_CTX *pctx = NULL;
+284.   
+285.       if (mctx == NULL) {
+
+ssl/statem/statem_lib.c:285:9: Taking false branch
+283.       EVP_PKEY_CTX *pctx = NULL;
+284.   
+285.       if (mctx == NULL) {
+               ^
+286.           SSLerr(SSL_F_TLS_PROCESS_CERT_VERIFY, ERR_R_MALLOC_FAILURE);
+287.           goto f_err;
+
+ssl/statem/statem_lib.c:290:5: 
+288.       }
+289.   
+290. >     peer = s->session->peer;
+291.       pkey = X509_get0_pubkey(peer);
+292.       pktype = EVP_PKEY_id(pkey);
+
+ssl/statem/statem_lib.c:291:5: 
+289.   
+290.       peer = s->session->peer;
+291. >     pkey = X509_get0_pubkey(peer);
+292.       pktype = EVP_PKEY_id(pkey);
+293.       type = X509_certificate_type(peer, pkey);
+
+crypto/x509/x509_cmp.c:265:1: start of procedure X509_get0_pubkey()
+  263.   }
+  264.   
+  265. > EVP_PKEY *X509_get0_pubkey(const X509 *x)
+  266.   {
+  267.       if (x == NULL)
+
+crypto/x509/x509_cmp.c:267:9: Taking false branch
+  265.   EVP_PKEY *X509_get0_pubkey(const X509 *x)
+  266.   {
+  267.       if (x == NULL)
+                 ^
+  268.           return NULL;
+  269.       return X509_PUBKEY_get0(x->cert_info.key);
+
+crypto/x509/x509_cmp.c:269:5: 
+  267.       if (x == NULL)
+  268.           return NULL;
+  269. >     return X509_PUBKEY_get0(x->cert_info.key);
+  270.   }
+  271.   
+
+crypto/x509/x_pubkey.c:140:1: start of procedure X509_PUBKEY_get0()
+    138.   }
+    139.   
+    140. > EVP_PKEY *X509_PUBKEY_get0(X509_PUBKEY *key)
+    141.   {
+    142.       EVP_PKEY *ret = NULL;
+
+crypto/x509/x_pubkey.c:142:5: 
+    140.   EVP_PKEY *X509_PUBKEY_get0(X509_PUBKEY *key)
+    141.   {
+    142. >     EVP_PKEY *ret = NULL;
+    143.   
+    144.       if (key == NULL || key->public_key == NULL)
+
+crypto/x509/x_pubkey.c:144:9: Taking false branch
+    142.       EVP_PKEY *ret = NULL;
+    143.   
+    144.       if (key == NULL || key->public_key == NULL)
+                   ^
+    145.           return NULL;
+    146.   
+
+crypto/x509/x_pubkey.c:144:24: Taking false branch
+    142.       EVP_PKEY *ret = NULL;
+    143.   
+    144.       if (key == NULL || key->public_key == NULL)
+                                  ^
+    145.           return NULL;
+    146.   
+
+crypto/x509/x_pubkey.c:147:9: Taking false branch
+    145.           return NULL;
+    146.   
+    147.       if (key->pkey != NULL)
+                   ^
+    148.           return key->pkey;
+    149.   
+
+crypto/x509/x_pubkey.c:158:5: 
+    156.        * in the queue.
+    157.        */
+    158. >     x509_pubkey_decode(&ret, key);
+    159.       /* If decode doesn't fail something bad happened */
+    160.       if (ret != NULL) {
+
+crypto/x509/x_pubkey.c:103:1: start of procedure x509_pubkey_decode()
+      101.   
+      102.   
+      103. > static int x509_pubkey_decode(EVP_PKEY **ppkey, X509_PUBKEY *key)
+      104.       {
+      105.       EVP_PKEY *pkey = EVP_PKEY_new();
+
+crypto/x509/x_pubkey.c:105:5: Skipping EVP_PKEY_new(): empty list of specs
+      103.   static int x509_pubkey_decode(EVP_PKEY **ppkey, X509_PUBKEY *key)
+      104.       {
+      105.       EVP_PKEY *pkey = EVP_PKEY_new();
+                 ^
+      106.   
+      107.       if (pkey == NULL) {
+
+crypto/x509/x_pubkey.c:107:9: Taking true branch
+      105.       EVP_PKEY *pkey = EVP_PKEY_new();
+      106.   
+      107.       if (pkey == NULL) {
+                     ^
+      108.           X509err(X509_F_X509_PUBKEY_DECODE, ERR_R_MALLOC_FAILURE);
+      109.           return -1;
+
+crypto/x509/x_pubkey.c:108:9: Skipping ERR_put_error(): empty list of specs
+      106.   
+      107.       if (pkey == NULL) {
+      108.           X509err(X509_F_X509_PUBKEY_DECODE, ERR_R_MALLOC_FAILURE);
+                     ^
+      109.           return -1;
+      110.       }
+
+crypto/x509/x_pubkey.c:109:9: 
+      107.       if (pkey == NULL) {
+      108.           X509err(X509_F_X509_PUBKEY_DECODE, ERR_R_MALLOC_FAILURE);
+      109. >         return -1;
+      110.       }
+      111.   
+
+crypto/x509/x_pubkey.c:138:1: return from a call to x509_pubkey_decode
+      136.       EVP_PKEY_free(pkey);
+      137.       return 0;
+      138. > }
+      139.   
+      140.   EVP_PKEY *X509_PUBKEY_get0(X509_PUBKEY *key)
+
+crypto/x509/x_pubkey.c:160:9: Taking false branch
+    158.       x509_pubkey_decode(&ret, key);
+    159.       /* If decode doesn't fail something bad happened */
+    160.       if (ret != NULL) {
+                   ^
+    161.           X509err(X509_F_X509_PUBKEY_GET0, ERR_R_INTERNAL_ERROR);
+    162.           EVP_PKEY_free(ret);
+
+crypto/x509/x_pubkey.c:165:5: 
+    163.       }
+    164.   
+    165. >     return NULL;
+    166.   }
+    167.   
+
+crypto/x509/x_pubkey.c:166:1: return from a call to X509_PUBKEY_get0
+    164.   
+    165.       return NULL;
+    166. > }
+    167.   
+    168.   EVP_PKEY *X509_PUBKEY_get(X509_PUBKEY *key)
+
+crypto/x509/x509_cmp.c:270:1: return from a call to X509_get0_pubkey
+  268.           return NULL;
+  269.       return X509_PUBKEY_get0(x->cert_info.key);
+  270. > }
+  271.   
+  272.   EVP_PKEY *X509_get_pubkey(X509 *x)
+
+ssl/statem/statem_lib.c:292:5: 
+290.       peer = s->session->peer;
+291.       pkey = X509_get0_pubkey(peer);
+292. >     pktype = EVP_PKEY_id(pkey);
+293.       type = X509_certificate_type(peer, pkey);
+294.   
+
+crypto/evp/p_lib.c:407:1: start of procedure EVP_PKEY_id()
+  405.   }
+  406.   
+  407. > int EVP_PKEY_id(const EVP_PKEY *pkey)
+  408.   {
+  409.       return pkey->type;
+
+crypto/evp/p_lib.c:409:5: 
+  407.   int EVP_PKEY_id(const EVP_PKEY *pkey)
+  408.   {
+  409. >     return pkey->type;
+  410.   }
+  411.   

@@ -1,0 +1,105 @@
+crypto/err/err.c:693: error: NULL_DEREFERENCE
+  pointer `es` last assigned on line 691 could be null and is dereferenced at line 693, column 9.
+Showing all 14 steps of the trace
+
+
+crypto/err/err.c:686:1: start of procedure ERR_set_error_data()
+684.   }
+685.   
+686. > void ERR_set_error_data(char *data, int flags)
+687.   {
+688.       ERR_STATE *es;
+
+crypto/err/err.c:691:5: 
+689.       int i;
+690.   
+691. >     es = ERR_get_state();
+692.   
+693.       i = es->top;
+
+crypto/err/err.c:645:1: start of procedure ERR_get_state()
+  643.   }
+  644.   
+  645. > ERR_STATE *ERR_get_state(void)
+  646.   {
+  647.       ERR_STATE *state = NULL;
+
+crypto/err/err.c:647:5: 
+  645.   ERR_STATE *ERR_get_state(void)
+  646.   {
+  647. >     ERR_STATE *state = NULL;
+  648.   
+  649.       if (!RUN_ONCE(&err_init, err_do_init))
+
+crypto/err/err.c:649:10: 
+  647.       ERR_STATE *state = NULL;
+  648.   
+  649. >     if (!RUN_ONCE(&err_init, err_do_init))
+  650.           return NULL;
+  651.   
+
+crypto/threads_pthread.c:104:1: start of procedure CRYPTO_THREAD_run_once()
+    102.   }
+    103.   
+    104. > int CRYPTO_THREAD_run_once(CRYPTO_ONCE *once, void (*init)(void))
+    105.   {
+    106.       if (pthread_once(once, init) != 0)
+
+crypto/threads_pthread.c:106:9: Taking true branch
+    104.   int CRYPTO_THREAD_run_once(CRYPTO_ONCE *once, void (*init)(void))
+    105.   {
+    106.       if (pthread_once(once, init) != 0)
+                   ^
+    107.           return 0;
+    108.   
+
+crypto/threads_pthread.c:107:9: 
+    105.   {
+    106.       if (pthread_once(once, init) != 0)
+    107. >         return 0;
+    108.   
+    109.       return 1;
+
+crypto/threads_pthread.c:110:1: return from a call to CRYPTO_THREAD_run_once
+    108.   
+    109.       return 1;
+    110. > }
+    111.   
+    112.   int CRYPTO_THREAD_init_local(CRYPTO_THREAD_LOCAL *key, void (*cleanup)(void *))
+
+crypto/err/err.c:649:10: Condition is false
+  647.       ERR_STATE *state = NULL;
+  648.   
+  649.       if (!RUN_ONCE(&err_init, err_do_init))
+                  ^
+  650.           return NULL;
+  651.   
+
+crypto/err/err.c:649:10: Taking true branch
+  647.       ERR_STATE *state = NULL;
+  648.   
+  649.       if (!RUN_ONCE(&err_init, err_do_init))
+                  ^
+  650.           return NULL;
+  651.   
+
+crypto/err/err.c:650:9: 
+  648.   
+  649.       if (!RUN_ONCE(&err_init, err_do_init))
+  650. >         return NULL;
+  651.   
+  652.       state = CRYPTO_THREAD_get_local(&err_thread_local);
+
+crypto/err/err.c:670:1: return from a call to ERR_get_state
+  668.   
+  669.       return state;
+  670. > }
+  671.   
+  672.   int ERR_get_next_error_library(void)
+
+crypto/err/err.c:693:5: 
+691.       es = ERR_get_state();
+692.   
+693. >     i = es->top;
+694.       if (i == 0)
+695.           i = ERR_NUM_ERRORS - 1;

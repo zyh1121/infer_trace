@@ -1,0 +1,11 @@
+crypto/x509/x509_vfy.c:1853: error: UNINITIALIZED_VALUE
+  The value read from buff1[_] was never initialized.
+Showing all 1 steps of the trace
+
+
+crypto/x509/x509_vfy.c:1853:9: 
+1851.   
+1852.       if (ctm->type == V_ASN1_UTCTIME) {
+1853. >         i = (buff1[0] - '0') * 10 + (buff1[1] - '0');
+1854.           if (i < 50)
+1855.               i += 100;           /* cf. RFC 2459 */

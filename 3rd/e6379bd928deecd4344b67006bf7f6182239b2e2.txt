@@ -1,0 +1,67 @@
+#867
+libavcodec/mpc.c:54: error: Buffer Overrun L2
+  Offset: [4+min(0, `c->synth_buf_offset[*]`), 5+max(511, `c->synth_buf_offset[*]`)] (⇐ [min(0, `c->synth_buf_offset[*]`), 1+max(511, `c->synth_buf_offset[*]`)] + 4) Size: 2 by call to `ff_mpa_synth_filter`.
+
+libavcodec/mpc.c:45:1: Parameter `c->synth_buf[*]`
+43.  * Process decoded Musepack data and produce PCM
+44.  */
+45. static void mpc_synth(MPCContext *c, int16_t *out)
+    ^
+46. {
+47.     int dither_state = 0;
+
+libavcodec/mpc.c:54:13: Call
+52.         samples_ptr = samples + ch;
+53.         for(i = 0; i < SAMPLES_PER_BAND; i++) {
+54.             ff_mpa_synth_filter(c->synth_buf[ch], &(c->synth_buf_offset[ch]),
+                ^
+55.                                 ff_mpa_synth_window, &dither_state,
+56.                                 samples_ptr, 2,
+
+libavcodec/mpegaudiodec.c:705:1: Parameter `*synth_buf_ptr`
+  703. /* XXX: optimize by avoiding ring buffer usage */
+  704. #if !CONFIG_FLOAT
+  705. void ff_mpa_synth_filter(MPA_INT *synth_buf_ptr, int *synth_buf_offset,
+       ^
+  706.                          MPA_INT *window, int *dither_state,
+  707.                          OUT_INT *samples, int incr,
+
+libavcodec/mpegaudiodec.c:718:5: Assignment
+  716. 
+  717.     offset = *synth_buf_offset;
+  718.     synth_buf = synth_buf_ptr + offset;
+           ^
+  719. 
+  720. #if FRAC_BITS <= 15
+
+libavcodec/mpegaudiodec.c:728:5: Call
+  726.     }
+  727. #else
+  728.     dct32(synth_buf, sb_samples);
+           ^
+  729. #endif
+  730. 
+
+libavcodec/dct32.c:106:1: <Length trace>
+104. 
+105. /* DCT32 without 1/sqrt(2) coef zero scaling. */
+106. static void dct32(INTFLOAT *out, const INTFLOAT *tab)
+     ^
+107. {
+108.     INTFLOAT tmp0, tmp1;
+
+libavcodec/dct32.c:106:1: Parameter `*out`
+    104. 
+    105. /* DCT32 without 1/sqrt(2) coef zero scaling. */
+    106. static void dct32(INTFLOAT *out, const INTFLOAT *tab)
+         ^
+    107. {
+    108.     INTFLOAT tmp0, tmp1;
+
+libavcodec/dct32.c:230:5: Array access: Offset: [4+min(0, c->synth_buf_offset[*]), 5+max(511, c->synth_buf_offset[*])] (⇐ [min(0, c->synth_buf_offset[*]), 1+max(511, c->synth_buf_offset[*])] + 4) Size: 2 by call to `ff_mpa_synth_filter` 
+    228.     out[ 8] = val2;
+    229.     out[24] = val3;
+    230.     out[ 4] = val4;
+             ^
+    231.     out[20] = val5;
+    232.     out[12] = val6;

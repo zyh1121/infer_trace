@@ -1,0 +1,275 @@
+#42354
+libavcodec/dvbsubdec.c:1392: error: NULL_DEREFERENCE
+  pointer `sub->rects` last assigned on line 1390 could be null and is dereferenced at line 1392, column 13.
+
+libavcodec/dvbsubdec.c:1366:1: start of procedure dvbsub_display_end_segment()
+1364. }
+1365. 
+1366. static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
+      ^
+1367.                                         int buf_size, AVSubtitle *sub)
+1368. {
+
+libavcodec/dvbsubdec.c:1369:5: 
+1367.                                         int buf_size, AVSubtitle *sub)
+1368. {
+1369.     DVBSubContext *ctx = avctx->priv_data;
+          ^
+1370.     DVBSubDisplayDefinition *display_def = ctx->display_definition;
+1371. 
+
+libavcodec/dvbsubdec.c:1370:5: 
+1368. {
+1369.     DVBSubContext *ctx = avctx->priv_data;
+1370.     DVBSubDisplayDefinition *display_def = ctx->display_definition;
+          ^
+1371. 
+1372.     DVBSubRegion *region;
+
+libavcodec/dvbsubdec.c:1378:5: 
+1376.     uint32_t *clut_table;
+1377.     int i;
+1378.     int offset_x=0, offset_y=0;
+          ^
+1379. 
+1380.     sub->end_display_time = ctx->time_out * 1000;
+
+libavcodec/dvbsubdec.c:1380:5: 
+1378.     int offset_x=0, offset_y=0;
+1379. 
+1380.     sub->end_display_time = ctx->time_out * 1000;
+          ^
+1381. 
+1382.     if (display_def) {
+
+libavcodec/dvbsubdec.c:1382:9: Taking true branch
+1380.     sub->end_display_time = ctx->time_out * 1000;
+1381. 
+1382.     if (display_def) {
+              ^
+1383.         offset_x = display_def->x;
+1384.         offset_y = display_def->y;
+
+libavcodec/dvbsubdec.c:1383:9: 
+1381. 
+1382.     if (display_def) {
+1383.         offset_x = display_def->x;
+              ^
+1384.         offset_y = display_def->y;
+1385.     }
+
+libavcodec/dvbsubdec.c:1384:9: 
+1382.     if (display_def) {
+1383.         offset_x = display_def->x;
+1384.         offset_y = display_def->y;
+              ^
+1385.     }
+1386. 
+
+libavcodec/dvbsubdec.c:1387:5: 
+1385.     }
+1386. 
+1387.     sub->num_rects = ctx->display_list_size;
+          ^
+1388. 
+1389.     if (sub->num_rects > 0){
+
+libavcodec/dvbsubdec.c:1389:9: Taking true branch
+1387.     sub->num_rects = ctx->display_list_size;
+1388. 
+1389.     if (sub->num_rects > 0){
+              ^
+1390.         sub->rects = av_mallocz(sizeof(*sub->rects) * sub->num_rects);
+1391.         for(i=0; i<sub->num_rects; i++)
+
+libavcodec/dvbsubdec.c:1390:9: 
+1388. 
+1389.     if (sub->num_rects > 0){
+1390.         sub->rects = av_mallocz(sizeof(*sub->rects) * sub->num_rects);
+              ^
+1391.         for(i=0; i<sub->num_rects; i++)
+1392.             sub->rects[i] = av_mallocz(sizeof(*sub->rects[i]));
+
+libavutil/mem.c:242:1: start of procedure av_mallocz()
+  240. }
+  241. 
+  242. void *av_mallocz(size_t size)
+       ^
+  243. {
+  244.     void *ptr = av_malloc(size);
+
+libavutil/mem.c:244:5: 
+  242. void *av_mallocz(size_t size)
+  243. {
+  244.     void *ptr = av_malloc(size);
+           ^
+  245.     if (ptr)
+  246.         memset(ptr, 0, size);
+
+libavutil/mem.c:74:1: start of procedure av_malloc()
+    72. }
+    73. 
+    74. void *av_malloc(size_t size)
+        ^
+    75. {
+    76.     void *ptr = NULL;
+
+libavutil/mem.c:76:5: 
+    74. void *av_malloc(size_t size)
+    75. {
+    76.     void *ptr = NULL;
+            ^
+    77. #if CONFIG_MEMALIGN_HACK
+    78.     long diff;
+
+libavutil/mem.c:82:9: Taking true branch
+    80. 
+    81.     /* let's disallow possibly ambiguous cases */
+    82.     if (size > (max_alloc_size - 32))
+                ^
+    83.         return NULL;
+    84. 
+
+libavutil/mem.c:83:9: 
+    81.     /* let's disallow possibly ambiguous cases */
+    82.     if (size > (max_alloc_size - 32))
+    83.         return NULL;
+                ^
+    84. 
+    85. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:140:1: return from a call to av_malloc
+    138. #endif
+    139.     return ptr;
+    140. }
+         ^
+    141. 
+    142. void *av_realloc(void *ptr, size_t size)
+
+libavutil/mem.c:245:9: Taking false branch
+  243. {
+  244.     void *ptr = av_malloc(size);
+  245.     if (ptr)
+               ^
+  246.         memset(ptr, 0, size);
+  247.     return ptr;
+
+libavutil/mem.c:247:5: 
+  245.     if (ptr)
+  246.         memset(ptr, 0, size);
+  247.     return ptr;
+           ^
+  248. }
+  249. 
+
+libavutil/mem.c:248:1: return from a call to av_mallocz
+  246.         memset(ptr, 0, size);
+  247.     return ptr;
+  248. }
+       ^
+  249. 
+  250. void *av_calloc(size_t nmemb, size_t size)
+
+libavcodec/dvbsubdec.c:1391:13: 
+1389.     if (sub->num_rects > 0){
+1390.         sub->rects = av_mallocz(sizeof(*sub->rects) * sub->num_rects);
+1391.         for(i=0; i<sub->num_rects; i++)
+                  ^
+1392.             sub->rects[i] = av_mallocz(sizeof(*sub->rects[i]));
+1393. 
+
+libavcodec/dvbsubdec.c:1391:18: Loop condition is true. Entering loop body
+1389.     if (sub->num_rects > 0){
+1390.         sub->rects = av_mallocz(sizeof(*sub->rects) * sub->num_rects);
+1391.         for(i=0; i<sub->num_rects; i++)
+                       ^
+1392.             sub->rects[i] = av_mallocz(sizeof(*sub->rects[i]));
+1393. 
+
+libavcodec/dvbsubdec.c:1392:13: 
+1390.         sub->rects = av_mallocz(sizeof(*sub->rects) * sub->num_rects);
+1391.         for(i=0; i<sub->num_rects; i++)
+1392.             sub->rects[i] = av_mallocz(sizeof(*sub->rects[i]));
+                  ^
+1393. 
+1394.     i = 0;
+
+libavutil/mem.c:242:1: start of procedure av_mallocz()
+  240. }
+  241. 
+  242. void *av_mallocz(size_t size)
+       ^
+  243. {
+  244.     void *ptr = av_malloc(size);
+
+libavutil/mem.c:244:5: 
+  242. void *av_mallocz(size_t size)
+  243. {
+  244.     void *ptr = av_malloc(size);
+           ^
+  245.     if (ptr)
+  246.         memset(ptr, 0, size);
+
+libavutil/mem.c:74:1: start of procedure av_malloc()
+    72. }
+    73. 
+    74. void *av_malloc(size_t size)
+        ^
+    75. {
+    76.     void *ptr = NULL;
+
+libavutil/mem.c:76:5: 
+    74. void *av_malloc(size_t size)
+    75. {
+    76.     void *ptr = NULL;
+            ^
+    77. #if CONFIG_MEMALIGN_HACK
+    78.     long diff;
+
+libavutil/mem.c:82:9: Taking true branch
+    80. 
+    81.     /* let's disallow possibly ambiguous cases */
+    82.     if (size > (max_alloc_size - 32))
+                ^
+    83.         return NULL;
+    84. 
+
+libavutil/mem.c:83:9: 
+    81.     /* let's disallow possibly ambiguous cases */
+    82.     if (size > (max_alloc_size - 32))
+    83.         return NULL;
+                ^
+    84. 
+    85. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:140:1: return from a call to av_malloc
+    138. #endif
+    139.     return ptr;
+    140. }
+         ^
+    141. 
+    142. void *av_realloc(void *ptr, size_t size)
+
+libavutil/mem.c:245:9: Taking false branch
+  243. {
+  244.     void *ptr = av_malloc(size);
+  245.     if (ptr)
+               ^
+  246.         memset(ptr, 0, size);
+  247.     return ptr;
+
+libavutil/mem.c:247:5: 
+  245.     if (ptr)
+  246.         memset(ptr, 0, size);
+  247.     return ptr;
+           ^
+  248. }
+  249. 
+
+libavutil/mem.c:248:1: return from a call to av_mallocz
+  246.         memset(ptr, 0, size);
+  247.     return ptr;
+  248. }
+       ^
+  249. 
+  250. void *av_calloc(size_t nmemb, size_t size)

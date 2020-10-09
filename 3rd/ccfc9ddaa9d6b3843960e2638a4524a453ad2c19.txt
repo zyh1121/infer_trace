@@ -1,0 +1,157 @@
+crypto/store/store_register.c:47: error: MEMORY_LEAK
+  memory dynamically allocated by call to `CRYPTO_zalloc()` at line 33, column 30 is not reachable after line 47, column 9.
+Showing all 21 steps of the trace
+
+
+crypto/store/store_register.c:31:1: start of procedure OSSL_STORE_LOADER_new()
+29.    */
+30.   
+31. > OSSL_STORE_LOADER *OSSL_STORE_LOADER_new(ENGINE *e, const char *scheme)
+32.   {
+33.       OSSL_STORE_LOADER *res = OPENSSL_zalloc(sizeof(*res));
+
+crypto/store/store_register.c:33:5: 
+31.   OSSL_STORE_LOADER *OSSL_STORE_LOADER_new(ENGINE *e, const char *scheme)
+32.   {
+33. >     OSSL_STORE_LOADER *res = OPENSSL_zalloc(sizeof(*res));
+34.   
+35.       if (res == NULL) {
+
+crypto/mem.c:197:1: start of procedure CRYPTO_zalloc()
+  195.   }
+  196.   
+  197. > void *CRYPTO_zalloc(size_t num, const char *file, int line)
+  198.   {
+  199.       void *ret = CRYPTO_malloc(num, file, line);
+
+crypto/mem.c:199:5: 
+  197.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+  198.   {
+  199. >     void *ret = CRYPTO_malloc(num, file, line);
+  200.   
+  201.       FAILTEST();
+
+crypto/mem.c:169:1: start of procedure CRYPTO_malloc()
+    167.   #endif
+    168.   
+    169. > void *CRYPTO_malloc(size_t num, const char *file, int line)
+    170.   {
+    171.       void *ret = NULL;
+
+crypto/mem.c:171:5: 
+    169.   void *CRYPTO_malloc(size_t num, const char *file, int line)
+    170.   {
+    171. >     void *ret = NULL;
+    172.   
+    173.       if (malloc_impl != NULL && malloc_impl != CRYPTO_malloc)
+
+crypto/mem.c:173:9: Taking false branch
+    171.       void *ret = NULL;
+    172.   
+    173.       if (malloc_impl != NULL && malloc_impl != CRYPTO_malloc)
+                   ^
+    174.           return malloc_impl(num, file, line);
+    175.   
+
+crypto/mem.c:176:9: Taking false branch
+    174.           return malloc_impl(num, file, line);
+    175.   
+    176.       if (num == 0)
+                   ^
+    177.           return NULL;
+    178.   
+
+crypto/mem.c:180:5: 
+    178.   
+    179.       FAILTEST();
+    180. >     allow_customize = 0;
+    181.   #ifndef OPENSSL_NO_CRYPTO_MDEBUG
+    182.       if (call_malloc_debug) {
+
+crypto/mem.c:190:5: 
+    188.       }
+    189.   #else
+    190. >     osslargused(file); osslargused(line);
+    191.       ret = malloc(num);
+    192.   #endif
+
+crypto/mem.c:190:24: 
+    188.       }
+    189.   #else
+    190. >     osslargused(file); osslargused(line);
+    191.       ret = malloc(num);
+    192.   #endif
+
+crypto/mem.c:191:5: 
+    189.   #else
+    190.       osslargused(file); osslargused(line);
+    191. >     ret = malloc(num);
+    192.   #endif
+    193.   
+
+crypto/mem.c:194:5: 
+    192.   #endif
+    193.   
+    194. >     return ret;
+    195.   }
+    196.   
+
+crypto/mem.c:195:1: return from a call to CRYPTO_malloc
+    193.   
+    194.       return ret;
+    195. > }
+    196.   
+    197.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+
+crypto/mem.c:202:9: Taking true branch
+  200.   
+  201.       FAILTEST();
+  202.       if (ret != NULL)
+                 ^
+  203.           memset(ret, 0, num);
+  204.       return ret;
+
+crypto/mem.c:203:9: 
+  201.       FAILTEST();
+  202.       if (ret != NULL)
+  203. >         memset(ret, 0, num);
+  204.       return ret;
+  205.   }
+
+crypto/mem.c:204:5: 
+  202.       if (ret != NULL)
+  203.           memset(ret, 0, num);
+  204. >     return ret;
+  205.   }
+  206.   
+
+crypto/mem.c:205:1: return from a call to CRYPTO_zalloc
+  203.           memset(ret, 0, num);
+  204.       return ret;
+  205. > }
+  206.   
+  207.   void *CRYPTO_realloc(void *str, size_t num, const char *file, int line)
+
+crypto/store/store_register.c:35:9: Taking false branch
+33.       OSSL_STORE_LOADER *res = OPENSSL_zalloc(sizeof(*res));
+34.   
+35.       if (res == NULL) {
+              ^
+36.           OSSL_STOREerr(OSSL_STORE_F_OSSL_STORE_LOADER_NEW, ERR_R_MALLOC_FAILURE);
+37.           return NULL;
+
+crypto/store/store_register.c:46:9: Taking true branch
+44.        * later on.
+45.        */
+46.       if (scheme == NULL) {
+              ^
+47.           OSSL_STOREerr(OSSL_STORE_F_OSSL_STORE_LOADER_NEW,
+48.                         OSSL_STORE_R_INVALID_SCHEME);
+
+crypto/store/store_register.c:47:9: Skipping ERR_put_error(): empty list of specs
+45.        */
+46.       if (scheme == NULL) {
+47.           OSSL_STOREerr(OSSL_STORE_F_OSSL_STORE_LOADER_NEW,
+              ^
+48.                         OSSL_STORE_R_INVALID_SCHEME);
+49.           return NULL;

@@ -1,0 +1,67 @@
+#14062
+libavcodec/wmavoice.c:774: error: BUFFER_OVERRUN_L2
+  Offset: [19, 271] (⇐ 16 + [3, 255]) Size: 144 by call to `wiener_denoise`.
+
+libavcodec/wmavoice.c:750:1: Parameter `s->synth_filter_out_buf[*]`
+748.  * @param pitch Pitch of the input signal
+749.  */
+750. static void postfilter(WMAVoiceContext *s, const float *synth,
+     ^
+751.                        float *samples,    int size,
+752.                        const float *lpcs, float *zero_exc_pf,
+
+libavcodec/wmavoice.c:755:5: Assignment
+753.                        int fcb_type,      int pitch)
+754. {
+755.     float synth_filter_in_buf[MAX_FRAMESIZE / 2],
+         ^
+756.           *synth_pf = &s->synth_filter_out_buf[MAX_LSPS_ALIGN16],
+757.           *synth_filter_in = zero_exc_pf;
+
+libavcodec/wmavoice.c:774:5: Call
+772.            sizeof(synth_pf[0]) * s->lsps);
+773. 
+774.     wiener_denoise(s, fcb_type, synth_pf, size, lpcs);
+         ^
+775. 
+776.     adaptive_gain_control(samples, synth_pf, synth, size, 0.99,
+
+libavcodec/wmavoice.c:700:14: <Offset trace>
+698.         synth_pf[0] *= coeffs[0];
+699.         synth_pf[1] *= coeffs[1];
+700.         for (n = 1; n < 128; n++) {
+                  ^
+701.             float v1 = synth_pf[n * 2], v2 = synth_pf[n * 2 + 1];
+702.             synth_pf[n * 2]     = v1 * coeffs[n * 2] - v2 * coeffs[n * 2 + 1];
+
+libavcodec/wmavoice.c:700:14: Assignment
+  698.         synth_pf[0] *= coeffs[0];
+  699.         synth_pf[1] *= coeffs[1];
+  700.         for (n = 1; n < 128; n++) {
+                    ^
+  701.             float v1 = synth_pf[n * 2], v2 = synth_pf[n * 2 + 1];
+  702.             synth_pf[n * 2]     = v1 * coeffs[n * 2] - v2 * coeffs[n * 2 + 1];
+
+libavcodec/wmavoice.c:669:1: <Length trace>
+667.  * @param lpcs LPCs used to synthesize this frame's speech data
+668.  */
+669. static void wiener_denoise(WMAVoiceContext *s, int fcb_type,
+     ^
+670.                            float *synth_pf, int size,
+671.                            const float *lpcs)
+
+libavcodec/wmavoice.c:669:1: Parameter `*synth_pf`
+  667.  * @param lpcs LPCs used to synthesize this frame's speech data
+  668.  */
+  669. static void wiener_denoise(WMAVoiceContext *s, int fcb_type,
+       ^
+  670.                            float *synth_pf, int size,
+  671.                            const float *lpcs)
+
+libavcodec/wmavoice.c:701:46: Array access: Offset: [19, 271] (⇐ 16 + [3, 255]) Size: 144 by call to `wiener_denoise` 
+  699.         synth_pf[1] *= coeffs[1];
+  700.         for (n = 1; n < 128; n++) {
+  701.             float v1 = synth_pf[n * 2], v2 = synth_pf[n * 2 + 1];
+                                                    ^
+  702.             synth_pf[n * 2]     = v1 * coeffs[n * 2] - v2 * coeffs[n * 2 + 1];
+  703.             synth_pf[n * 2 + 1] = v2 * coeffs[n * 2] + v1 * coeffs[n * 2 + 1];

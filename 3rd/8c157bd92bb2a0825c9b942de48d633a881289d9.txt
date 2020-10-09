@@ -1,0 +1,11 @@
+ssl/s3_clnt.c:933: error: UNINITIALIZED_VALUE
+  The value read from al was never initialized.
+Showing all 1 steps of the trace
+
+
+ssl/s3_clnt.c:933:2: 
+931.   	return(1);
+932.   f_err:
+933. > 	ssl3_send_alert(s,SSL3_AL_FATAL,al);
+934.   err:
+935.   	return(-1);

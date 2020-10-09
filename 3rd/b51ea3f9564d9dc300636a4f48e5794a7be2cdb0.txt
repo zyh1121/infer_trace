@@ -1,0 +1,80 @@
+ssl/s3_clnt.c:1795: error: INTEGER_OVERFLOW_L2
+  ([0, +oo] - 2):unsigned64 by call to `PACKET_get_bytes`.
+Showing all 10 steps of the trace
+
+
+ssl/s3_clnt.c:1484:10: Call
+1482.       }
+1483.   
+1484.       if (!PACKET_buf_init(&pkt, s->init_msg, n)) {
+                 ^
+1485.               SSLerr(SSL_F_SSL3_GET_KEY_EXCHANGE, ERR_R_INTERNAL_ERROR);
+1486.               al = SSL_AD_INTERNAL_ERROR;
+
+ssl/packet_locl.h:110:8: Parameter `pkt->remaining`
+  108.    * is being used.
+  109.    */
+  110.   __owur static inline int PACKET_buf_init(PACKET *pkt, unsigned char *buf,
+                ^
+  111.                                            size_t len)
+  112.   {
+
+ssl/s3_clnt.c:1795:18: Call
+1793.               unsigned char *sigalgs;
+1794.               int rv;
+1795.               if (!PACKET_get_bytes(&pkt, &sigalgs, 2)) {
+                         ^
+1796.                   SSLerr(SSL_F_SSL3_GET_KEY_EXCHANGE, SSL_R_LENGTH_TOO_SHORT);
+1797.                   goto f_err;
+
+ssl/packet_locl.h:332:8: Parameter `len`
+  330.    * freed
+  331.    */
+  332.   __owur static inline int PACKET_get_bytes(PACKET *pkt, unsigned char **data,
+                ^
+  333.                                             size_t len)
+  334.   {
+
+ssl/packet_locl.h:338:5: Call
+  336.           return 0;
+  337.   
+  338.       packet_forward(pkt, len);
+             ^
+  339.   
+  340.       return 1;
+
+ssl/packet_locl.h:80:1: <LHS trace>
+78.   
+79.   /* Internal unchecked shorthand; don't use outside this file. */
+80. > static inline void packet_forward(PACKET *pkt, size_t len)
+81.   {
+82.       pkt->curr += len;
+
+ssl/packet_locl.h:80:1: Parameter `pkt->remaining`
+    78.   
+    79.   /* Internal unchecked shorthand; don't use outside this file. */
+    80. > static inline void packet_forward(PACKET *pkt, size_t len)
+    81.   {
+    82.       pkt->curr += len;
+
+ssl/packet_locl.h:80:1: <RHS trace>
+78.   
+79.   /* Internal unchecked shorthand; don't use outside this file. */
+80. > static inline void packet_forward(PACKET *pkt, size_t len)
+81.   {
+82.       pkt->curr += len;
+
+ssl/packet_locl.h:80:1: Parameter `len`
+    78.   
+    79.   /* Internal unchecked shorthand; don't use outside this file. */
+    80. > static inline void packet_forward(PACKET *pkt, size_t len)
+    81.   {
+    82.       pkt->curr += len;
+
+ssl/packet_locl.h:83:5: Binary operation: ([0, +oo] - 2):unsigned64 by call to `PACKET_get_bytes` 
+    81.   {
+    82.       pkt->curr += len;
+    83.       pkt->remaining -= len;
+              ^
+    84.   }
+    85.   

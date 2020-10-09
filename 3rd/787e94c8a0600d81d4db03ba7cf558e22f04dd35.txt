@@ -1,0 +1,94 @@
+crypto/ec/ecp_smpl.c:1467: error: BUFFER_OVERRUN_L3
+  Offset added: [0, 24] Size: [0, 67108856] by call to `BN_mod_lshift_quick`.
+Showing all 12 steps of the trace
+
+
+crypto/ec/ecp_smpl.c:1467:13: Call
+1465.           || !group->meth->field_mul(group, t1, p->X, p->Z, ctx)
+1466.           || !group->meth->field_mul(group, t4, t1, t6, ctx)
+1467.           || !BN_mod_lshift_quick(t4, t4, 3, group->field)
+                    ^
+1468.           /* r->X coord output */
+1469.           || !BN_mod_sub_quick(r->X, t5, t4, group->field)
+
+crypto/bn/bn_mod.c:279:1: Parameter `n`
+  277.    * m
+  278.    */
+  279. > int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m)
+  280.   {
+  281.       if (r != a) {
+
+crypto/bn/bn_mod.c:302:18: Call
+  300.   
+  301.           if (max_shift) {
+  302.               if (!BN_lshift(r, r, max_shift))
+                          ^
+  303.                   return 0;
+  304.               n -= max_shift;
+
+crypto/bn/bn_shift.c:83:1: <Offset trace>
+81.   }
+82.   
+83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+84.   {
+85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:83:1: Parameter `n`
+    81.   }
+    82.   
+    83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+    84.   {
+    85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:97:5: Assignment
+    95.       }
+    96.   
+    97.       nw = n / BN_BITS2;
+               ^
+    98.       if (bn_wexpand(r, a->top + nw + 1) == NULL)
+    99.           return 0;
+
+crypto/bn/bn_shift.c:83:1: <Length trace>
+81.   }
+82.   
+83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+84.   {
+85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:83:1: Parameter `*r->d`
+    81.   }
+    82.   
+    83. > int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+    84.   {
+    85.       int i, nw, lb, rb;
+
+crypto/bn/bn_shift.c:98:9: Call
+    96.   
+    97.       nw = n / BN_BITS2;
+    98.       if (bn_wexpand(r, a->top + nw + 1) == NULL)
+                   ^
+    99.           return 0;
+    100.       r->neg = a->neg;
+
+crypto/bn/bn_lib.c:939:1: Parameter `*a->d`
+      937.   }
+      938.   
+      939. > BIGNUM *bn_wexpand(BIGNUM *a, int words)
+      940.   {
+      941.       return (words <= a->dmax) ? a : bn_expand2(a, words);
+
+crypto/bn/bn_shift.c:104:5: Assignment
+    102.       rb = BN_BITS2 - lb;
+    103.       f = a->d;
+    104.       t = r->d;
+               ^
+    105.       t[a->top + nw] = 0;
+    106.       if (lb == 0)
+
+crypto/bn/bn_shift.c:115:5: Array access: Offset added: [0, 24] Size: [0, 67108856] by call to `BN_mod_lshift_quick` 
+    113.               t[nw + i] = (l << lb) & BN_MASK2;
+    114.           }
+    115.       memset(t, 0, sizeof(*t) * nw);
+               ^
+    116.       r->top = a->top + nw + 1;
+    117.       bn_correct_top(r);

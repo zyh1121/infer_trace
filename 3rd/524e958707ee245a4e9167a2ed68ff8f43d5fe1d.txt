@@ -1,0 +1,11 @@
+#26425
+libavformat/flvdec.c:508: error: UNINITIALIZED_VALUE
+  The value read from vcodec was never initialized.
+
+libavformat/flvdec.c:508:15: 
+506.         if (amf_type == AMF_DATA_TYPE_OBJECT && s->nb_streams == 1 &&
+507.            ((!acodec && !strcmp(key, "audiocodecid")) ||
+508.             (!vcodec && !strcmp(key, "videocodecid"))))
+                   ^
+509.                 s->ctx_flags &= ~AVFMTCTX_NOHEADER; //If there is either audio/video missing, codecid will be an empty object
+510. 

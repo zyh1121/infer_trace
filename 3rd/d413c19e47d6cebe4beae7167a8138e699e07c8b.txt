@@ -1,0 +1,83 @@
+#1294
+libavcodec/avs.c:134: error: INTEGER_OVERFLOW_L2
+  ([0, +oo] - 1):unsigned32 by call to `bitstream_read_bit`.
+
+libavcodec/avs.c:128:9: Call
+126.         if (buf_end - table < map_size)
+127.             return AVERROR_INVALIDDATA;
+128.         bitstream_init(&change_map, table, map_size * 8);
+             ^
+129.         table += map_size;
+130.     }
+
+libavcodec/bitstream.h:85:9: Assignment
+  83.         bc->buffer    =
+  84.         bc->ptr       = NULL;
+  85.         bc->bits_left = 0;
+              ^
+  86.         return AVERROR_INVALIDDATA;
+  87.     }
+
+libavcodec/avs.c:134:44: Call
+132.     for (y=0; y<198; y+=vect_h) {
+133.         for (x=0; x<318; x+=vect_w) {
+134.             if (sub_type == AVS_I_FRAME || bitstream_read_bit(&change_map)) {
+                                                ^
+135.                 if (buf_end - table < 1)
+136.                     return AVERROR_INVALIDDATA;
+
+libavcodec/bitstream.h:145:1: Parameter `bc->bits_left`
+  143. 
+  144. /* Return one bit from the buffer. */
+  145. static inline unsigned bitstream_read_bit(BitstreamContext *bc)
+       ^
+  146. {
+  147.     if (!bc->bits_left)
+
+libavcodec/bitstream.h:150:12: Call
+  148.         refill_64(bc);
+  149. 
+  150.     return get_val(bc, 1);
+                  ^
+  151. }
+  152. 
+
+libavcodec/bitstream.h:130:1: <LHS trace>
+128. }
+129. 
+130. static inline uint64_t get_val(BitstreamContext *bc, unsigned n)
+     ^
+131. {
+132. #ifdef BITSTREAM_READER_LE
+
+libavcodec/bitstream.h:130:1: Parameter `bc->bits_left`
+    128. }
+    129. 
+    130. static inline uint64_t get_val(BitstreamContext *bc, unsigned n)
+         ^
+    131. {
+    132. #ifdef BITSTREAM_READER_LE
+
+libavcodec/bitstream.h:130:1: <RHS trace>
+128. }
+129. 
+130. static inline uint64_t get_val(BitstreamContext *bc, unsigned n)
+     ^
+131. {
+132. #ifdef BITSTREAM_READER_LE
+
+libavcodec/bitstream.h:130:1: Parameter `n`
+    128. }
+    129. 
+    130. static inline uint64_t get_val(BitstreamContext *bc, unsigned n)
+         ^
+    131. {
+    132. #ifdef BITSTREAM_READER_LE
+
+libavcodec/bitstream.h:139:5: Binary operation: ([0, +oo] - 1):unsigned32 by call to `bitstream_read_bit` 
+    137.     bc->bits <<= n;
+    138. #endif
+    139.     bc->bits_left -= n;
+             ^
+    140. 
+    141.     return ret;

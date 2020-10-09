@@ -1,0 +1,195 @@
+#43697
+libswscale/utils.c:1905: error: NULL_DEREFERENCE
+  pointer `diff` last assigned on line 1903 could be null and is dereferenced at line 1905, column 17.
+
+libswscale/utils.c:1901:1: start of procedure sws_subVec()
+1899. }
+1900. 
+1901. void sws_subVec(SwsVector *a, SwsVector *b)
+      ^
+1902. {
+1903.     SwsVector *diff = sws_diffVec(a, b);
+
+libswscale/utils.c:1903:5: 
+1901. void sws_subVec(SwsVector *a, SwsVector *b)
+1902. {
+1903.     SwsVector *diff = sws_diffVec(a, b);
+          ^
+1904.     av_free(a->coeff);
+1905.     a->coeff  = diff->coeff;
+
+libswscale/utils.c:1848:1: start of procedure sws_diffVec()
+  1846. }
+  1847. 
+  1848. static SwsVector *sws_diffVec(SwsVector *a, SwsVector *b)
+        ^
+  1849. {
+  1850.     int length = FFMAX(a->length, b->length);
+
+libswscale/utils.c:1850:18: Condition is true
+  1848. static SwsVector *sws_diffVec(SwsVector *a, SwsVector *b)
+  1849. {
+  1850.     int length = FFMAX(a->length, b->length);
+                         ^
+  1851.     int i;
+  1852.     SwsVector *vec = sws_getConstVec(0.0, length);
+
+libswscale/utils.c:1850:5: 
+  1848. static SwsVector *sws_diffVec(SwsVector *a, SwsVector *b)
+  1849. {
+  1850.     int length = FFMAX(a->length, b->length);
+            ^
+  1851.     int i;
+  1852.     SwsVector *vec = sws_getConstVec(0.0, length);
+
+libswscale/utils.c:1852:5: 
+  1850.     int length = FFMAX(a->length, b->length);
+  1851.     int i;
+  1852.     SwsVector *vec = sws_getConstVec(0.0, length);
+            ^
+  1853. 
+  1854.     if (!vec)
+
+libswscale/utils.c:1770:1: start of procedure sws_getConstVec()
+    1768. }
+    1769. 
+    1770. SwsVector *sws_getConstVec(double c, int length)
+          ^
+    1771. {
+    1772.     int i;
+
+libswscale/utils.c:1773:5: 
+    1771. {
+    1772.     int i;
+    1773.     SwsVector *vec = sws_allocVec(length);
+              ^
+    1774. 
+    1775.     if (!vec)
+
+libswscale/utils.c:1727:1: start of procedure sws_allocVec()
+      1725. }
+      1726. 
+      1727. SwsVector *sws_allocVec(int length)
+            ^
+      1728. {
+      1729.     SwsVector *vec;
+
+libswscale/utils.c:1731:8: Taking false branch
+      1729.     SwsVector *vec;
+      1730. 
+      1731.     if(length <= 0 || length > INT_MAX/ sizeof(double))
+                   ^
+      1732.         return NULL;
+      1733. 
+
+libswscale/utils.c:1731:23: Taking true branch
+      1729.     SwsVector *vec;
+      1730. 
+      1731.     if(length <= 0 || length > INT_MAX/ sizeof(double))
+                                  ^
+      1732.         return NULL;
+      1733. 
+
+libswscale/utils.c:1732:9: 
+      1730. 
+      1731.     if(length <= 0 || length > INT_MAX/ sizeof(double))
+      1732.         return NULL;
+                    ^
+      1733. 
+      1734.     vec = av_malloc(sizeof(SwsVector));
+
+libswscale/utils.c:1742:1: return from a call to sws_allocVec
+      1740.         av_freep(&vec);
+      1741.     return vec;
+      1742. }
+            ^
+      1743. 
+      1744. SwsVector *sws_getGaussianVec(double variance, double quality)
+
+libswscale/utils.c:1775:10: Taking true branch
+    1773.     SwsVector *vec = sws_allocVec(length);
+    1774. 
+    1775.     if (!vec)
+                   ^
+    1776.         return NULL;
+    1777. 
+
+libswscale/utils.c:1776:9: 
+    1774. 
+    1775.     if (!vec)
+    1776.         return NULL;
+                  ^
+    1777. 
+    1778.     for (i = 0; i < length; i++)
+
+libswscale/utils.c:1782:1: return from a call to sws_getConstVec
+    1780. 
+    1781.     return vec;
+    1782. }
+          ^
+    1783. 
+    1784. SwsVector *sws_getIdentityVec(void)
+
+libswscale/utils.c:1854:10: Taking true branch
+  1852.     SwsVector *vec = sws_getConstVec(0.0, length);
+  1853. 
+  1854.     if (!vec)
+                 ^
+  1855.         return NULL;
+  1856. 
+
+libswscale/utils.c:1855:9: 
+  1853. 
+  1854.     if (!vec)
+  1855.         return NULL;
+                ^
+  1856. 
+  1857.     for (i = 0; i < a->length; i++)
+
+libswscale/utils.c:1863:1: return from a call to sws_diffVec
+  1861. 
+  1862.     return vec;
+  1863. }
+        ^
+  1864. 
+  1865. /* shift left / or right if "shift" is negative */
+
+libswscale/utils.c:1904:5: 
+1902. {
+1903.     SwsVector *diff = sws_diffVec(a, b);
+1904.     av_free(a->coeff);
+          ^
+1905.     a->coeff  = diff->coeff;
+1906.     a->length = diff->length;
+
+libavutil/mem.c:219:1: start of procedure av_free()
+  217. }
+  218. 
+  219. void av_free(void *ptr)
+       ^
+  220. {
+  221. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:230:5: 
+  228.     _aligned_free(ptr);
+  229. #else
+  230.     free(ptr);
+           ^
+  231. #endif
+  232. }
+
+libavutil/mem.c:232:1: return from a call to av_free
+  230.     free(ptr);
+  231. #endif
+  232. }
+       ^
+  233. 
+  234. void av_freep(void *arg)
+
+libswscale/utils.c:1905:5: 
+1903.     SwsVector *diff = sws_diffVec(a, b);
+1904.     av_free(a->coeff);
+1905.     a->coeff  = diff->coeff;
+          ^
+1906.     a->length = diff->length;
+1907.     av_free(diff);

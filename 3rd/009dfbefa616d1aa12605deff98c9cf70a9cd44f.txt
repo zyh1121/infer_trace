@@ -1,0 +1,11 @@
+#8965
+libavcodec/vp8dsp.c:209: error: UNINITIALIZED_VALUE
+  The value read from p2 was never initialized.
+
+libavcodec/vp8dsp.c:209:12: 
+207.     LOAD_PIXELS
+208.     return simple_limit(p, stride, E) &&
+209.            FFABS(p3 - p2) <= I &&
+                ^
+210.            FFABS(p2 - p1) <= I &&
+211.            FFABS(p1 - p0) <= I &&

@@ -1,0 +1,78 @@
+crypto/bn/bn_gf2m.c:948: error: BUFFER_OVERRUN_L3
+  Offset: [-1, +oo] Size: [1, +oo] by call to `BN_CTX_end`.
+Showing all 10 steps of the trace
+
+
+crypto/bn/bn_gf2m.c:938:5: Call
+936.       }
+937.   
+938.       BN_CTX_start(ctx);
+           ^
+939.       if ((u = BN_CTX_get(ctx)) == NULL)
+940.           goto err;
+
+crypto/bn/bn_ctx.c:171:1: Parameter `*ctx->stack.indexes`
+  169.   }
+  170.   
+  171. > void BN_CTX_start(BN_CTX *ctx)
+  172.   {
+  173.       CTXDBG("ENTER BN_CTX_start()", ctx);
+
+crypto/bn/bn_gf2m.c:948:5: Call
+946.   
+947.    err:
+948.       BN_CTX_end(ctx);
+           ^
+949.       return ret;
+950.   }
+
+crypto/bn/bn_ctx.c:185:1: Parameter `*ctx->stack.indexes`
+  183.   }
+  184.   
+  185. > void BN_CTX_end(BN_CTX *ctx)
+  186.   {
+  187.       CTXDBG("ENTER BN_CTX_end()", ctx);
+
+crypto/bn/bn_ctx.c:191:27: Call
+  189.           ctx->err_stack--;
+  190.       else {
+  191.           unsigned int fp = BN_STACK_pop(&ctx->stack);
+                                   ^
+  192.           /* Does this stack frame have anything to release? */
+  193.           if (fp < ctx->used)
+
+crypto/bn/bn_ctx.c:266:1: <Offset trace>
+264.   }
+265.   
+266. > static unsigned int BN_STACK_pop(BN_STACK *st)
+267.   {
+268.       return st->indexes[--(st->depth)];
+
+crypto/bn/bn_ctx.c:266:1: Parameter `st->depth`
+    264.   }
+    265.   
+    266. > static unsigned int BN_STACK_pop(BN_STACK *st)
+    267.   {
+    268.       return st->indexes[--(st->depth)];
+
+crypto/bn/bn_ctx.c:266:1: <Length trace>
+264.   }
+265.   
+266. > static unsigned int BN_STACK_pop(BN_STACK *st)
+267.   {
+268.       return st->indexes[--(st->depth)];
+
+crypto/bn/bn_ctx.c:266:1: Parameter `*st->indexes`
+    264.   }
+    265.   
+    266. > static unsigned int BN_STACK_pop(BN_STACK *st)
+    267.   {
+    268.       return st->indexes[--(st->depth)];
+
+crypto/bn/bn_ctx.c:268:12: Array access: Offset: [-1, +oo] Size: [1, +oo] by call to `BN_CTX_end` 
+    266.   static unsigned int BN_STACK_pop(BN_STACK *st)
+    267.   {
+    268.       return st->indexes[--(st->depth)];
+                      ^
+    269.   }
+    270.   

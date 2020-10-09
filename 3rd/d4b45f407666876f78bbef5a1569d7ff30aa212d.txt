@@ -1,0 +1,103 @@
+crypto/x509v3/v3_alt.c:174: error: BUFFER_OVERRUN_L2
+  Offset added: [0, 2147483646] Size: 112 by call to `X509V3_add_value`.
+Showing all 13 steps of the trace
+
+
+crypto/x509v3/v3_alt.c:174:9: Call
+172.       case GEN_RID:
+173.           i2t_ASN1_OBJECT(oline, 256, gen->d.rid);
+174.           X509V3_add_value("Registered ID", oline, &ret);
+               ^
+175.           break;
+176.       }
+
+crypto/x509v3/v3_utl.c:83:1: Parameter `*name`
+  81.   /* Add a CONF_VALUE name value pair to stack */
+  82.   
+  83. > int X509V3_add_value(const char *name, const char *value,
+  84.                        STACK_OF(CONF_VALUE) **extlist)
+  85.   {
+
+crypto/x509v3/v3_utl.c:89:26: Call
+  87.       char *tname = NULL, *tvalue = NULL;
+  88.   
+  89.       if (name && (tname = BUF_strdup(name)) == NULL)
+                                 ^
+  90.           goto err;
+  91.       if (value && (tvalue = BUF_strdup(value)) == NULL)
+
+crypto/buffer/buf_str.c:73:1: Parameter `*str`
+    71.   }
+    72.   
+    73. > char *BUF_strdup(const char *str)
+    74.   {
+    75.       if (str == NULL)
+
+crypto/buffer/buf_str.c:77:12: Call
+    75.       if (str == NULL)
+    76.           return NULL;
+    77.       return BUF_strndup(str, strlen(str));
+                     ^
+    78.   }
+    79.   
+
+crypto/buffer/buf_str.c:87:11: <Offset trace>
+85.           return NULL;
+86.   
+87.       siz = BUF_strnlen(str, siz);
+                ^
+88.   
+89.       if (siz >= INT_MAX)
+
+crypto/buffer/buf_str.c:87:11: Call
+      85.           return NULL;
+      86.   
+      87.       siz = BUF_strnlen(str, siz);
+                      ^
+      88.   
+      89.       if (siz >= INT_MAX)
+
+crypto/buffer/buf_str.c:64:1: Parameter `*str`
+        62.   #include <openssl/buffer.h>
+        63.   
+        64. > size_t BUF_strnlen(const char *str, size_t maxlen)
+        65.   {
+        66.       const char *p;
+
+crypto/buffer/buf_str.c:70:5: Assignment
+        68.       for (p = str; maxlen-- != 0 && *p != '\0'; ++p) ;
+        69.   
+        70.       return p - str;
+                  ^
+        71.   }
+        72.   
+
+crypto/buffer/buf_str.c:87:5: Assignment
+      85.           return NULL;
+      86.   
+      87.       siz = BUF_strnlen(str, siz);
+                ^
+      88.   
+      89.       if (siz >= INT_MAX)
+
+crypto/buffer/buf_str.c:80:1: <Length trace>
+78.   }
+79.   
+80. > char *BUF_strndup(const char *str, size_t siz)
+81.   {
+82.       char *ret;
+
+crypto/buffer/buf_str.c:80:1: Parameter `*str`
+      78.   }
+      79.   
+      80. > char *BUF_strndup(const char *str, size_t siz)
+      81.   {
+      82.       char *ret;
+
+crypto/buffer/buf_str.c:98:5: Array access: Offset added: [0, 2147483646] Size: 112 by call to `X509V3_add_value` 
+      96.       }
+      97.   
+      98.       memcpy(ret, str, siz);
+                 ^
+      99.       ret[siz] = '\0';
+      100.   

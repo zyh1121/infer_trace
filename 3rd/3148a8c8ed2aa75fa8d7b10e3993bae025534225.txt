@@ -1,0 +1,139 @@
+#249
+libavformat/oggparsespeex.c:49: error: NULL_DEREFERENCE
+  pointer `st->codec->extradata` last assigned on line 48 could be null and is dereferenced by call to `memcpy()` at line 49, column 5.
+
+libavformat/oggparsespeex.c:33:1: start of procedure speex_header()
+31. #include "avstring.h"
+32. 
+33. static int speex_header(AVFormatContext *s, int idx) {
+    ^
+34.     ogg_t *ogg = s->priv_data;
+35.     ogg_stream_t *os = ogg->streams + idx;
+
+libavformat/oggparsespeex.c:34:5: 
+32. 
+33. static int speex_header(AVFormatContext *s, int idx) {
+34.     ogg_t *ogg = s->priv_data;
+        ^
+35.     ogg_stream_t *os = ogg->streams + idx;
+36.     AVStream *st = s->streams[idx];
+
+libavformat/oggparsespeex.c:35:5: 
+33. static int speex_header(AVFormatContext *s, int idx) {
+34.     ogg_t *ogg = s->priv_data;
+35.     ogg_stream_t *os = ogg->streams + idx;
+        ^
+36.     AVStream *st = s->streams[idx];
+37.     uint8_t *p = os->buf + os->pstart;
+
+libavformat/oggparsespeex.c:36:5: 
+34.     ogg_t *ogg = s->priv_data;
+35.     ogg_stream_t *os = ogg->streams + idx;
+36.     AVStream *st = s->streams[idx];
+        ^
+37.     uint8_t *p = os->buf + os->pstart;
+38. 
+
+libavformat/oggparsespeex.c:37:5: 
+35.     ogg_stream_t *os = ogg->streams + idx;
+36.     AVStream *st = s->streams[idx];
+37.     uint8_t *p = os->buf + os->pstart;
+        ^
+38. 
+39.     if (os->psize < 80)
+
+libavformat/oggparsespeex.c:39:9: Taking false branch
+37.     uint8_t *p = os->buf + os->pstart;
+38. 
+39.     if (os->psize < 80)
+            ^
+40.         return 1;
+41. 
+
+libavformat/oggparsespeex.c:42:5: 
+40.         return 1;
+41. 
+42.     st->codec->codec_type = CODEC_TYPE_AUDIO;
+        ^
+43.     st->codec->codec_id = CODEC_ID_SPEEX;
+44. 
+
+libavformat/oggparsespeex.c:43:5: 
+41. 
+42.     st->codec->codec_type = CODEC_TYPE_AUDIO;
+43.     st->codec->codec_id = CODEC_ID_SPEEX;
+        ^
+44. 
+45.     st->codec->sample_rate = AV_RL32(p + 36);
+
+libavformat/oggparsespeex.c:45:5: 
+43.     st->codec->codec_id = CODEC_ID_SPEEX;
+44. 
+45.     st->codec->sample_rate = AV_RL32(p + 36);
+        ^
+46.     st->codec->channels = AV_RL32(p + 48);
+47.     st->codec->extradata_size = os->psize;
+
+libavformat/oggparsespeex.c:46:5: 
+44. 
+45.     st->codec->sample_rate = AV_RL32(p + 36);
+46.     st->codec->channels = AV_RL32(p + 48);
+        ^
+47.     st->codec->extradata_size = os->psize;
+48.     st->codec->extradata = av_malloc(st->codec->extradata_size);
+
+libavformat/oggparsespeex.c:47:5: 
+45.     st->codec->sample_rate = AV_RL32(p + 36);
+46.     st->codec->channels = AV_RL32(p + 48);
+47.     st->codec->extradata_size = os->psize;
+        ^
+48.     st->codec->extradata = av_malloc(st->codec->extradata_size);
+49.     memcpy(st->codec->extradata, p, st->codec->extradata_size);
+
+libavformat/oggparsespeex.c:48:5: 
+46.     st->codec->channels = AV_RL32(p + 48);
+47.     st->codec->extradata_size = os->psize;
+48.     st->codec->extradata = av_malloc(st->codec->extradata_size);
+        ^
+49.     memcpy(st->codec->extradata, p, st->codec->extradata_size);
+50. 
+
+libavutil/mem.c:42:1: start of procedure av_malloc()
+  40.    linker will do it automatically */
+  41. 
+  42. void *av_malloc(unsigned int size)
+      ^
+  43. {
+  44.     void *ptr;
+
+libavutil/mem.c:50:8: Taking true branch
+  48. 
+  49.     /* let's disallow possible ambiguous cases */
+  50.     if(size > (INT_MAX-16) )
+             ^
+  51.         return NULL;
+  52. 
+
+libavutil/mem.c:51:9: 
+  49.     /* let's disallow possible ambiguous cases */
+  50.     if(size > (INT_MAX-16) )
+  51.         return NULL;
+              ^
+  52. 
+  53. #ifdef CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:92:1: return from a call to av_malloc
+  90. #endif
+  91.     return ptr;
+  92. }
+      ^
+  93. 
+  94. void *av_realloc(void *ptr, unsigned int size)
+
+libavformat/oggparsespeex.c:49:5: 
+47.     st->codec->extradata_size = os->psize;
+48.     st->codec->extradata = av_malloc(st->codec->extradata_size);
+49.     memcpy(st->codec->extradata, p, st->codec->extradata_size);
+        ^
+50. 
+51.     st->time_base.num = 1;

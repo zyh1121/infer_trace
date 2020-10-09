@@ -1,0 +1,147 @@
+#17984
+libswscale/swscale.c:3181: error: Null Dereference
+  pointer `vec` last assigned on line 3179 could be null and is dereferenced at line 3181, column 5.
+
+libswscale/swscale.c:3175:1: start of procedure sws_getConvVec()
+3173. }
+3174. 
+3175. static SwsVector *sws_getConvVec(SwsVector *a, SwsVector *b){
+      ^
+3176.     int length= a->length + b->length - 1;
+3177.     double *coeff= av_malloc(length*sizeof(double));
+
+libswscale/swscale.c:3176:5: 
+3174. 
+3175. static SwsVector *sws_getConvVec(SwsVector *a, SwsVector *b){
+3176.     int length= a->length + b->length - 1;
+          ^
+3177.     double *coeff= av_malloc(length*sizeof(double));
+3178.     int i, j;
+
+libswscale/swscale.c:3177:5: 
+3175. static SwsVector *sws_getConvVec(SwsVector *a, SwsVector *b){
+3176.     int length= a->length + b->length - 1;
+3177.     double *coeff= av_malloc(length*sizeof(double));
+          ^
+3178.     int i, j;
+3179.     SwsVector *vec= av_malloc(sizeof(SwsVector));
+
+libavutil/mem.c:47:1: start of procedure av_malloc()
+  45.    linker will do it automatically. */
+  46. 
+  47. void *av_malloc(unsigned int size)
+      ^
+  48. {
+  49.     void *ptr = NULL;
+
+libavutil/mem.c:49:5: 
+  47. void *av_malloc(unsigned int size)
+  48. {
+  49.     void *ptr = NULL;
+          ^
+  50. #if CONFIG_MEMALIGN_HACK
+  51.     long diff;
+
+libavutil/mem.c:55:8: Taking false branch
+  53. 
+  54.     /* let's disallow possible ambiguous cases */
+  55.     if(size > (INT_MAX-16) )
+             ^
+  56.         return NULL;
+  57. 
+
+libavutil/mem.c:66:9: Taking false branch
+  64.     ((char*)ptr)[-1]= diff;
+  65. #elif HAVE_POSIX_MEMALIGN
+  66.     if (posix_memalign(&ptr,16,size))
+              ^
+  67.         ptr = NULL;
+  68. #elif HAVE_MEMALIGN
+
+libavutil/mem.c:99:5: 
+   97.     ptr = malloc(size);
+   98. #endif
+   99.     return ptr;
+           ^
+  100. }
+  101. 
+
+libavutil/mem.c:100:1: return from a call to av_malloc
+   98. #endif
+   99.     return ptr;
+  100. }
+       ^
+  101. 
+  102. void *av_realloc(void *ptr, unsigned int size)
+
+libswscale/swscale.c:3179:5: 
+3177.     double *coeff= av_malloc(length*sizeof(double));
+3178.     int i, j;
+3179.     SwsVector *vec= av_malloc(sizeof(SwsVector));
+          ^
+3180. 
+3181.     vec->coeff= coeff;
+
+libavutil/mem.c:47:1: start of procedure av_malloc()
+  45.    linker will do it automatically. */
+  46. 
+  47. void *av_malloc(unsigned int size)
+      ^
+  48. {
+  49.     void *ptr = NULL;
+
+libavutil/mem.c:49:5: 
+  47. void *av_malloc(unsigned int size)
+  48. {
+  49.     void *ptr = NULL;
+          ^
+  50. #if CONFIG_MEMALIGN_HACK
+  51.     long diff;
+
+libavutil/mem.c:55:8: Taking false branch
+  53. 
+  54.     /* let's disallow possible ambiguous cases */
+  55.     if(size > (INT_MAX-16) )
+             ^
+  56.         return NULL;
+  57. 
+
+libavutil/mem.c:66:9: Taking true branch
+  64.     ((char*)ptr)[-1]= diff;
+  65. #elif HAVE_POSIX_MEMALIGN
+  66.     if (posix_memalign(&ptr,16,size))
+              ^
+  67.         ptr = NULL;
+  68. #elif HAVE_MEMALIGN
+
+libavutil/mem.c:67:9: 
+  65. #elif HAVE_POSIX_MEMALIGN
+  66.     if (posix_memalign(&ptr,16,size))
+  67.         ptr = NULL;
+              ^
+  68. #elif HAVE_MEMALIGN
+  69.     ptr = memalign(16,size);
+
+libavutil/mem.c:99:5: 
+   97.     ptr = malloc(size);
+   98. #endif
+   99.     return ptr;
+           ^
+  100. }
+  101. 
+
+libavutil/mem.c:100:1: return from a call to av_malloc
+   98. #endif
+   99.     return ptr;
+  100. }
+       ^
+  101. 
+  102. void *av_realloc(void *ptr, unsigned int size)
+
+libswscale/swscale.c:3181:5: 
+3179.     SwsVector *vec= av_malloc(sizeof(SwsVector));
+3180. 
+3181.     vec->coeff= coeff;
+          ^
+3182.     vec->length= length;
+3183. 

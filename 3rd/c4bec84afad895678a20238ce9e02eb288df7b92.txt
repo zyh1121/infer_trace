@@ -1,0 +1,67 @@
+#13155
+libavutil/sha.c:236: error: BUFFER_OVERRUN_L3
+  Offset: [-3, 44] Size: 64.
+
+libavutil/sha.c:221:10: <Offset trace>
+219.     }
+220. #else
+221.     for (i = 0; i < 16 - 7;) {
+              ^
+222.         ROUND256_0_TO_15(a, b, c, d, e, f, g, h);
+223.         ROUND256_0_TO_15(h, a, b, c, d, e, f, g);
+
+libavutil/sha.c:221:10: Assignment
+219.     }
+220. #else
+221.     for (i = 0; i < 16 - 7;) {
+              ^
+222.         ROUND256_0_TO_15(a, b, c, d, e, f, g, h);
+223.         ROUND256_0_TO_15(h, a, b, c, d, e, f, g);
+
+libavutil/sha.c:233:9: Assignment
+231. 
+232.     for (; i < 64 - 7;) {
+233.         ROUND256_16_TO_63(a, b, c, d, e, f, g, h);
+             ^
+234.         ROUND256_16_TO_63(h, a, b, c, d, e, f, g);
+235.         ROUND256_16_TO_63(g, h, a, b, c, d, e, f);
+
+libavutil/sha.c:234:9: Assignment
+232.     for (; i < 64 - 7;) {
+233.         ROUND256_16_TO_63(a, b, c, d, e, f, g, h);
+234.         ROUND256_16_TO_63(h, a, b, c, d, e, f, g);
+             ^
+235.         ROUND256_16_TO_63(g, h, a, b, c, d, e, f);
+236.         ROUND256_16_TO_63(f, g, h, a, b, c, d, e);
+
+libavutil/sha.c:235:9: Assignment
+233.         ROUND256_16_TO_63(a, b, c, d, e, f, g, h);
+234.         ROUND256_16_TO_63(h, a, b, c, d, e, f, g);
+235.         ROUND256_16_TO_63(g, h, a, b, c, d, e, f);
+             ^
+236.         ROUND256_16_TO_63(f, g, h, a, b, c, d, e);
+237.         ROUND256_16_TO_63(e, f, g, h, a, b, c, d);
+
+libavutil/sha.c:188:1: <Length trace>
+186.     ROUND256(a,b,c,d,e,f,g,h)
+187. 
+188. static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
+     ^
+189. {
+190.     unsigned int i, a, b, c, d, e, f, g, h;
+
+libavutil/sha.c:188:1: Array declaration
+186.     ROUND256(a,b,c,d,e,f,g,h)
+187. 
+188. static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
+     ^
+189. {
+190.     unsigned int i, a, b, c, d, e, f, g, h;
+
+libavutil/sha.c:236:9: Array access: Offset: [-3, 44] Size: 64
+234.         ROUND256_16_TO_63(h, a, b, c, d, e, f, g);
+235.         ROUND256_16_TO_63(g, h, a, b, c, d, e, f);
+236.         ROUND256_16_TO_63(f, g, h, a, b, c, d, e);
+             ^
+237.         ROUND256_16_TO_63(e, f, g, h, a, b, c, d);
+238.         ROUND256_16_TO_63(d, e, f, g, h, a, b, c);

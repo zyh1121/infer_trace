@@ -1,0 +1,403 @@
+#35249
+libavformat/movenc.c:1682: error: Null Dereference
+  pointer `null` is dereferenced by call to `ff_sdp_write_media()` at line 1682, column 5.
+
+libavformat/movenc.c:1676:1: start of procedure mov_write_udta_sdp()
+1674. }
+1675. 
+1676. static int mov_write_udta_sdp(AVIOContext *pb, MOVTrack *track)
+      ^
+1677. {
+1678.     AVFormatContext *ctx = track->rtp_ctx;
+
+libavformat/movenc.c:1678:5: 
+1676. static int mov_write_udta_sdp(AVIOContext *pb, MOVTrack *track)
+1677. {
+1678.     AVFormatContext *ctx = track->rtp_ctx;
+          ^
+1679.     char buf[1000] = "";
+1680.     int len;
+
+libavformat/movenc.c:1679:5: 
+1677. {
+1678.     AVFormatContext *ctx = track->rtp_ctx;
+1679.     char buf[1000] = "";
+          ^
+1680.     int len;
+1681. 
+
+libavformat/movenc.c:1682:5: 
+1680.     int len;
+1681. 
+1682.     ff_sdp_write_media(buf, sizeof(buf), ctx->streams[0], track->src_track,
+          ^
+1683.                        NULL, NULL, 0, 0, ctx);
+1684.     av_strlcatf(buf, sizeof(buf), "a=control:streamid=%d\r\n", track->track_id);
+
+libavformat/sdp.c:709:1: start of procedure ff_sdp_write_media()
+  707. }
+  708. 
+  709. void ff_sdp_write_media(char *buff, int size, AVStream *st, int idx,
+       ^
+  710.                         const char *dest_addr, const char *dest_type,
+  711.                         int port, int ttl, AVFormatContext *fmt)
+
+libavformat/sdp.c:713:5: 
+  711.                         int port, int ttl, AVFormatContext *fmt)
+  712. {
+  713.     AVCodecParameters *p = st->codecpar;
+           ^
+  714.     const char *type;
+  715.     int payload_type;
+
+libavformat/sdp.c:717:5: Skipping ff_rtp_get_payload_type(): empty list of specs
+  715.     int payload_type;
+  716. 
+  717.     payload_type = ff_rtp_get_payload_type(fmt, st->codecpar, idx);
+           ^
+  718. 
+  719.     switch (p->codec_type) {
+
+libavformat/sdp.c:719:5: 
+  717.     payload_type = ff_rtp_get_payload_type(fmt, st->codecpar, idx);
+  718. 
+  719.     switch (p->codec_type) {
+           ^
+  720.         case AVMEDIA_TYPE_VIDEO   : type = "video"      ; break;
+  721.         case AVMEDIA_TYPE_AUDIO   : type = "audio"      ; break;
+
+libavformat/sdp.c:720:9: Switch condition is false. Skipping switch case
+  718. 
+  719.     switch (p->codec_type) {
+  720.         case AVMEDIA_TYPE_VIDEO   : type = "video"      ; break;
+               ^
+  721.         case AVMEDIA_TYPE_AUDIO   : type = "audio"      ; break;
+  722.         case AVMEDIA_TYPE_SUBTITLE: type = "text"       ; break;
+
+libavformat/sdp.c:721:9: Switch condition is false. Skipping switch case
+  719.     switch (p->codec_type) {
+  720.         case AVMEDIA_TYPE_VIDEO   : type = "video"      ; break;
+  721.         case AVMEDIA_TYPE_AUDIO   : type = "audio"      ; break;
+               ^
+  722.         case AVMEDIA_TYPE_SUBTITLE: type = "text"       ; break;
+  723.         default                 : type = "application"; break;
+
+libavformat/sdp.c:722:9: Switch condition is false. Skipping switch case
+  720.         case AVMEDIA_TYPE_VIDEO   : type = "video"      ; break;
+  721.         case AVMEDIA_TYPE_AUDIO   : type = "audio"      ; break;
+  722.         case AVMEDIA_TYPE_SUBTITLE: type = "text"       ; break;
+               ^
+  723.         default                 : type = "application"; break;
+  724.     }
+
+libavformat/sdp.c:723:35: 
+  721.         case AVMEDIA_TYPE_AUDIO   : type = "audio"      ; break;
+  722.         case AVMEDIA_TYPE_SUBTITLE: type = "text"       ; break;
+  723.         default                 : type = "application"; break;
+                                         ^
+  724.     }
+  725. 
+
+libavformat/sdp.c:726:5: 
+  724.     }
+  725. 
+  726.     av_strlcatf(buff, size, "m=%s %d RTP/AVP %d\r\n", type, port, payload_type);
+           ^
+  727.     sdp_write_address(buff, size, dest_addr, dest_type, ttl);
+  728.     if (p->bit_rate) {
+
+libavutil/avstring.c:99:1: start of procedure av_strlcatf()
+     97. }
+     98. 
+     99. size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...)
+         ^
+    100. {
+    101.     int len = strlen(dst);
+
+libavutil/avstring.c:101:5: 
+     99. size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...)
+    100. {
+    101.     int len = strlen(dst);
+             ^
+    102.     va_list vl;
+    103. 
+
+libavutil/avstring.c:104:5: 
+    102.     va_list vl;
+    103. 
+    104.     va_start(vl, fmt);
+             ^
+    105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+    106.     va_end(vl);
+
+libavutil/avstring.c:105:33: Condition is true
+    103. 
+    104.     va_start(vl, fmt);
+    105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+                                         ^
+    106.     va_end(vl);
+    107. 
+
+libavutil/avstring.c:105:5: 
+    103. 
+    104.     va_start(vl, fmt);
+    105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+             ^
+    106.     va_end(vl);
+    107. 
+
+libavutil/avstring.c:106:5: 
+    104.     va_start(vl, fmt);
+    105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+    106.     va_end(vl);
+             ^
+    107. 
+    108.     return len;
+
+libavutil/avstring.c:108:5: 
+    106.     va_end(vl);
+    107. 
+    108.     return len;
+             ^
+    109. }
+    110. 
+
+libavutil/avstring.c:109:1: return from a call to av_strlcatf
+    107. 
+    108.     return len;
+    109. }
+         ^
+    110. 
+    111. char *av_d2str(double d)
+
+libavformat/sdp.c:727:5: 
+  725. 
+  726.     av_strlcatf(buff, size, "m=%s %d RTP/AVP %d\r\n", type, port, payload_type);
+  727.     sdp_write_address(buff, size, dest_addr, dest_type, ttl);
+           ^
+  728.     if (p->bit_rate) {
+  729.         av_strlcatf(buff, size, "b=AS:%d\r\n", p->bit_rate / 1000);
+
+libavformat/sdp.c:58:1: start of procedure sdp_write_address()
+    56. };
+    57. 
+    58. static void sdp_write_address(char *buff, int size, const char *dest_addr,
+        ^
+    59.                               const char *dest_type, int ttl)
+    60. {
+
+libavformat/sdp.c:61:9: Taking true branch
+    59.                               const char *dest_type, int ttl)
+    60. {
+    61.     if (dest_addr) {
+                ^
+    62.         if (!dest_type)
+    63.             dest_type = "IP4";
+
+libavformat/sdp.c:62:14: Taking false branch
+    60. {
+    61.     if (dest_addr) {
+    62.         if (!dest_type)
+                     ^
+    63.             dest_type = "IP4";
+    64.         if (ttl > 0 && !strcmp(dest_type, "IP4")) {
+
+libavformat/sdp.c:64:13: Taking true branch
+    62.         if (!dest_type)
+    63.             dest_type = "IP4";
+    64.         if (ttl > 0 && !strcmp(dest_type, "IP4")) {
+                    ^
+    65.             /* The TTL should only be specified for IPv4 multicast addresses,
+    66.              * not for IPv6. */
+
+libavformat/sdp.c:64:25: Taking false branch
+    62.         if (!dest_type)
+    63.             dest_type = "IP4";
+    64.         if (ttl > 0 && !strcmp(dest_type, "IP4")) {
+                                ^
+    65.             /* The TTL should only be specified for IPv4 multicast addresses,
+    66.              * not for IPv6. */
+
+libavformat/sdp.c:69:13: 
+    67.             av_strlcatf(buff, size, "c=IN %s %s/%d\r\n", dest_type, dest_addr, ttl);
+    68.         } else {
+    69.             av_strlcatf(buff, size, "c=IN %s %s\r\n", dest_type, dest_addr);
+                    ^
+    70.         }
+    71.     }
+
+libavutil/avstring.c:99:1: start of procedure av_strlcatf()
+       97. }
+       98. 
+       99. size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...)
+           ^
+      100. {
+      101.     int len = strlen(dst);
+
+libavutil/avstring.c:101:5: 
+       99. size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...)
+      100. {
+      101.     int len = strlen(dst);
+               ^
+      102.     va_list vl;
+      103. 
+
+libavutil/avstring.c:104:5: 
+      102.     va_list vl;
+      103. 
+      104.     va_start(vl, fmt);
+               ^
+      105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+      106.     va_end(vl);
+
+libavutil/avstring.c:105:33: Condition is true
+      103. 
+      104.     va_start(vl, fmt);
+      105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+                                           ^
+      106.     va_end(vl);
+      107. 
+
+libavutil/avstring.c:105:5: 
+      103. 
+      104.     va_start(vl, fmt);
+      105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+               ^
+      106.     va_end(vl);
+      107. 
+
+libavutil/avstring.c:106:5: 
+      104.     va_start(vl, fmt);
+      105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+      106.     va_end(vl);
+               ^
+      107. 
+      108.     return len;
+
+libavutil/avstring.c:108:5: 
+      106.     va_end(vl);
+      107. 
+      108.     return len;
+               ^
+      109. }
+      110. 
+
+libavutil/avstring.c:109:1: return from a call to av_strlcatf
+      107. 
+      108.     return len;
+      109. }
+           ^
+      110. 
+      111. char *av_d2str(double d)
+
+libavformat/sdp.c:61:5: 
+    59.                               const char *dest_type, int ttl)
+    60. {
+    61.     if (dest_addr) {
+            ^
+    62.         if (!dest_type)
+    63.             dest_type = "IP4";
+
+libavformat/sdp.c:72:1: return from a call to sdp_write_address
+    70.         }
+    71.     }
+    72. }
+        ^
+    73. 
+    74. static void sdp_write_header(char *buff, int size, struct sdp_session_level *s)
+
+libavformat/sdp.c:728:9: Taking true branch
+  726.     av_strlcatf(buff, size, "m=%s %d RTP/AVP %d\r\n", type, port, payload_type);
+  727.     sdp_write_address(buff, size, dest_addr, dest_type, ttl);
+  728.     if (p->bit_rate) {
+               ^
+  729.         av_strlcatf(buff, size, "b=AS:%d\r\n", p->bit_rate / 1000);
+  730.     }
+
+libavformat/sdp.c:729:9: 
+  727.     sdp_write_address(buff, size, dest_addr, dest_type, ttl);
+  728.     if (p->bit_rate) {
+  729.         av_strlcatf(buff, size, "b=AS:%d\r\n", p->bit_rate / 1000);
+               ^
+  730.     }
+  731. 
+
+libavutil/avstring.c:99:1: start of procedure av_strlcatf()
+     97. }
+     98. 
+     99. size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...)
+         ^
+    100. {
+    101.     int len = strlen(dst);
+
+libavutil/avstring.c:101:5: 
+     99. size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...)
+    100. {
+    101.     int len = strlen(dst);
+             ^
+    102.     va_list vl;
+    103. 
+
+libavutil/avstring.c:104:5: 
+    102.     va_list vl;
+    103. 
+    104.     va_start(vl, fmt);
+             ^
+    105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+    106.     va_end(vl);
+
+libavutil/avstring.c:105:33: Condition is true
+    103. 
+    104.     va_start(vl, fmt);
+    105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+                                         ^
+    106.     va_end(vl);
+    107. 
+
+libavutil/avstring.c:105:5: 
+    103. 
+    104.     va_start(vl, fmt);
+    105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+             ^
+    106.     va_end(vl);
+    107. 
+
+libavutil/avstring.c:106:5: 
+    104.     va_start(vl, fmt);
+    105.     len += vsnprintf(dst + len, size > len ? size - len : 0, fmt, vl);
+    106.     va_end(vl);
+             ^
+    107. 
+    108.     return len;
+
+libavutil/avstring.c:108:5: 
+    106.     va_end(vl);
+    107. 
+    108.     return len;
+             ^
+    109. }
+    110. 
+
+libavutil/avstring.c:109:1: return from a call to av_strlcatf
+    107. 
+    108.     return len;
+    109. }
+         ^
+    110. 
+    111. char *av_d2str(double d)
+
+libavformat/sdp.c:732:5: Skipping sdp_write_media_attributes(): empty list of specs
+  730.     }
+  731. 
+  732.     sdp_write_media_attributes(buff, size, p, payload_type, fmt);
+           ^
+  733. }
+  734. 
+
+libavformat/sdp.c:733:1: return from a call to ff_sdp_write_media
+  731. 
+  732.     sdp_write_media_attributes(buff, size, p, payload_type, fmt);
+  733. }
+       ^
+  734. 
+  735. int av_sdp_create(AVFormatContext *ac[], int n_files, char *buf, int size)

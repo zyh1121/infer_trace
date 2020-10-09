@@ -1,0 +1,96 @@
+test/drbgtest.c:584: error: NULL_DEREFERENCE
+  pointer `ctx` last assigned on line 582 could be null and is dereferenced at line 584, column 25.
+Showing all 13 steps of the trace
+
+
+test/drbgtest.c:580:1: start of procedure unhook_drbg()
+578.   
+579.   /* Installs the hook for the get_entropy() callback of the given drbg */
+580. > static void unhook_drbg(RAND_DRBG *drbg)
+581.   {
+582.       HOOK_CTX *ctx = get_hook_ctx(drbg);
+
+test/drbgtest.c:582:5: 
+580.   static void unhook_drbg(RAND_DRBG *drbg)
+581.   {
+582. >     HOOK_CTX *ctx = get_hook_ctx(drbg);
+583.   
+584.       drbg->get_entropy = ctx->get_entropy;
+
+test/drbgtest.c:545:1: start of procedure get_hook_ctx()
+  543.   static HOOK_CTX master_ctx, public_ctx, private_ctx;
+  544.   
+  545. > static HOOK_CTX *get_hook_ctx(RAND_DRBG *drbg)
+  546.   {
+  547.       return (HOOK_CTX *)RAND_DRBG_get_ex_data(drbg, app_data_index);
+
+test/drbgtest.c:547:5: 
+  545.   static HOOK_CTX *get_hook_ctx(RAND_DRBG *drbg)
+  546.   {
+  547. >     return (HOOK_CTX *)RAND_DRBG_get_ex_data(drbg, app_data_index);
+  548.   }
+  549.   
+
+crypto/rand/drbg_lib.c:929:1: start of procedure RAND_DRBG_get_ex_data()
+    927.   }
+    928.   
+    929. > void *RAND_DRBG_get_ex_data(const RAND_DRBG *drbg, int idx)
+    930.   {
+    931.       return CRYPTO_get_ex_data(&drbg->ex_data, idx);
+
+crypto/rand/drbg_lib.c:931:5: 
+    929.   void *RAND_DRBG_get_ex_data(const RAND_DRBG *drbg, int idx)
+    930.   {
+    931. >     return CRYPTO_get_ex_data(&drbg->ex_data, idx);
+    932.   }
+    933.   
+
+crypto/ex_data.c:458:1: start of procedure CRYPTO_get_ex_data()
+      456.    * particular index in the class used by this variable
+      457.    */
+      458. > void *CRYPTO_get_ex_data(const CRYPTO_EX_DATA *ad, int idx)
+      459.   {
+      460.       if (ad->sk == NULL || idx >= sk_void_num(ad->sk))
+
+crypto/ex_data.c:460:9: Taking true branch
+      458.   void *CRYPTO_get_ex_data(const CRYPTO_EX_DATA *ad, int idx)
+      459.   {
+      460.       if (ad->sk == NULL || idx >= sk_void_num(ad->sk))
+                     ^
+      461.           return NULL;
+      462.       return sk_void_value(ad->sk, idx);
+
+crypto/ex_data.c:461:9: 
+      459.   {
+      460.       if (ad->sk == NULL || idx >= sk_void_num(ad->sk))
+      461. >         return NULL;
+      462.       return sk_void_value(ad->sk, idx);
+      463.   }
+
+crypto/ex_data.c:463:1: return from a call to CRYPTO_get_ex_data
+      461.           return NULL;
+      462.       return sk_void_value(ad->sk, idx);
+      463. > }
+      464.   
+      465.   OPENSSL_CTX *crypto_ex_data_get_openssl_ctx(const CRYPTO_EX_DATA *ad)
+
+crypto/rand/drbg_lib.c:932:1: return from a call to RAND_DRBG_get_ex_data
+    930.   {
+    931.       return CRYPTO_get_ex_data(&drbg->ex_data, idx);
+    932. > }
+    933.   
+    934.   
+
+test/drbgtest.c:548:1: return from a call to get_hook_ctx
+  546.   {
+  547.       return (HOOK_CTX *)RAND_DRBG_get_ex_data(drbg, app_data_index);
+  548. > }
+  549.   
+  550.   /* Intercepts and counts calls to the get_entropy() callback */
+
+test/drbgtest.c:584:5: 
+582.       HOOK_CTX *ctx = get_hook_ctx(drbg);
+583.   
+584. >     drbg->get_entropy = ctx->get_entropy;
+585.       CRYPTO_free_ex_data(CRYPTO_EX_INDEX_DRBG, drbg, &drbg->ex_data);
+586.   }

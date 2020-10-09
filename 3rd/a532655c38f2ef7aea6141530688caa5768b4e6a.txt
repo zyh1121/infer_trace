@@ -1,0 +1,107 @@
+apps/speed.c:1602: error: BUFFER_OVERRUN_L3
+  Offset: [0, 99998] Size: [1, 61599384].
+Showing all 13 steps of the trace
+
+
+apps/speed.c:1600:10: <Offset trace>
+1598.       memset(loopargs, 0, loopargs_len * sizeof(loopargs_t));
+1599.   
+1600.       for (i = 0; i < loopargs_len; i++) {
+                 ^
+1601.           if (async_jobs > 0) {
+1602.               loopargs[i].wait_ctx = ASYNC_WAIT_CTX_new();
+
+apps/speed.c:1600:10: Assignment
+1598.       memset(loopargs, 0, loopargs_len * sizeof(loopargs_t));
+1599.   
+1600.       for (i = 0; i < loopargs_len; i++) {
+                 ^
+1601.           if (async_jobs > 0) {
+1602.               loopargs[i].wait_ctx = ASYNC_WAIT_CTX_new();
+
+apps/speed.c:1595:21: <Length trace>
+1593.       }
+1594.   
+1595.       loopargs_len = (async_jobs == 0 ? 1 : async_jobs);
+                            ^
+1596.       loopargs =
+1597.           app_malloc(loopargs_len * sizeof(loopargs_t), "array of loopargs");
+
+apps/speed.c:1595:21: Assignment
+1593.       }
+1594.   
+1595.       loopargs_len = (async_jobs == 0 ? 1 : async_jobs);
+                            ^
+1596.       loopargs =
+1597.           app_malloc(loopargs_len * sizeof(loopargs_t), "array of loopargs");
+
+apps/speed.c:1595:5: Assignment
+1593.       }
+1594.   
+1595.       loopargs_len = (async_jobs == 0 ? 1 : async_jobs);
+            ^
+1596.       loopargs =
+1597.           app_malloc(loopargs_len * sizeof(loopargs_t), "array of loopargs");
+
+apps/speed.c:1597:9: Call
+1595.       loopargs_len = (async_jobs == 0 ? 1 : async_jobs);
+1596.       loopargs =
+1597.           app_malloc(loopargs_len * sizeof(loopargs_t), "array of loopargs");
+                ^
+1598.       memset(loopargs, 0, loopargs_len * sizeof(loopargs_t));
+1599.   
+
+apps/apps.c:948:1: Parameter `sz`
+  946.   }
+  947.   
+  948. > void* app_malloc(int sz, const char *what)
+  949.   {
+  950.       void *vp = OPENSSL_malloc(sz);
+
+apps/apps.c:950:16: Call
+  948.   void* app_malloc(int sz, const char *what)
+  949.   {
+  950.       void *vp = OPENSSL_malloc(sz);
+                        ^
+  951.   
+  952.       if (vp == NULL) {
+
+crypto/mem.c:201:9: Assignment
+    199.   
+    200.       if (num == 0)
+    201.           return NULL;
+                   ^
+    202.   
+    203.       FAILTEST();
+
+apps/apps.c:950:5: Assignment
+  948.   void* app_malloc(int sz, const char *what)
+  949.   {
+  950.       void *vp = OPENSSL_malloc(sz);
+             ^
+  951.   
+  952.       if (vp == NULL) {
+
+apps/apps.c:958:5: Assignment
+  956.           exit(1);
+  957.       }
+  958.       return vp;
+             ^
+  959.   }
+  960.   
+
+apps/speed.c:1596:5: Assignment
+1594.   
+1595.       loopargs_len = (async_jobs == 0 ? 1 : async_jobs);
+1596.       loopargs =
+            ^
+1597.           app_malloc(loopargs_len * sizeof(loopargs_t), "array of loopargs");
+1598.       memset(loopargs, 0, loopargs_len * sizeof(loopargs_t));
+
+apps/speed.c:1602:13: Array access: Offset: [0, 99998] Size: [1, 61599384]
+1600.       for (i = 0; i < loopargs_len; i++) {
+1601.           if (async_jobs > 0) {
+1602.               loopargs[i].wait_ctx = ASYNC_WAIT_CTX_new();
+                    ^
+1603.               if (loopargs[i].wait_ctx == NULL) {
+1604.                   BIO_printf(bio_err, "Error creating the ASYNC_WAIT_CTX\n");

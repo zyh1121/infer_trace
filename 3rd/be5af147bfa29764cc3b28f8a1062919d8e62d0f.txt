@@ -1,0 +1,177 @@
+test/srptest.c:150: error: BUFFER_OVERRUN_L3
+  Offset: [31, +oo] Size: [0, 8388607] by call to `SRP_create_verifier_BN`.
+Showing all 23 steps of the trace
+
+
+test/srptest.c:150:10: Call
+148.       BN_hex2bn(&s, "BEB25379D1A8581EB5A727673A2441EE");
+149.       /* Set up server's password entry */
+150.       if (!TEST_true(SRP_create_verifier_BN("alice", "password123", &s, &v, GN->N,
+                ^
+151.                                             GN->g)))
+152.           goto err;
+
+crypto/srp/srp_vfy.c:695:1: Parameter `g->top`
+  693.    * BIGNUMS.
+  694.    */
+  695. > int SRP_create_verifier_BN(const char *user, const char *pass, BIGNUM **salt,
+  696.                              BIGNUM **verifier, const BIGNUM *N,
+  697.                              const BIGNUM *g)
+
+crypto/srp/srp_vfy.c:730:10: Call
+  728.           goto err;
+  729.   
+  730.       if (!BN_mod_exp(*verifier, g, x, N, bn_ctx)) {
+                  ^
+  731.           BN_clear_free(*verifier);
+  732.           goto err;
+
+crypto/bn/bn_exp.c:89:1: Parameter `a->top`
+    87.   }
+    88.   
+    89. > int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
+    90.                  BN_CTX *ctx)
+    91.   {
+
+crypto/bn/bn_exp.c:144:19: Call
+    142.           } else
+    143.   # endif
+    144.               ret = BN_mod_exp_mont(r, a, p, m, ctx, NULL);
+                             ^
+    145.       } else
+    146.   #endif
+
+crypto/bn/bn_exp.c:296:1: Parameter `a->top`
+      294.   }
+      295.   
+      296. > int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+      297.                       const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+      298.   {
+
+crypto/bn/bn_exp.c:310:16: Call
+      308.               || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+      309.               || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+      310.           return BN_mod_exp_mont_consttime(rr, a, p, m, ctx, in_mont);
+                            ^
+      311.       }
+      312.   
+
+crypto/bn/bn_exp.c:592:1: Parameter `a->top`
+        590.    * http://www.daemonology.net/hyperthreading-considered-harmful/)
+        591.    */
+        592. > int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+        593.                                 const BIGNUM *m, BN_CTX *ctx,
+        594.                                 BN_MONT_CTX *in_mont)
+
+crypto/bn/bn_exp.c:755:17: Call
+        753.           if (!bn_to_mont_fixed_top(&am, &am, mont, ctx))
+        754.               goto err;
+        755.       } else if (!bn_to_mont_fixed_top(&am, a, mont, ctx))
+                               ^
+        756.           goto err;
+        757.   
+
+crypto/bn/bn_mont.c:222:1: Parameter `a->top`
+          220.   }
+          221.   
+          222. > int bn_to_mont_fixed_top(BIGNUM *r, const BIGNUM *a, BN_MONT_CTX *mont,
+          223.                            BN_CTX *ctx)
+          224.   {
+
+crypto/bn/bn_mont.c:225:12: Call
+          223.                            BN_CTX *ctx)
+          224.   {
+          225.       return bn_mul_mont_fixed_top(r, a, &(mont->RR), mont, ctx);
+                            ^
+          226.   }
+          227.   
+
+crypto/bn/bn_mont.c:37:1: Parameter `b->top`
+            35.   }
+            36.   
+            37. > int bn_mul_mont_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+            38.                             BN_MONT_CTX *mont, BN_CTX *ctx)
+            39.   {
+
+crypto/bn/bn_mont.c:67:14: Call
+            65.       bn_check_top(tmp);
+            66.       if (a == b) {
+            67.           if (!bn_sqr_fixed_top(tmp, a, ctx))
+                               ^
+            68.               goto err;
+            69.       } else {
+
+crypto/bn/bn_sqr.c:27:1: Parameter `a->top`
+              25.   }
+              26.   
+              27. > int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
+              28.   {
+              29.       int max, al;
+
+crypto/bn/bn_sqr.c:35:5: Assignment
+              33.       bn_check_top(a);
+              34.   
+              35.       al = a->top;
+                        ^
+              36.       if (al <= 0) {
+              37.           r->top = 0;
+
+crypto/bn/bn_sqr.c:84:17: Call
+              82.                   if (bn_wexpand(tmp, max) == NULL)
+              83.                       goto err;
+              84.                   bn_sqr_normal(rr->d, a->d, al, tmp->d);
+                                    ^
+              85.               }
+              86.           }
+
+crypto/bn/bn_sqr.c:109:1: <Offset trace>
+107.   
+108.   /* tmp must have 2*n words */
+109. > void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
+110.   {
+111.       int i, j, max;
+
+crypto/bn/bn_sqr.c:109:1: Parameter `n`
+                107.   
+                108.   /* tmp must have 2*n words */
+                109. > void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
+                110.   {
+                111.       int i, j, max;
+
+crypto/bn/bn_sqr.c:115:5: Assignment
+                113.       BN_ULONG *rp;
+                114.   
+                115.       max = n * 2;
+                           ^
+                116.       ap = a;
+                117.       rp = r;
+
+crypto/bn/bn_sqr.c:109:1: <Length trace>
+107.   
+108.   /* tmp must have 2*n words */
+109. > void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
+110.   {
+111.       int i, j, max;
+
+crypto/bn/bn_sqr.c:109:1: Parameter `*r`
+                107.   
+                108.   /* tmp must have 2*n words */
+                109. > void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
+                110.   {
+                111.       int i, j, max;
+
+crypto/bn/bn_sqr.c:117:5: Assignment
+                115.       max = n * 2;
+                116.       ap = a;
+                117.       rp = r;
+                           ^
+                118.       rp[0] = rp[max - 1] = 0;
+                119.       rp++;
+
+crypto/bn/bn_sqr.c:118:13: Array access: Offset: [31, +oo] Size: [0, 8388607] by call to `SRP_create_verifier_BN` 
+                116.       ap = a;
+                117.       rp = r;
+                118.       rp[0] = rp[max - 1] = 0;
+                                   ^
+                119.       rp++;
+                120.       j = n;

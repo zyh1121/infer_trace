@@ -1,0 +1,35 @@
+#656
+src/http/modules/ngx_http_limit_req_module.c:200: error: Integer Overflow L2
+  ([0, +oo] - [0, 15]):unsigned64 by call to `ngx_slab_alloc_locked`.
+
+src/http/modules/ngx_http_limit_req_module.c:200:16: Call
+198.             + len;
+199. 
+200.         node = ngx_slab_alloc_locked(ctx->shpool, n);
+                    ^
+201.         if (node == NULL) {
+202. 
+
+src/core/ngx_slab.c:155:1: <LHS trace>
+153. 
+154. 
+155. void *
+     ^
+156. ngx_slab_alloc_locked(ngx_slab_pool_t *pool, size_t size)
+157. {
+
+src/core/ngx_slab.c:155:1: Global `ngx_pagesize_shift`
+  153. 
+  154. 
+  155. void *
+       ^
+  156. ngx_slab_alloc_locked(ngx_slab_pool_t *pool, size_t size)
+  157. {
+
+src/core/ngx_slab.c:288:13: Binary operation: ([0, +oo] - [0, 15]):unsigned64 by call to `ngx_slab_alloc_locked` 
+  286.         } else { /* shift > ngx_slab_exact_shift */
+  287. 
+  288.             n = ngx_pagesize_shift - (page->slab & NGX_SLAB_SHIFT_MASK);
+                   ^
+  289.             n = 1 << n;
+  290.             n = ((uintptr_t) 1 << n) - 1;

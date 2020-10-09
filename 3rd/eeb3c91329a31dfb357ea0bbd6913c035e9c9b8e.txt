@@ -1,0 +1,59 @@
+#8512
+libavcodec/apedec.c:436: error: Integer Overflow L2
+  ([0, +oo] - 1):unsigned32 by call to `ape_decode_value`.
+
+libavcodec/apedec.c:421:1: Parameter `ctx->riceX.k`
+419. }
+420. 
+421. static void entropy_decode(APEContext * ctx, int blockstodecode, int stereo)
+     ^
+422. {
+423.     int32_t *decoded0 = ctx->decoded0;
+
+libavcodec/apedec.c:436:31: Call
+434.             *decoded0++ = ape_decode_value(ctx, &ctx->riceY);
+435.             if (stereo)
+436.                 *decoded1++ = ape_decode_value(ctx, &ctx->riceX);
+                                   ^
+437.         }
+438.     }
+
+libavcodec/apedec.c:370:1: Parameter `rice->k`
+  368. }
+  369. 
+  370. static inline int ape_decode_value(APEContext * ctx, APERice *rice)
+       ^
+  371. {
+  372.     int x, overflow;
+
+libavcodec/apedec.c:412:5: Call
+  410.     }
+  411. 
+  412.     update_rice(rice, x);
+           ^
+  413. 
+  414.     /* Convert to signed */
+
+libavcodec/apedec.c:359:1: <LHS trace>
+357. /** @} */ // group rangecoder
+358. 
+359. static inline void update_rice(APERice *rice, int x)
+     ^
+360. {
+361.     int lim = rice->k ? (1 << (rice->k + 4)) : 0;
+
+libavcodec/apedec.c:359:1: Parameter `rice->k`
+    357. /** @} */ // group rangecoder
+    358. 
+    359. static inline void update_rice(APERice *rice, int x)
+         ^
+    360. {
+    361.     int lim = rice->k ? (1 << (rice->k + 4)) : 0;
+
+libavcodec/apedec.c:365:9: Binary operation: ([0, +oo] - 1):unsigned32 by call to `ape_decode_value` 
+    363. 
+    364.     if (rice->ksum < lim)
+    365.         rice->k--;
+                 ^
+    366.     else if (rice->ksum >= (1 << (rice->k + 5)))
+    367.         rice->k++;

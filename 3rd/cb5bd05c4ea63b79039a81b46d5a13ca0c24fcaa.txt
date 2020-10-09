@@ -1,0 +1,11 @@
+#7356
+libavformat/wav.c:199: error: UNINITIALIZED_VALUE
+  The value read from ret was never initialized.
+
+libavformat/wav.c:199:9: 
+197.     ff_get_wav_header(pb, (*st)->codec, size);
+198.     if (ret < 0)
+199.         return ret;
+             ^
+200.     (*st)->need_parsing = AVSTREAM_PARSE_FULL;
+201. 

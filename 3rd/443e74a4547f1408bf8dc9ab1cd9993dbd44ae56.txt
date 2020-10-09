@@ -1,0 +1,78 @@
+crypto/rand/drbg_rand.c:408: error: BUFFER_OVERRUN_L3
+  Offset added: [0, 15] Size: [0, +oo] by call to `RAND_DRBG_generate`.
+Showing all 10 steps of the trace
+
+
+crypto/rand/drbg_rand.c:395:1: Parameter `count`
+393.   }
+394.   
+395. > static int drbg_bytes(unsigned char *out, int count)
+396.   {
+397.       DRBG_CTX *dctx = RAND_DRBG_get_default();
+
+crypto/rand/drbg_rand.c:405:13: Assignment
+403.   
+404.           if (count > (int)dctx->max_request)
+405.               rcnt = dctx->max_request;
+                   ^
+406.           else
+407.               rcnt = count;
+
+crypto/rand/drbg_rand.c:408:15: Call
+406.           else
+407.               rcnt = count;
+408.           ret = RAND_DRBG_generate(dctx, out, rcnt, 0, NULL, 0);
+                     ^
+409.           if (!ret)
+410.               goto err;
+
+crypto/rand/drbg_lib.c:258:1: Parameter `outlen`
+  256.    * sent in |adin| and |adinlen|.
+  257.    */
+  258. > int RAND_DRBG_generate(DRBG_CTX *dctx, unsigned char *out, size_t outlen,
+  259.                          int prediction_resistance,
+  260.                          const unsigned char *adin, size_t adinlen)
+
+crypto/rand/drbg_lib.c:294:10: Call
+  292.       }
+  293.   
+  294.       if (!ctr_generate(dctx, out, outlen, adin, adinlen)) {
+                  ^
+  295.           r = RAND_R_GENERATE_ERROR;
+  296.           dctx->status = DRBG_STATUS_ERROR;
+
+crypto/rand/drbg_rand.c:284:1: <Offset trace>
+282.   }
+283.   
+284. > int ctr_generate(DRBG_CTX *dctx,
+285.                    unsigned char *out, size_t outlen,
+286.                    const unsigned char *adin, size_t adinlen)
+
+crypto/rand/drbg_rand.c:284:1: Parameter `outlen`
+    282.   }
+    283.   
+    284. > int ctr_generate(DRBG_CTX *dctx,
+    285.                    unsigned char *out, size_t outlen,
+    286.                    const unsigned char *adin, size_t adinlen)
+
+crypto/rand/drbg_rand.c:284:1: <Length trace>
+282.   }
+283.   
+284. > int ctr_generate(DRBG_CTX *dctx,
+285.                    unsigned char *out, size_t outlen,
+286.                    const unsigned char *adin, size_t adinlen)
+
+crypto/rand/drbg_rand.c:284:1: Parameter `dctx->ctr.K[*]`
+    282.   }
+    283.   
+    284. > int ctr_generate(DRBG_CTX *dctx,
+    285.                    unsigned char *out, size_t outlen,
+    286.                    const unsigned char *adin, size_t adinlen)
+
+crypto/rand/drbg_rand.c:306:13: Array access: Offset added: [0, 15] Size: [0, +oo] by call to `RAND_DRBG_generate` 
+    304.               /* Use K as temp space as it will be updated */
+    305.               AES_encrypt(cctx->V, cctx->K, &cctx->ks);
+    306.               memcpy(out, cctx->K, outlen);
+                       ^
+    307.               break;
+    308.           }

@@ -1,0 +1,11 @@
+#13175
+libavutil/sha.c:233: error: UNINITIALIZED_VALUE
+  The value read from block[_] was never initialized.
+
+libavutil/sha.c:233:9: 
+231. 
+232.     for (; i < 64 - 7;) {
+233.         ROUND256_16_TO_63(a, b, c, d, e, f, g, h);
+             ^
+234.         ROUND256_16_TO_63(h, a, b, c, d, e, f, g);
+235.         ROUND256_16_TO_63(g, h, a, b, c, d, e, f);

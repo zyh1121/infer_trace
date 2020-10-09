@@ -1,0 +1,86 @@
+crypto/ec/ec2_smpl.c:941: error: INTEGER_OVERFLOW_L2
+  ([0, +oo] - 1):unsigned32 by call to `BN_CTX_end`.
+Showing all 11 steps of the trace
+
+
+crypto/ec/ec2_smpl.c:912:1: Parameter `ctx->pool.used`
+910.   
+911.   /* Forces the given EC_POINT to internally use affine coordinates. */
+912. > int ec_GF2m_simple_make_affine(const EC_GROUP *group, EC_POINT *point, BN_CTX *ctx)
+913.   	{
+914.   	BN_CTX *new_ctx = NULL;
+
+crypto/ec/ec2_smpl.c:929:6: Call
+927.   
+928.   	BN_CTX_start(ctx);
+929.   	x = BN_CTX_get(ctx);
+            ^
+930.   	y = BN_CTX_get(ctx);
+931.   	if (y == NULL) goto err;
+
+crypto/bn/bn_ctx.c:288:1: Parameter `ctx->pool.used`
+  286.   	}
+  287.   
+  288. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+  289.   	{
+  290.   	BIGNUM *ret;
+
+crypto/ec/ec2_smpl.c:930:6: Call
+928.   	BN_CTX_start(ctx);
+929.   	x = BN_CTX_get(ctx);
+930.   	y = BN_CTX_get(ctx);
+            ^
+931.   	if (y == NULL) goto err;
+932.   	
+
+crypto/bn/bn_ctx.c:288:1: Parameter `ctx->pool.used`
+  286.   	}
+  287.   
+  288. > BIGNUM *BN_CTX_get(BN_CTX *ctx)
+  289.   	{
+  290.   	BIGNUM *ret;
+
+crypto/ec/ec2_smpl.c:941:11: Call
+939.   
+940.     err:
+941.   	if (ctx) BN_CTX_end(ctx);
+                 ^
+942.   	if (new_ctx) BN_CTX_free(new_ctx);
+943.   	return ret;
+
+crypto/bn/bn_ctx.c:270:1: Parameter `ctx->pool.used`
+  268.   	}
+  269.   
+  270. > void BN_CTX_end(BN_CTX *ctx)
+  271.   	{
+  272.   	CTXDBG_ENTRY("BN_CTX_end", ctx);
+
+crypto/bn/bn_ctx.c:280:4: Call
+  278.   		/* Does this stack frame have anything to release? */
+  279.   		if(fp < ctx->used)
+  280.   			BN_POOL_release(&ctx->pool, ctx->used - fp);
+            ^
+  281.   		ctx->used = fp;
+  282.   		/* Unjam "too_many" in case "get" had failed */
+
+crypto/bn/bn_ctx.c:438:1: <LHS trace>
+436.   	}
+437.   
+438. > static void BN_POOL_release(BN_POOL *p, unsigned int num)
+439.   	{
+440.   	unsigned int offset = (p->used - 1) % BN_CTX_POOL_SIZE;
+
+crypto/bn/bn_ctx.c:438:1: Parameter `p->used`
+    436.   	}
+    437.   
+    438. > static void BN_POOL_release(BN_POOL *p, unsigned int num)
+    439.   	{
+    440.   	unsigned int offset = (p->used - 1) % BN_CTX_POOL_SIZE;
+
+crypto/bn/bn_ctx.c:440:2: Binary operation: ([0, +oo] - 1):unsigned32 by call to `BN_CTX_end` 
+    438.   static void BN_POOL_release(BN_POOL *p, unsigned int num)
+    439.   	{
+    440.   	unsigned int offset = (p->used - 1) % BN_CTX_POOL_SIZE;
+            ^
+    441.   	p->used -= num;
+    442.   	while(num--)

@@ -1,0 +1,75 @@
+#35669
+libavcodec/sanm.c:467: error: INTEGER_OVERFLOW_L2
+  ([32+max(0, `ctx->buf_size`), 18446744073709551615] + [0, 18446744073709551615]):unsigned64 by call to `av_fast_padded_malloc`.
+
+libavcodec/sanm.c:463:1: Parameter `ctx->buf_size`
+461. }
+462. 
+463. static av_cold int init_buffers(SANMVideoContext *ctx)
+     ^
+464. {
+465.     av_fast_padded_malloc(&ctx->frm0, &ctx->frm0_size, ctx->buf_size);
+
+libavcodec/sanm.c:467:5: Call
+465.     av_fast_padded_malloc(&ctx->frm0, &ctx->frm0_size, ctx->buf_size);
+466.     av_fast_padded_malloc(&ctx->frm1, &ctx->frm1_size, ctx->buf_size);
+467.     av_fast_padded_malloc(&ctx->frm2, &ctx->frm2_size, ctx->buf_size);
+         ^
+468.     if (!ctx->version)
+469.         av_fast_padded_malloc(&ctx->stored_frame,
+
+libavcodec/utils.c:121:1: Parameter `min_size`
+  119. static void *avformat_mutex;
+  120. 
+  121. void av_fast_padded_malloc(void *ptr, unsigned int *size, size_t min_size)
+       ^
+  122. {
+  123.     uint8_t **p = ptr;
+
+libavcodec/utils.c:129:10: Call
+  127.         return;
+  128.     }
+  129.     if (!ff_fast_malloc(p, size, min_size + AV_INPUT_BUFFER_PADDING_SIZE, 1))
+                ^
+  130.         memset(*p + min_size, 0, AV_INPUT_BUFFER_PADDING_SIZE);
+  131. }
+
+libavutil/mem_internal.h:27:1: <LHS trace>
+25. #include "mem.h"
+26. 
+27. static inline int ff_fast_malloc(void *ptr, unsigned int *size, size_t min_size, int zero_realloc)
+    ^
+28. {
+29.     void *val;
+
+libavutil/mem_internal.h:27:1: Parameter `min_size`
+    25. #include "mem.h"
+    26. 
+    27. static inline int ff_fast_malloc(void *ptr, unsigned int *size, size_t min_size, int zero_realloc)
+        ^
+    28. {
+    29.     void *val;
+
+libavutil/mem_internal.h:27:1: <RHS trace>
+25. #include "mem.h"
+26. 
+27. static inline int ff_fast_malloc(void *ptr, unsigned int *size, size_t min_size, int zero_realloc)
+    ^
+28. {
+29.     void *val;
+
+libavutil/mem_internal.h:27:1: Parameter `min_size`
+    25. #include "mem.h"
+    26. 
+    27. static inline int ff_fast_malloc(void *ptr, unsigned int *size, size_t min_size, int zero_realloc)
+        ^
+    28. {
+    29.     void *val;
+
+libavutil/mem_internal.h:36:16: Binary operation: ([32+max(0, ctx->buf_size), 18446744073709551615] + [0, 18446744073709551615]):unsigned64 by call to `av_fast_padded_malloc` 
+    34.         return 0;
+    35.     }
+    36.     min_size = FFMAX(min_size + min_size / 16 + 32, min_size);
+                       ^
+    37.     av_freep(ptr);
+    38.     val = zero_realloc ? av_mallocz(min_size) : av_malloc(min_size);

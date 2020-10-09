@@ -1,0 +1,56 @@
+ssl/statem/statem_srvr.c:1834: error: BUFFER_OVERRUN_S2
+  Offset added: [`s->method->ssl3_enc->hhlen` + `s->cert->psk_identity_hint->strlen` + 2, `s->method->ssl3_enc->hhlen` + `s->cert->psk_identity_hint->strlen` + 2] (⇐ [`s->method->ssl3_enc->hhlen` + 2, `s->method->ssl3_enc->hhlen` + 2] + `s->cert->psk_identity_hint->strlen`) Size: [1, 2147483644].
+Showing all 7 steps of the trace
+
+
+ssl/statem/statem_srvr.c:1607:1: <Offset trace>
+1605.   }
+1606.   
+1607. > int tls_construct_server_key_exchange(SSL *s)
+1608.   {
+1609.   #ifndef OPENSSL_NO_DH
+
+ssl/statem/statem_srvr.c:1607:1: Parameter `s->cert->psk_identity_hint->strlen`
+1605.   }
+1606.   
+1607. > int tls_construct_server_key_exchange(SSL *s)
+1608.   {
+1609.   #ifndef OPENSSL_NO_DH
+
+ssl/statem/statem_srvr.c:1607:1: <Length trace>
+1605.   }
+1606.   
+1607. > int tls_construct_server_key_exchange(SSL *s)
+1608.   {
+1609.   #ifndef OPENSSL_NO_DH
+
+ssl/statem/statem_srvr.c:1607:1: Parameter `s->method->ssl3_enc->hhlen`
+1605.   }
+1606.   
+1607. > int tls_construct_server_key_exchange(SSL *s)
+1608.   {
+1609.   #ifndef OPENSSL_NO_DH
+
+ssl/statem/statem_srvr.c:1827:9: Assignment
+1825.           goto err;
+1826.       }
+1827.       d = p = ssl_handshake_start(s);
+                ^
+1828.   
+1829.   #ifndef OPENSSL_NO_PSK
+
+ssl/statem/statem_srvr.c:1833:13: Assignment
+1831.           /* copy PSK identity hint */
+1832.           if (s->cert->psk_identity_hint) {
+1833.               s2n(strlen(s->cert->psk_identity_hint), p);
+                    ^
+1834.               strncpy((char *)p, s->cert->psk_identity_hint,
+1835.                       strlen(s->cert->psk_identity_hint));
+
+ssl/statem/statem_srvr.c:1834:13: Array access: Offset added: [s->method->ssl3_enc->hhlen + s->cert->psk_identity_hint->strlen + 2, s->method->ssl3_enc->hhlen + s->cert->psk_identity_hint->strlen + 2] (⇐ [s->method->ssl3_enc->hhlen + 2, s->method->ssl3_enc->hhlen + 2] + s->cert->psk_identity_hint->strlen) Size: [1, 2147483644]
+1832.           if (s->cert->psk_identity_hint) {
+1833.               s2n(strlen(s->cert->psk_identity_hint), p);
+1834.               strncpy((char *)p, s->cert->psk_identity_hint,
+                    ^
+1835.                       strlen(s->cert->psk_identity_hint));
+1836.               p += strlen(s->cert->psk_identity_hint);

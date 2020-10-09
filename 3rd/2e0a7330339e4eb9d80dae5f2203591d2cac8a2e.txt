@@ -1,0 +1,211 @@
+#17135
+libavformat/matroskadec.c:944: error: MEMORY_LEAK
+  memory dynamically allocated by call to `av_realloc()` at line 944, column 24 is not reachable after line 944, column 13.
+
+libavformat/matroskadec.c:924:1: start of procedure matroska_decode_buffer()
+922. }
+923. 
+924. static int matroska_decode_buffer(uint8_t** buf, int* buf_size,
+     ^
+925.                                   MatroskaTrack *track)
+926. {
+
+libavformat/matroskadec.c:927:5: 
+925.                                   MatroskaTrack *track)
+926. {
+927.     MatroskaTrackEncoding *encodings = track->encodings.elem;
+         ^
+928.     uint8_t* data = *buf;
+929.     int isize = *buf_size;
+
+libavformat/matroskadec.c:928:5: 
+926. {
+927.     MatroskaTrackEncoding *encodings = track->encodings.elem;
+928.     uint8_t* data = *buf;
+         ^
+929.     int isize = *buf_size;
+930.     uint8_t* pkt_data = NULL;
+
+libavformat/matroskadec.c:929:5: 
+927.     MatroskaTrackEncoding *encodings = track->encodings.elem;
+928.     uint8_t* data = *buf;
+929.     int isize = *buf_size;
+         ^
+930.     uint8_t* pkt_data = NULL;
+931.     int pkt_size = isize;
+
+libavformat/matroskadec.c:930:5: 
+928.     uint8_t* data = *buf;
+929.     int isize = *buf_size;
+930.     uint8_t* pkt_data = NULL;
+         ^
+931.     int pkt_size = isize;
+932.     int result = 0;
+
+libavformat/matroskadec.c:931:5: 
+929.     int isize = *buf_size;
+930.     uint8_t* pkt_data = NULL;
+931.     int pkt_size = isize;
+         ^
+932.     int result = 0;
+933.     int olen;
+
+libavformat/matroskadec.c:932:5: 
+930.     uint8_t* pkt_data = NULL;
+931.     int pkt_size = isize;
+932.     int result = 0;
+         ^
+933.     int olen;
+934. 
+
+libavformat/matroskadec.c:935:9: Taking false branch
+933.     int olen;
+934. 
+935.     if (pkt_size >= 10000000)
+             ^
+936.         return -1;
+937. 
+
+libavformat/matroskadec.c:938:5: 
+936.         return -1;
+937. 
+938.     switch (encodings[0].compression.algo) {
+         ^
+939.     case MATROSKA_TRACK_ENCODING_COMP_HEADERSTRIP:
+940.         return encodings[0].compression.settings.size;
+
+libavformat/matroskadec.c:939:5: Switch condition is false. Skipping switch case
+937. 
+938.     switch (encodings[0].compression.algo) {
+939.     case MATROSKA_TRACK_ENCODING_COMP_HEADERSTRIP:
+         ^
+940.         return encodings[0].compression.settings.size;
+941.     case MATROSKA_TRACK_ENCODING_COMP_LZO:
+
+libavformat/matroskadec.c:941:5: Switch condition is true. Entering switch case
+939.     case MATROSKA_TRACK_ENCODING_COMP_HEADERSTRIP:
+940.         return encodings[0].compression.settings.size;
+941.     case MATROSKA_TRACK_ENCODING_COMP_LZO:
+         ^
+942.         do {
+943.             olen = pkt_size *= 3;
+
+libavformat/matroskadec.c:943:13: 
+941.     case MATROSKA_TRACK_ENCODING_COMP_LZO:
+942.         do {
+943.             olen = pkt_size *= 3;
+                 ^
+944.             pkt_data = av_realloc(pkt_data, pkt_size+AV_LZO_OUTPUT_PADDING);
+945.             result = av_lzo1x_decode(pkt_data, &olen, data, &isize);
+
+libavformat/matroskadec.c:944:13: 
+942.         do {
+943.             olen = pkt_size *= 3;
+944.             pkt_data = av_realloc(pkt_data, pkt_size+AV_LZO_OUTPUT_PADDING);
+                 ^
+945.             result = av_lzo1x_decode(pkt_data, &olen, data, &isize);
+946.         } while (result==AV_LZO_OUTPUT_FULL && pkt_size<10000000);
+
+libavutil/mem.c:119:1: start of procedure av_realloc()
+  117. }
+  118. 
+  119. void *av_realloc(void *ptr, size_t size)
+       ^
+  120. {
+  121. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:126:8: Taking false branch
+  124. 
+  125.     /* let's disallow possible ambiguous cases */
+  126.     if(size > (INT_MAX-16) )
+              ^
+  127.         return NULL;
+  128. 
+
+libavutil/mem.c:135:5: 
+  133.     return (char*)realloc((char*)ptr - diff, size + diff) + diff;
+  134. #else
+  135.     return realloc(ptr, size);
+           ^
+  136. #endif
+  137. }
+
+libavutil/mem.c:137:1: return from a call to av_realloc
+  135.     return realloc(ptr, size);
+  136. #endif
+  137. }
+       ^
+  138. 
+  139. void av_free(void *ptr)
+
+libavformat/matroskadec.c:945:13: Skipping av_lzo1x_decode(): empty list of specs
+943.             olen = pkt_size *= 3;
+944.             pkt_data = av_realloc(pkt_data, pkt_size+AV_LZO_OUTPUT_PADDING);
+945.             result = av_lzo1x_decode(pkt_data, &olen, data, &isize);
+                 ^
+946.         } while (result==AV_LZO_OUTPUT_FULL && pkt_size<10000000);
+947.         if (result)
+
+libavformat/matroskadec.c:946:18: Loop condition is true. Entering loop body
+944.             pkt_data = av_realloc(pkt_data, pkt_size+AV_LZO_OUTPUT_PADDING);
+945.             result = av_lzo1x_decode(pkt_data, &olen, data, &isize);
+946.         } while (result==AV_LZO_OUTPUT_FULL && pkt_size<10000000);
+                      ^
+947.         if (result)
+948.             goto failed;
+
+libavformat/matroskadec.c:946:48: Loop condition is true. Entering loop body
+944.             pkt_data = av_realloc(pkt_data, pkt_size+AV_LZO_OUTPUT_PADDING);
+945.             result = av_lzo1x_decode(pkt_data, &olen, data, &isize);
+946.         } while (result==AV_LZO_OUTPUT_FULL && pkt_size<10000000);
+                                                    ^
+947.         if (result)
+948.             goto failed;
+
+libavformat/matroskadec.c:943:13: 
+941.     case MATROSKA_TRACK_ENCODING_COMP_LZO:
+942.         do {
+943.             olen = pkt_size *= 3;
+                 ^
+944.             pkt_data = av_realloc(pkt_data, pkt_size+AV_LZO_OUTPUT_PADDING);
+945.             result = av_lzo1x_decode(pkt_data, &olen, data, &isize);
+
+libavformat/matroskadec.c:944:13: 
+942.         do {
+943.             olen = pkt_size *= 3;
+944.             pkt_data = av_realloc(pkt_data, pkt_size+AV_LZO_OUTPUT_PADDING);
+                 ^
+945.             result = av_lzo1x_decode(pkt_data, &olen, data, &isize);
+946.         } while (result==AV_LZO_OUTPUT_FULL && pkt_size<10000000);
+
+libavutil/mem.c:119:1: start of procedure av_realloc()
+  117. }
+  118. 
+  119. void *av_realloc(void *ptr, size_t size)
+       ^
+  120. {
+  121. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:126:8: Taking true branch
+  124. 
+  125.     /* let's disallow possible ambiguous cases */
+  126.     if(size > (INT_MAX-16) )
+              ^
+  127.         return NULL;
+  128. 
+
+libavutil/mem.c:127:9: 
+  125.     /* let's disallow possible ambiguous cases */
+  126.     if(size > (INT_MAX-16) )
+  127.         return NULL;
+               ^
+  128. 
+  129. #if CONFIG_MEMALIGN_HACK
+
+libavutil/mem.c:137:1: return from a call to av_realloc
+  135.     return realloc(ptr, size);
+  136. #endif
+  137. }
+       ^
+  138. 
+  139. void av_free(void *ptr)

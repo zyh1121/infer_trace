@@ -1,0 +1,408 @@
+#2478
+libavformat/unix.c:78: error: Resource Leak
+  resource acquired by call to `ff_socket()` at line 74, column 15 is not released after line 78, column 9.
+
+libavformat/unix.c:65:1: start of procedure unix_open()
+63. };
+64. 
+65. static int unix_open(URLContext *h, const char *filename, int flags)
+    ^
+66. {
+67.     UnixContext *s = h->priv_data;
+
+libavformat/unix.c:67:5: 
+65. static int unix_open(URLContext *h, const char *filename, int flags)
+66. {
+67.     UnixContext *s = h->priv_data;
+        ^
+68.     int fd, ret;
+69. 
+
+libavformat/unix.c:70:5: Skipping av_strstart(): empty list of specs
+68.     int fd, ret;
+69. 
+70.     av_strstart(filename, "unix:", &filename);
+        ^
+71.     s->addr.sun_family = AF_UNIX;
+72.     av_strlcpy(s->addr.sun_path, filename, sizeof(s->addr.sun_path));
+
+libavformat/unix.c:71:5: 
+69. 
+70.     av_strstart(filename, "unix:", &filename);
+71.     s->addr.sun_family = AF_UNIX;
+        ^
+72.     av_strlcpy(s->addr.sun_path, filename, sizeof(s->addr.sun_path));
+73. 
+
+libavformat/unix.c:72:5: 
+70.     av_strstart(filename, "unix:", &filename);
+71.     s->addr.sun_family = AF_UNIX;
+72.     av_strlcpy(s->addr.sun_path, filename, sizeof(s->addr.sun_path));
+        ^
+73. 
+74.     if ((fd = ff_socket(AF_UNIX, s->type, 0)) < 0)
+
+libavutil/avstring.c:81:1: start of procedure av_strlcpy()
+  79. }
+  80. 
+  81. size_t av_strlcpy(char *dst, const char *src, size_t size)
+      ^
+  82. {
+  83.     size_t len = 0;
+
+libavutil/avstring.c:83:5: 
+  81. size_t av_strlcpy(char *dst, const char *src, size_t size)
+  82. {
+  83.     size_t len = 0;
+          ^
+  84.     while (++len < size && *src)
+  85.         *dst++ = *src++;
+
+libavutil/avstring.c:84:12: Loop condition is true. Entering loop body
+  82. {
+  83.     size_t len = 0;
+  84.     while (++len < size && *src)
+                 ^
+  85.         *dst++ = *src++;
+  86.     if (len <= size)
+
+libavutil/avstring.c:84:28: Loop condition is false. Leaving loop
+  82. {
+  83.     size_t len = 0;
+  84.     while (++len < size && *src)
+                                 ^
+  85.         *dst++ = *src++;
+  86.     if (len <= size)
+
+libavutil/avstring.c:86:9: Taking true branch
+  84.     while (++len < size && *src)
+  85.         *dst++ = *src++;
+  86.     if (len <= size)
+              ^
+  87.         *dst = 0;
+  88.     return len + strlen(src) - 1;
+
+libavutil/avstring.c:87:9: 
+  85.         *dst++ = *src++;
+  86.     if (len <= size)
+  87.         *dst = 0;
+              ^
+  88.     return len + strlen(src) - 1;
+  89. }
+
+libavutil/avstring.c:88:5: 
+  86.     if (len <= size)
+  87.         *dst = 0;
+  88.     return len + strlen(src) - 1;
+          ^
+  89. }
+  90. 
+
+libavutil/avstring.c:89:1: return from a call to av_strlcpy
+  87.         *dst = 0;
+  88.     return len + strlen(src) - 1;
+  89. }
+      ^
+  90. 
+  91. size_t av_strlcat(char *dst, const char *src, size_t size)
+
+libavformat/unix.c:74:9: 
+72.     av_strlcpy(s->addr.sun_path, filename, sizeof(s->addr.sun_path));
+73. 
+74.     if ((fd = ff_socket(AF_UNIX, s->type, 0)) < 0)
+            ^
+75.         return ff_neterrno();
+76. 
+
+libavformat/network.c:214:1: start of procedure ff_socket()
+  212. }
+  213. 
+  214. int ff_socket(int af, int type, int proto)
+       ^
+  215. {
+  216.     int fd;
+
+libavformat/network.c:219:5: 
+  217. 
+  218. #ifdef SOCK_CLOEXEC
+  219.     fd = socket(af, type | SOCK_CLOEXEC, proto);
+           ^
+  220.     if (fd == -1 && errno == EINVAL)
+  221. #endif
+
+libavformat/network.c:220:9: Taking false branch
+  218. #ifdef SOCK_CLOEXEC
+  219.     fd = socket(af, type | SOCK_CLOEXEC, proto);
+  220.     if (fd == -1 && errno == EINVAL)
+               ^
+  221. #endif
+  222.     {
+
+libavformat/network.c:229:5: 
+  227. #endif
+  228.     }
+  229.     return fd;
+           ^
+  230. }
+  231. 
+
+libavformat/network.c:230:1: return from a call to ff_socket
+  228.     }
+  229.     return fd;
+  230. }
+       ^
+  231. 
+  232. int ff_listen_bind(int fd, const struct sockaddr *addr,
+
+libavformat/unix.c:74:9: Taking false branch
+72.     av_strlcpy(s->addr.sun_path, filename, sizeof(s->addr.sun_path));
+73. 
+74.     if ((fd = ff_socket(AF_UNIX, s->type, 0)) < 0)
+            ^
+75.         return ff_neterrno();
+76. 
+
+libavformat/unix.c:77:9: Taking true branch
+75.         return ff_neterrno();
+76. 
+77.     if (s->listen) {
+            ^
+78.         fd = ff_listen_bind(fd, (struct sockaddr *)&s->addr,
+79.                             sizeof(s->addr), s->timeout, h);
+
+libavformat/unix.c:78:9: 
+76. 
+77.     if (s->listen) {
+78.         fd = ff_listen_bind(fd, (struct sockaddr *)&s->addr,
+            ^
+79.                             sizeof(s->addr), s->timeout, h);
+80.         if (fd < 0) {
+
+libavformat/network.c:232:1: start of procedure ff_listen_bind()
+  230. }
+  231. 
+  232. int ff_listen_bind(int fd, const struct sockaddr *addr,
+       ^
+  233.                    socklen_t addrlen, int timeout, URLContext *h)
+  234. {
+
+libavformat/network.c:236:5: 
+  234. {
+  235.     int ret;
+  236.     int reuse = 1;
+           ^
+  237.     struct pollfd lp = { fd, POLLIN, 0 };
+  238.     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+
+libavformat/network.c:237:5: 
+  235.     int ret;
+  236.     int reuse = 1;
+  237.     struct pollfd lp = { fd, POLLIN, 0 };
+           ^
+  238.     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+  239.     ret = bind(fd, addr, addrlen);
+
+libavformat/network.c:238:5: Skipping setsockopt(): method has no implementation
+  236.     int reuse = 1;
+  237.     struct pollfd lp = { fd, POLLIN, 0 };
+  238.     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+           ^
+  239.     ret = bind(fd, addr, addrlen);
+  240.     if (ret)
+
+libavformat/network.c:239:5: Skipping bind(): method has no implementation
+  237.     struct pollfd lp = { fd, POLLIN, 0 };
+  238.     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+  239.     ret = bind(fd, addr, addrlen);
+           ^
+  240.     if (ret)
+  241.         return ff_neterrno();
+
+libavformat/network.c:240:9: Taking false branch
+  238.     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+  239.     ret = bind(fd, addr, addrlen);
+  240.     if (ret)
+               ^
+  241.         return ff_neterrno();
+  242. 
+
+libavformat/network.c:243:5: Skipping listen(): method has no implementation
+  241.         return ff_neterrno();
+  242. 
+  243.     ret = listen(fd, 1);
+           ^
+  244.     if (ret)
+  245.         return ff_neterrno();
+
+libavformat/network.c:244:9: Taking false branch
+  242. 
+  243.     ret = listen(fd, 1);
+  244.     if (ret)
+               ^
+  245.         return ff_neterrno();
+  246. 
+
+libavformat/network.c:247:5: 
+  245.         return ff_neterrno();
+  246. 
+  247.     ret = ff_poll_interrupt(&lp, 1, timeout, &h->interrupt_callback);
+           ^
+  248.     if (ret < 0)
+  249.         return ret;
+
+libavformat/network.c:193:1: start of procedure ff_poll_interrupt()
+    191. }
+    192. 
+    193. static int ff_poll_interrupt(struct pollfd *p, nfds_t nfds, int timeout,
+         ^
+    194.                              AVIOInterruptCB *cb)
+    195. {
+
+libavformat/network.c:196:5: 
+    194.                              AVIOInterruptCB *cb)
+    195. {
+    196.     int runs = timeout / POLLING_TIME;
+             ^
+    197.     int ret = 0;
+    198. 
+
+libavformat/network.c:197:5: 
+    195. {
+    196.     int runs = timeout / POLLING_TIME;
+    197.     int ret = 0;
+             ^
+    198. 
+    199.     do {
+
+libavformat/network.c:200:13: 
+    198. 
+    199.     do {
+    200.         if (ff_check_interrupt(cb))
+                     ^
+    201.             return AVERROR_EXIT;
+    202.         ret = poll(p, nfds, POLLING_TIME);
+
+libavformat/avio.c:383:1: start of procedure ff_check_interrupt()
+      381. }
+      382. 
+      383. int ff_check_interrupt(AVIOInterruptCB *cb)
+           ^
+      384. {
+      385.     int ret;
+
+libavformat/avio.c:386:9: Taking true branch
+      384. {
+      385.     int ret;
+      386.     if (cb && cb->callback && (ret = cb->callback(cb->opaque)))
+                   ^
+      387.         return ret;
+      388.     return 0;
+
+libavformat/avio.c:386:15: Taking true branch
+      384. {
+      385.     int ret;
+      386.     if (cb && cb->callback && (ret = cb->callback(cb->opaque)))
+                         ^
+      387.         return ret;
+      388.     return 0;
+
+libavformat/avio.c:386:32: Taking false branch
+      384. {
+      385.     int ret;
+      386.     if (cb && cb->callback && (ret = cb->callback(cb->opaque)))
+                                          ^
+      387.         return ret;
+      388.     return 0;
+
+libavformat/avio.c:388:5: 
+      386.     if (cb && cb->callback && (ret = cb->callback(cb->opaque)))
+      387.         return ret;
+      388.     return 0;
+               ^
+      389. }
+
+libavformat/avio.c:389:1: return from a call to ff_check_interrupt
+      387.         return ret;
+      388.     return 0;
+      389. }
+           ^
+
+libavformat/network.c:200:13: Taking false branch
+    198. 
+    199.     do {
+    200.         if (ff_check_interrupt(cb))
+                     ^
+    201.             return AVERROR_EXIT;
+    202.         ret = poll(p, nfds, POLLING_TIME);
+
+libavformat/network.c:202:9: Skipping poll(): method has no implementation
+    200.         if (ff_check_interrupt(cb))
+    201.             return AVERROR_EXIT;
+    202.         ret = poll(p, nfds, POLLING_TIME);
+                 ^
+    203.         if (ret != 0)
+    204.             break;
+
+libavformat/network.c:203:13: Taking true branch
+    201.             return AVERROR_EXIT;
+    202.         ret = poll(p, nfds, POLLING_TIME);
+    203.         if (ret != 0)
+                     ^
+    204.             break;
+    205.     } while (timeout < 0 || runs-- > 0);
+
+libavformat/network.c:207:10: Taking false branch
+    205.     } while (timeout < 0 || runs-- > 0);
+    206. 
+    207.     if (!ret)
+                  ^
+    208.         return AVERROR(ETIMEDOUT);
+    209.     if (ret < 0)
+
+libavformat/network.c:209:9: Taking true branch
+    207.     if (!ret)
+    208.         return AVERROR(ETIMEDOUT);
+    209.     if (ret < 0)
+                 ^
+    210.         return AVERROR(errno);
+    211.     return ret;
+
+libavformat/network.c:210:9: 
+    208.         return AVERROR(ETIMEDOUT);
+    209.     if (ret < 0)
+    210.         return AVERROR(errno);
+                 ^
+    211.     return ret;
+    212. }
+
+libavformat/network.c:212:1: return from a call to ff_poll_interrupt
+    210.         return AVERROR(errno);
+    211.     return ret;
+    212. }
+         ^
+    213. 
+    214. int ff_socket(int af, int type, int proto)
+
+libavformat/network.c:248:9: Taking true branch
+  246. 
+  247.     ret = ff_poll_interrupt(&lp, 1, timeout, &h->interrupt_callback);
+  248.     if (ret < 0)
+               ^
+  249.         return ret;
+  250. 
+
+libavformat/network.c:249:9: 
+  247.     ret = ff_poll_interrupt(&lp, 1, timeout, &h->interrupt_callback);
+  248.     if (ret < 0)
+  249.         return ret;
+               ^
+  250. 
+  251.     ret = accept(fd, NULL, NULL);
+
+libavformat/network.c:259:1: return from a call to ff_listen_bind
+  257.     ff_socket_nonblock(ret, 1);
+  258.     return ret;
+  259. }
+       ^
+  260. 
+  261. int ff_listen_connect(int fd, const struct sockaddr *addr,

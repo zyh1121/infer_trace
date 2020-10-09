@@ -1,0 +1,519 @@
+test/bntest.c:1159: error: MEMORY_LEAK
+  memory dynamically allocated by call to `BN_MONT_CTX_new()` at line 1141, column 12 is not reachable after line 1159, column 17.
+Showing all 70 steps of the trace
+
+
+test/bntest.c:1131:1: start of procedure test_mod_exp_mont5()
+1129.    * x86_64 cause a different code branch to be taken.
+1130.    */
+1131. > int test_mod_exp_mont5(BIO *bp, BN_CTX *ctx)
+1132.   {
+1133.       BIGNUM *a, *p, *m, *d, *e;
+
+test/bntest.c:1136:5: Skipping BN_new(): empty list of specs
+1134.       BN_MONT_CTX *mont;
+1135.   
+1136.       a = BN_new();
+            ^
+1137.       p = BN_new();
+1138.       m = BN_new();
+
+test/bntest.c:1137:5: Skipping BN_new(): empty list of specs
+1135.   
+1136.       a = BN_new();
+1137.       p = BN_new();
+            ^
+1138.       m = BN_new();
+1139.       d = BN_new();
+
+test/bntest.c:1138:5: Skipping BN_new(): empty list of specs
+1136.       a = BN_new();
+1137.       p = BN_new();
+1138.       m = BN_new();
+            ^
+1139.       d = BN_new();
+1140.       e = BN_new();
+
+test/bntest.c:1139:5: Skipping BN_new(): empty list of specs
+1137.       p = BN_new();
+1138.       m = BN_new();
+1139.       d = BN_new();
+            ^
+1140.       e = BN_new();
+1141.       mont = BN_MONT_CTX_new();
+
+test/bntest.c:1140:5: Skipping BN_new(): empty list of specs
+1138.       m = BN_new();
+1139.       d = BN_new();
+1140.       e = BN_new();
+            ^
+1141.       mont = BN_MONT_CTX_new();
+1142.   
+
+test/bntest.c:1141:5: 
+1139.       d = BN_new();
+1140.       e = BN_new();
+1141. >     mont = BN_MONT_CTX_new();
+1142.   
+1143.       BN_bntest_rand(m, 1024, 0, 1); /* must be odd for montgomery */
+
+crypto/bn/bn_mont.c:213:1: start of procedure BN_MONT_CTX_new()
+  211.   }
+  212.   
+  213. > BN_MONT_CTX *BN_MONT_CTX_new(void)
+  214.   {
+  215.       BN_MONT_CTX *ret;
+
+crypto/bn/bn_mont.c:217:9: 
+  215.       BN_MONT_CTX *ret;
+  216.   
+  217. >     if ((ret = OPENSSL_malloc(sizeof(*ret))) == NULL)
+  218.           return (NULL);
+  219.   
+
+crypto/mem.c:71:1: start of procedure CRYPTO_malloc()
+    69.   }
+    70.   
+    71. > void *CRYPTO_malloc(size_t num, const char *file, int line)
+    72.   {
+    73.       void *ret = NULL;
+
+crypto/mem.c:73:5: 
+    71.   void *CRYPTO_malloc(size_t num, const char *file, int line)
+    72.   {
+    73. >     void *ret = NULL;
+    74.   
+    75.       if (malloc_impl != NULL && malloc_impl != CRYPTO_malloc)
+
+crypto/mem.c:75:9: Taking false branch
+    73.       void *ret = NULL;
+    74.   
+    75.       if (malloc_impl != NULL && malloc_impl != CRYPTO_malloc)
+                  ^
+    76.           return malloc_impl(num, file, line);
+    77.   
+
+crypto/mem.c:78:9: Taking false branch
+    76.           return malloc_impl(num, file, line);
+    77.   
+    78.       if (num <= 0)
+                  ^
+    79.           return NULL;
+    80.   
+
+crypto/mem.c:81:5: 
+    79.           return NULL;
+    80.   
+    81. >     allow_customize = 0;
+    82.   #ifndef OPENSSL_NO_CRYPTO_MDEBUG
+    83.       if (call_malloc_debug) {
+
+crypto/mem.c:91:5: 
+    89.       }
+    90.   #else
+    91. >     osslargused(file); osslargused(line);
+    92.       ret = malloc(num);
+    93.   #endif
+
+crypto/mem.c:91:24: 
+    89.       }
+    90.   #else
+    91. >     osslargused(file); osslargused(line);
+    92.       ret = malloc(num);
+    93.   #endif
+
+crypto/mem.c:92:5: 
+    90.   #else
+    91.       osslargused(file); osslargused(line);
+    92. >     ret = malloc(num);
+    93.   #endif
+    94.   
+
+crypto/mem.c:95:5: 
+    93.   #endif
+    94.   
+    95. >     return ret;
+    96.   }
+    97.   
+
+crypto/mem.c:96:1: return from a call to CRYPTO_malloc
+    94.   
+    95.       return ret;
+    96. > }
+    97.   
+    98.   void *CRYPTO_zalloc(size_t num, const char *file, int line)
+
+crypto/bn/bn_mont.c:217:9: Taking false branch
+  215.       BN_MONT_CTX *ret;
+  216.   
+  217.       if ((ret = OPENSSL_malloc(sizeof(*ret))) == NULL)
+                 ^
+  218.           return (NULL);
+  219.   
+
+crypto/bn/bn_mont.c:220:5: 
+  218.           return (NULL);
+  219.   
+  220. >     BN_MONT_CTX_init(ret);
+  221.       ret->flags = BN_FLG_MALLOCED;
+  222.       return (ret);
+
+crypto/bn/bn_mont.c:225:1: start of procedure BN_MONT_CTX_init()
+    223.   }
+    224.   
+    225. > void BN_MONT_CTX_init(BN_MONT_CTX *ctx)
+    226.   {
+    227.       ctx->ri = 0;
+
+crypto/bn/bn_mont.c:227:5: 
+    225.   void BN_MONT_CTX_init(BN_MONT_CTX *ctx)
+    226.   {
+    227. >     ctx->ri = 0;
+    228.       bn_init(&(ctx->RR));
+    229.       bn_init(&(ctx->N));
+
+crypto/bn/bn_mont.c:228:5: Skipping bn_init(): empty list of specs
+    226.   {
+    227.       ctx->ri = 0;
+    228.       bn_init(&(ctx->RR));
+               ^
+    229.       bn_init(&(ctx->N));
+    230.       bn_init(&(ctx->Ni));
+
+crypto/bn/bn_mont.c:229:5: Skipping bn_init(): empty list of specs
+    227.       ctx->ri = 0;
+    228.       bn_init(&(ctx->RR));
+    229.       bn_init(&(ctx->N));
+               ^
+    230.       bn_init(&(ctx->Ni));
+    231.       ctx->n0[0] = ctx->n0[1] = 0;
+
+crypto/bn/bn_mont.c:230:5: Skipping bn_init(): empty list of specs
+    228.       bn_init(&(ctx->RR));
+    229.       bn_init(&(ctx->N));
+    230.       bn_init(&(ctx->Ni));
+               ^
+    231.       ctx->n0[0] = ctx->n0[1] = 0;
+    232.       ctx->flags = 0;
+
+crypto/bn/bn_mont.c:231:5: 
+    229.       bn_init(&(ctx->N));
+    230.       bn_init(&(ctx->Ni));
+    231. >     ctx->n0[0] = ctx->n0[1] = 0;
+    232.       ctx->flags = 0;
+    233.   }
+
+crypto/bn/bn_mont.c:232:5: 
+    230.       bn_init(&(ctx->Ni));
+    231.       ctx->n0[0] = ctx->n0[1] = 0;
+    232. >     ctx->flags = 0;
+    233.   }
+    234.   
+
+crypto/bn/bn_mont.c:233:1: return from a call to BN_MONT_CTX_init
+    231.       ctx->n0[0] = ctx->n0[1] = 0;
+    232.       ctx->flags = 0;
+    233. > }
+    234.   
+    235.   void BN_MONT_CTX_free(BN_MONT_CTX *mont)
+
+crypto/bn/bn_mont.c:221:5: 
+  219.   
+  220.       BN_MONT_CTX_init(ret);
+  221. >     ret->flags = BN_FLG_MALLOCED;
+  222.       return (ret);
+  223.   }
+
+crypto/bn/bn_mont.c:222:5: 
+  220.       BN_MONT_CTX_init(ret);
+  221.       ret->flags = BN_FLG_MALLOCED;
+  222. >     return (ret);
+  223.   }
+  224.   
+
+crypto/bn/bn_mont.c:223:1: return from a call to BN_MONT_CTX_new
+  221.       ret->flags = BN_FLG_MALLOCED;
+  222.       return (ret);
+  223. > }
+  224.   
+  225.   void BN_MONT_CTX_init(BN_MONT_CTX *ctx)
+
+test/bntest.c:1143:5: 
+1141.       mont = BN_MONT_CTX_new();
+1142.   
+1143. >     BN_bntest_rand(m, 1024, 0, 1); /* must be odd for montgomery */
+1144.       /* Zero exponent */
+1145.       BN_bntest_rand(a, 1024, 0, 0);
+
+crypto/bn/bn_rand.c:106:1: start of procedure BN_bntest_rand()
+  104.   }
+  105.   
+  106. > int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+
+crypto/bn/bn_rand.c:108:5: Skipping bnrand(): empty list of specs
+  106.   int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+             ^
+  109.   }
+  110.   
+
+crypto/bn/bn_rand.c:109:1: return from a call to BN_bntest_rand
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+  109. > }
+  110.   
+  111.   /* random number r:  0 <= r < range */
+
+test/bntest.c:1145:5: 
+1143.       BN_bntest_rand(m, 1024, 0, 1); /* must be odd for montgomery */
+1144.       /* Zero exponent */
+1145. >     BN_bntest_rand(a, 1024, 0, 0);
+1146.       BN_zero(p);
+1147.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+
+crypto/bn/bn_rand.c:106:1: start of procedure BN_bntest_rand()
+  104.   }
+  105.   
+  106. > int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+
+crypto/bn/bn_rand.c:108:5: Skipping bnrand(): empty list of specs
+  106.   int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+             ^
+  109.   }
+  110.   
+
+crypto/bn/bn_rand.c:109:1: return from a call to BN_bntest_rand
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+  109. > }
+  110.   
+  111.   /* random number r:  0 <= r < range */
+
+test/bntest.c:1146:5: Skipping BN_set_word(): empty list of specs
+1144.       /* Zero exponent */
+1145.       BN_bntest_rand(a, 1024, 0, 0);
+1146.       BN_zero(p);
+            ^
+1147.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+1148.           return 0;
+
+test/bntest.c:1147:10: Taking false branch
+1145.       BN_bntest_rand(a, 1024, 0, 0);
+1146.       BN_zero(p);
+1147.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+                 ^
+1148.           return 0;
+1149.       if (!BN_is_one(d)) {
+
+test/bntest.c:1149:10: 
+1147.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+1148.           return 0;
+1149. >     if (!BN_is_one(d)) {
+1150.           fprintf(stderr, "Modular exponentiation test failed!\n");
+1151.           return 0;
+
+crypto/bn/bn_lib.c:925:1: start of procedure BN_is_one()
+  923.   }
+  924.   
+  925. > int BN_is_one(const BIGNUM *a)
+  926.   {
+  927.       return BN_abs_is_word(a, 1) && !a->neg;
+
+crypto/bn/bn_lib.c:927:12: 
+  925.   int BN_is_one(const BIGNUM *a)
+  926.   {
+  927. >     return BN_abs_is_word(a, 1) && !a->neg;
+  928.   }
+  929.   
+
+crypto/bn/bn_lib.c:915:1: start of procedure BN_abs_is_word()
+    913.   }
+    914.   
+    915. > int BN_abs_is_word(const BIGNUM *a, const BN_ULONG w)
+    916.   {
+    917.       return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
+
+crypto/bn/bn_lib.c:917:14: Condition is true
+    915.   int BN_abs_is_word(const BIGNUM *a, const BN_ULONG w)
+    916.   {
+    917.       return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
+                        ^
+    918.   }
+    919.   
+
+crypto/bn/bn_lib.c:917:31: Condition is true
+    915.   int BN_abs_is_word(const BIGNUM *a, const BN_ULONG w)
+    916.   {
+    917.       return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
+                                         ^
+    918.   }
+    919.   
+
+crypto/bn/bn_lib.c:917:12: 
+    915.   int BN_abs_is_word(const BIGNUM *a, const BN_ULONG w)
+    916.   {
+    917. >     return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
+    918.   }
+    919.   
+
+crypto/bn/bn_lib.c:917:5: 
+    915.   int BN_abs_is_word(const BIGNUM *a, const BN_ULONG w)
+    916.   {
+    917. >     return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
+    918.   }
+    919.   
+
+crypto/bn/bn_lib.c:918:1: return from a call to BN_abs_is_word
+    916.   {
+    917.       return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
+    918. > }
+    919.   
+    920.   int BN_is_zero(const BIGNUM *a)
+
+crypto/bn/bn_lib.c:927:12: Condition is true
+  925.   int BN_is_one(const BIGNUM *a)
+  926.   {
+  927.       return BN_abs_is_word(a, 1) && !a->neg;
+                    ^
+  928.   }
+  929.   
+
+crypto/bn/bn_lib.c:927:37: Condition is true
+  925.   int BN_is_one(const BIGNUM *a)
+  926.   {
+  927.       return BN_abs_is_word(a, 1) && !a->neg;
+                                             ^
+  928.   }
+  929.   
+
+crypto/bn/bn_lib.c:927:12: 
+  925.   int BN_is_one(const BIGNUM *a)
+  926.   {
+  927. >     return BN_abs_is_word(a, 1) && !a->neg;
+  928.   }
+  929.   
+
+crypto/bn/bn_lib.c:927:5: 
+  925.   int BN_is_one(const BIGNUM *a)
+  926.   {
+  927. >     return BN_abs_is_word(a, 1) && !a->neg;
+  928.   }
+  929.   
+
+crypto/bn/bn_lib.c:928:1: return from a call to BN_is_one
+  926.   {
+  927.       return BN_abs_is_word(a, 1) && !a->neg;
+  928. > }
+  929.   
+  930.   int BN_is_word(const BIGNUM *a, const BN_ULONG w)
+
+test/bntest.c:1149:10: Taking false branch
+1147.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+1148.           return 0;
+1149.       if (!BN_is_one(d)) {
+                 ^
+1150.           fprintf(stderr, "Modular exponentiation test failed!\n");
+1151.           return 0;
+
+test/bntest.c:1154:5: 
+1152.       }
+1153.       /* Zero input */
+1154. >     BN_bntest_rand(p, 1024, 0, 0);
+1155.       BN_zero(a);
+1156.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+
+crypto/bn/bn_rand.c:106:1: start of procedure BN_bntest_rand()
+  104.   }
+  105.   
+  106. > int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+
+crypto/bn/bn_rand.c:108:5: Skipping bnrand(): empty list of specs
+  106.   int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+             ^
+  109.   }
+  110.   
+
+crypto/bn/bn_rand.c:109:1: return from a call to BN_bntest_rand
+  107.   {
+  108.       return bnrand(2, rnd, bits, top, bottom);
+  109. > }
+  110.   
+  111.   /* random number r:  0 <= r < range */
+
+test/bntest.c:1155:5: Skipping BN_set_word(): empty list of specs
+1153.       /* Zero input */
+1154.       BN_bntest_rand(p, 1024, 0, 0);
+1155.       BN_zero(a);
+            ^
+1156.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+1157.           return 0;
+
+test/bntest.c:1156:10: Taking false branch
+1154.       BN_bntest_rand(p, 1024, 0, 0);
+1155.       BN_zero(a);
+1156.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+                 ^
+1157.           return 0;
+1158.       if (!BN_is_zero(d)) {
+
+test/bntest.c:1158:10: 
+1156.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+1157.           return 0;
+1158. >     if (!BN_is_zero(d)) {
+1159.           fprintf(stderr, "Modular exponentiation test failed!\n");
+1160.           return 0;
+
+crypto/bn/bn_lib.c:920:1: start of procedure BN_is_zero()
+  918.   }
+  919.   
+  920. > int BN_is_zero(const BIGNUM *a)
+  921.   {
+  922.       return a->top == 0;
+
+crypto/bn/bn_lib.c:922:12: Condition is false
+  920.   int BN_is_zero(const BIGNUM *a)
+  921.   {
+  922.       return a->top == 0;
+                    ^
+  923.   }
+  924.   
+
+crypto/bn/bn_lib.c:922:5: 
+  920.   int BN_is_zero(const BIGNUM *a)
+  921.   {
+  922. >     return a->top == 0;
+  923.   }
+  924.   
+
+crypto/bn/bn_lib.c:923:1: return from a call to BN_is_zero
+  921.   {
+  922.       return a->top == 0;
+  923. > }
+  924.   
+  925.   int BN_is_one(const BIGNUM *a)
+
+test/bntest.c:1158:10: Taking true branch
+1156.       if (!BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+1157.           return 0;
+1158.       if (!BN_is_zero(d)) {
+                 ^
+1159.           fprintf(stderr, "Modular exponentiation test failed!\n");
+1160.           return 0;
+
+test/bntest.c:1159:9: 
+1157.           return 0;
+1158.       if (!BN_is_zero(d)) {
+1159. >         fprintf(stderr, "Modular exponentiation test failed!\n");
+1160.           return 0;
+1161.       }

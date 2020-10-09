@@ -1,0 +1,131 @@
+crypto/ec/ec_mult.c:165: error: BUFFER_OVERRUN_L3
+  Offset added: [8, +oo] Size: [0, +oo] by call to `BN_mul`.
+Showing all 17 steps of the trace
+
+
+crypto/ec/ec_mult.c:162:19: Call
+160.       EC_POINT_BN_set_flags(s, BN_FLG_CONSTTIME);
+161.   
+162.       cardinality = BN_CTX_get(ctx);
+                         ^
+163.       lambda = BN_CTX_get(ctx);
+164.       k = BN_CTX_get(ctx);
+
+crypto/bn/bn_ctx.c:229:5: Call
+  227.       }
+  228.       /* OK, make sure the returned bignum is "zero" */
+  229.       BN_zero(ret);
+             ^
+  230.       ctx->used++;
+  231.       CTXDBG_RET(ctx, ret);
+
+crypto/bn/bn_lib.c:359:1: Parameter `*a->d`
+    357.   }
+    358.   
+    359. > int BN_set_word(BIGNUM *a, BN_ULONG w)
+    360.   {
+    361.       bn_check_top(a);
+
+crypto/bn/bn_lib.c:362:9: Call
+    360.   {
+    361.       bn_check_top(a);
+    362.       if (bn_expand(a, (int)sizeof(BN_ULONG) * 8) == NULL)
+                   ^
+    363.           return 0;
+    364.       a->neg = 0;
+
+crypto/bn/bn_lcl.h:660:1: Parameter `*a->d`
+      658.                            const BIGNUM *add, const BIGNUM *rem, BN_CTX *ctx);
+      659.   
+      660. > static ossl_inline BIGNUM *bn_expand(BIGNUM *a, int bits)
+      661.   {
+      662.       if (bits > (INT_MAX - BN_BITS2 + 1))
+
+crypto/ec/ec_mult.c:165:23: Call
+163.       lambda = BN_CTX_get(ctx);
+164.       k = BN_CTX_get(ctx);
+165.       if (k == NULL || !BN_mul(cardinality, group->order, group->cofactor, ctx))
+                             ^
+166.           goto err;
+167.   
+
+crypto/bn/bn_mul.c:497:1: Parameter `*r->d`
+  495.   #endif                          /* BN_RECURSION */
+  496.   
+  497. > int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+  498.   {
+  499.       int ret = 0;
+
+crypto/bn/bn_mul.c:592:9: Call
+  590.       }
+  591.   #endif                          /* BN_RECURSION */
+  592.       if (bn_wexpand(rr, top) == NULL)
+                 ^
+  593.           goto err;
+  594.       rr->top = top;
+
+crypto/bn/bn_lib.c:949:1: Parameter `*a->d`
+    947.   }
+    948.   
+    949. > BIGNUM *bn_wexpand(BIGNUM *a, int words)
+    950.   {
+    951.       return (words <= a->dmax) ? a : bn_expand2(a, words);
+
+crypto/bn/bn_lib.c:951:37: Call
+    949.   BIGNUM *bn_wexpand(BIGNUM *a, int words)
+    950.   {
+    951.       return (words <= a->dmax) ? a : bn_expand2(a, words);
+                                               ^
+    952.   }
+    953.   
+
+crypto/bn/bn_lib.c:245:1: Parameter `*b->d`
+      243.    */
+      244.   
+      245. > BIGNUM *bn_expand2(BIGNUM *b, int words)
+      246.   {
+      247.       if (words > b->dmax) {
+
+crypto/bn/bn_lib.c:248:23: Call
+      246.   {
+      247.       if (words > b->dmax) {
+      248.           BN_ULONG *a = bn_expand_internal(b, words);
+                                   ^
+      249.           if (!a)
+      250.               return NULL;
+
+crypto/bn/bn_lib.c:209:1: <Offset trace>
+207.   /* This is used by bn_expand2() */
+208.   /* The caller MUST check that words > b->dmax before calling this */
+209. > static BN_ULONG *bn_expand_internal(const BIGNUM *b, int words)
+210.   {
+211.       BN_ULONG *a = NULL;
+
+crypto/bn/bn_lib.c:209:1: Parameter `b->top`
+        207.   /* This is used by bn_expand2() */
+        208.   /* The caller MUST check that words > b->dmax before calling this */
+        209. > static BN_ULONG *bn_expand_internal(const BIGNUM *b, int words)
+        210.   {
+        211.       BN_ULONG *a = NULL;
+
+crypto/bn/bn_lib.c:209:1: <Length trace>
+207.   /* This is used by bn_expand2() */
+208.   /* The caller MUST check that words > b->dmax before calling this */
+209. > static BN_ULONG *bn_expand_internal(const BIGNUM *b, int words)
+210.   {
+211.       BN_ULONG *a = NULL;
+
+crypto/bn/bn_lib.c:209:1: Parameter `*b->d`
+        207.   /* This is used by bn_expand2() */
+        208.   /* The caller MUST check that words > b->dmax before calling this */
+        209. > static BN_ULONG *bn_expand_internal(const BIGNUM *b, int words)
+        210.   {
+        211.       BN_ULONG *a = NULL;
+
+crypto/bn/bn_lib.c:232:9: Array access: Offset added: [8, +oo] Size: [0, +oo] by call to `BN_mul` 
+        230.       assert(b->top <= words);
+        231.       if (b->top > 0)
+        232.           memcpy(a, b->d, sizeof(*a) * b->top);
+                       ^
+        233.   
+        234.       return a;

@@ -1,0 +1,63 @@
+ssl/record/ssl3_record.c:437: error: INTEGER_OVERFLOW_L2
+  ([0, +oo] - [256, 320]):unsigned64 by call to `ssl3_cbc_copy_mac`.
+Showing all 8 steps of the trace
+
+
+ssl/record/ssl3_record.c:125:1: Parameter `s->rlayer.rrec.length`
+123.    */
+124.   /* used only by ssl3_read_bytes */
+125. > int ssl3_get_record(SSL *s)
+126.   {
+127.       int ssl_major, ssl_minor, al;
+
+ssl/record/ssl3_record.c:329:9: Assignment
+327.           /* decrypt in place in 'rr->input' */
+328.           rr[num_recs].data = rr[num_recs].input;
+329.           rr[num_recs].orig_len = rr[num_recs].length;
+               ^
+330.   
+331.           /* Mark this record as not read by upper layers yet */
+
+ssl/record/ssl3_record.c:437:17: Call
+435.                    */
+436.                   mac = mac_tmp;
+437.                   ssl3_cbc_copy_mac(mac_tmp, &rr[j], mac_size);
+                       ^
+438.                   rr[j].length -= mac_size;
+439.               } else {
+
+ssl/record/ssl3_record.c:1231:1: <LHS trace>
+1229.   #define CBC_MAC_ROTATE_IN_PLACE
+1230.   
+1231. > void ssl3_cbc_copy_mac(unsigned char *out,
+1232.                          const SSL3_RECORD *rec, size_t md_size)
+1233.   {
+
+ssl/record/ssl3_record.c:1231:1: Parameter `md_size`
+  1229.   #define CBC_MAC_ROTATE_IN_PLACE
+  1230.   
+  1231. > void ssl3_cbc_copy_mac(unsigned char *out,
+  1232.                          const SSL3_RECORD *rec, size_t md_size)
+  1233.   {
+
+ssl/record/ssl3_record.c:1231:1: <RHS trace>
+1229.   #define CBC_MAC_ROTATE_IN_PLACE
+1230.   
+1231. > void ssl3_cbc_copy_mac(unsigned char *out,
+1232.                          const SSL3_RECORD *rec, size_t md_size)
+1233.   {
+
+ssl/record/ssl3_record.c:1231:1: Parameter `md_size`
+  1229.   #define CBC_MAC_ROTATE_IN_PLACE
+  1230.   
+  1231. > void ssl3_cbc_copy_mac(unsigned char *out,
+  1232.                          const SSL3_RECORD *rec, size_t md_size)
+  1233.   {
+
+ssl/record/ssl3_record.c:1264:9: Binary operation: ([0, +oo] - [256, 320]):unsigned64 by call to `ssl3_cbc_copy_mac` 
+  1262.       /* This information is public so it's safe to branch based on it. */
+  1263.       if (rec->orig_len > md_size + 255 + 1)
+  1264.           scan_start = rec->orig_len - (md_size + 255 + 1);
+                  ^
+  1265.       /*
+  1266.        * div_spoiler contains a multiple of md_size that is used to cause the

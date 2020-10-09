@@ -1,0 +1,27 @@
+#17113
+libavcodec/mpegvideo_motion.c:648: error: Buffer Overrun L1
+  Offset added: 8 Size: 4.
+
+libavcodec/mpegvideo_motion.c:624:1: <Length trace>
+622.  * the motion vectors are taken from s->mv and the MV type from s->mv_type
+623.  */
+624. static av_always_inline void MPV_motion_internal(MpegEncContext *s,
+     ^
+625.                               uint8_t *dest_y, uint8_t *dest_cb,
+626.                               uint8_t *dest_cr, int dir,
+
+libavcodec/mpegvideo_motion.c:624:1: Array declaration
+622.  * the motion vectors are taken from s->mv and the MV type from s->mv_type
+623.  */
+624. static av_always_inline void MPV_motion_internal(MpegEncContext *s,
+     ^
+625.                               uint8_t *dest_y, uint8_t *dest_cb,
+626.                               uint8_t *dest_cr, int dir,
+
+libavcodec/mpegvideo_motion.c:648:9: Array access: Offset added: 8 Size: 4
+646.         assert(!s->mb_skipped);
+647. 
+648.         memcpy(mv_cache[1][1], s->current_picture.f.motion_val[0][mot_xy             ], sizeof(int16_t) * 4);
+             ^
+649.         memcpy(mv_cache[2][1], s->current_picture.f.motion_val[0][mot_xy + mot_stride], sizeof(int16_t) * 4);
+650.         memcpy(mv_cache[3][1], s->current_picture.f.motion_val[0][mot_xy + mot_stride], sizeof(int16_t) * 4);
